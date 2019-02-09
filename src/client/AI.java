@@ -12,7 +12,7 @@ public class AI
 
     public void preProcess(World world)
     {
-        //System.out.println("pre process started");
+        System.out.println("pre process started");
 
     }
 
