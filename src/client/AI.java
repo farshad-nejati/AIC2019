@@ -18,18 +18,18 @@ public class AI
 
     public void pickTurn(World world)
     {
-        //System.out.println("pick started");
+        System.out.println("pick started");
 
     }
 
     public void moveTurn(World world)
     {
-        //System.out.println("move started");
+        System.out.println("move started");
 
     }
 
     public void actionTurn(World world) {
-        //System.out.println("action started");
+        System.out.println("action started");
 
     }
 
