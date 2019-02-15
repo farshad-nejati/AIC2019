@@ -1,9 +1,10 @@
 package client;
 
 import client.model.*;
-
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 
 public class AI
@@ -98,21 +99,39 @@ public class AI
 
     public void randomAction(World world) {
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
-        HashMap<Hero, Hero> effectiveHeroes = getEffectiveHeroesForInVisionOppHeroes(world, inVisionOppHeroes);
+        ArrayList<EffectiveHero> effectiveHeroes = getEffectiveHeroesForInVisionOppHeroes(world, inVisionOppHeroes);
         if (effectiveHeroes.isEmpty()) {
             return;
         }
 
-        Hero randomMyHero = (Hero) effectiveHeroes.keySet().toArray()[new Random().nextInt(effectiveHeroes.keySet().toArray().length)];
-//        Hero randomOppHero = effectiveHeroes.get(randomMyHero);
-        Hero randomOppHero = effectiveHeroes.get(randomMyHero);
-        Ability randomAbility = getRandomAbility(randomMyHero);
+        effectiveHeroes = getTargetForEachMyHeroes(effectiveHeroes);
+        for (EffectiveHero effectiveHero: effectiveHeroes) {
+            Hero myHero = effectiveHero.getMyHero();
+            Hero oppHero = effectiveHero.getOppHero();
+            Ability randomAbility = getRandomAbility(myHero);
+            doAction(world, myHero, oppHero, randomAbility);
+        }
+    }
 
-        world.castAbility(randomMyHero, randomAbility.getName(), randomOppHero.getCurrentCell());
-        int row =randomOppHero.getCurrentCell().getRow();
-        int column =randomOppHero.getCurrentCell().getColumn();
-        System.out.println("\n\n" + randomAbility.getName() + " ability used with " + randomMyHero.getName());
+    public void doAction(World world, Hero myHero, Hero oppHero, Ability ability) {
+        world.castAbility(myHero, ability.getName(), oppHero.getCurrentCell());
+        int row =oppHero.getCurrentCell().getRow();
+        int column =oppHero.getCurrentCell().getColumn();
+        System.out.println("\n\n" + ability.getName() + " ability used with " + myHero.getName());
         System.out.println("in Position: " + row + " , " + column + "\n\n");
+    }
+
+    public ArrayList<EffectiveHero> getTargetForEachMyHeroes(ArrayList<EffectiveHero> effectiveHeroes) {
+        ArrayList<EffectiveHero> targetForEachMyHero = new ArrayList<>();
+        ArrayList<Integer> targetHeroIDs = new ArrayList();
+
+        for (EffectiveHero effectiveHero: effectiveHeroes) {
+            Integer myHeroID = effectiveHero.getMyHero().getId();
+            if (!targetHeroIDs.contains(myHeroID)) {
+                targetForEachMyHero.add(effectiveHero);
+            }
+        }
+        return targetForEachMyHero;
     }
 
     public ArrayList<Hero> getInVisionOppHeroes(World world) {
@@ -127,14 +146,14 @@ public class AI
         return availableOppHeroes;
     }
 
-    public HashMap<Hero, Hero> getEffectiveHeroesForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes) {
-        HashMap<Hero,Hero> effectiveHeroes = new HashMap<>();
+    public ArrayList<EffectiveHero> getEffectiveHeroesForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes) {
+        ArrayList<EffectiveHero> effectiveHeroes = new ArrayList<>();
         Hero[] myHeroes = world.getMyHeroes();
         for (Hero myHero: myHeroes) {
             for (Hero oppHero: inVisionOppHeroes) {
                 if (world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
                     if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) < 4) {
-                        effectiveHeroes.put(myHero, oppHero);
+                        effectiveHeroes.add(new EffectiveHero(myHero, oppHero));
                     }
                 }
             }
