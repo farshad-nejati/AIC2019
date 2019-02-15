@@ -104,10 +104,11 @@ public class AI
         }
 
         Hero randomMyHero = (Hero) effectiveHeroes.keySet().toArray()[new Random().nextInt(effectiveHeroes.keySet().toArray().length)];
+//        Hero randomOppHero = effectiveHeroes.get(randomMyHero);
         Hero randomOppHero = effectiveHeroes.get(randomMyHero);
         Ability randomAbility = getRandomAbility(randomMyHero);
 
-        world.castAbility(randomMyHero, randomAbility, randomOppHero.getCurrentCell());
+        world.castAbility(randomMyHero, randomAbility.getName(), randomOppHero.getCurrentCell());
         int row =randomOppHero.getCurrentCell().getRow();
         int column =randomOppHero.getCurrentCell().getColumn();
         System.out.println("\n\n" + randomAbility.getName() + " ability used with " + randomMyHero.getName());
@@ -119,7 +120,7 @@ public class AI
         ArrayList<Hero> availableOppHeroes = new ArrayList();
         for (Hero hero: oppHeroes) {
             Cell heroCell = hero.getCurrentCell();
-            if (heroCell.isInVision()) {
+            if (heroCell.isInVision() && heroCell.getColumn() != -1) {
                 availableOppHeroes.add(hero);
             }
         }
@@ -132,7 +133,7 @@ public class AI
         for (Hero myHero: myHeroes) {
             for (Hero oppHero: inVisionOppHeroes) {
                 if (world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
-                    if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) < 7) {
+                    if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) < 4) {
                         effectiveHeroes.put(myHero, oppHero);
                     }
                 }
@@ -142,7 +143,7 @@ public class AI
     }
 
     public Ability getRandomAbility(Hero hero) {
-        Ability[] abilities = hero.getAbilities();
+        Ability[] abilities = hero.getOffensiveAbilities();
         Random random = new Random();
         int randomNumber = random.nextInt(abilities.length);
         return  abilities[randomNumber];
