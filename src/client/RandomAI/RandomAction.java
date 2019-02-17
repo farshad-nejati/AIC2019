@@ -17,17 +17,16 @@ public class RandomAction {
         effectiveHeroes = getTargetForEachMyHeroes(effectiveHeroes);
         for (EffectiveHero effectiveHero: effectiveHeroes) {
             Hero myHero = effectiveHero.getMyHero();
-            Hero oppHero = effectiveHero.getOppHero();
-            doAction(world, myHero, oppHero, effectiveHero.getRandomAbility());
+            doAction(world, myHero, effectiveHero.getTargetCell(), effectiveHero.getRandomAbility());
         }
     }
 
 
 
-    public void doAction(World world, Hero myHero, Hero oppHero, Ability ability) {
-        world.castAbility(myHero, ability.getName(), oppHero.getCurrentCell());
-        int row =oppHero.getCurrentCell().getRow();
-        int column =oppHero.getCurrentCell().getColumn();
+    public void doAction(World world, Hero myHero, Cell targetCell, Ability ability) {
+        world.castAbility(myHero, ability.getName(), targetCell);
+        int row =targetCell.getRow();
+        int column =targetCell.getColumn();
         System.out.println("\n\n" + ability.getName() + " ability used with " + myHero.getName());
         System.out.println("in Position: " + row + " , " + column + "\n\n");
     }
@@ -68,8 +67,14 @@ public class RandomAction {
                     Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
                     for (Ability ability: myHeroAbilities) {
                         int range = ability.getRange() + ability.getAreaOfEffect();
-                        if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) <= range) {
-                            effectiveHeroes.add(new EffectiveHero(myHero, oppHero, ability));
+                        int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
+                        if (distance <= range) {
+                            if (distance > ability.getRange()) {
+                                Cell targetCell = getCellInRangeOfHeroAttack(world, myHero, oppHero, ability);
+                                effectiveHeroes.add(new EffectiveHero(myHero, oppHero, ability, targetCell));
+                            } else {
+                                effectiveHeroes.add(new EffectiveHero(myHero, oppHero, ability, oppHero.getCurrentCell()));
+                            }
                         }
                     }
                 }
@@ -83,6 +88,30 @@ public class RandomAction {
         Random random = new Random();
         int randomNumber = random.nextInt(abilities.length);
         return  abilities[randomNumber];
+    }
+
+    public Cell getCellInRangeOfHeroAttack(World world, Hero myHero, Hero oppHero, Ability ability) {
+        Cell myCell = myHero.getCurrentCell();
+        int myRow = myCell.getRow();
+        int myColumn = myCell.getColumn();
+
+        Cell oppCell = oppHero.getCurrentCell();
+        int oppRow = oppCell.getRow();
+        int oppColumn = oppCell.getColumn();
+
+        int areaEffect = ability.getAreaOfEffect();
+        int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
+        int bestPlaceRange = areaEffect - ((ability.getRange() + areaEffect) - distance);
+
+        if (oppColumn > myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
+            return world.getMap().getCell(oppRow, oppColumn - bestPlaceRange);
+        } else if (oppColumn < myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
+            return world.getMap().getCell(oppRow, oppColumn + bestPlaceRange);
+        } else if (oppRow > myRow && Math.abs(oppRow - myRow) >= areaEffect) {
+            return world.getMap().getCell(oppRow - bestPlaceRange, oppColumn);
+        } else  {
+            return world.getMap().getCell(oppRow + bestPlaceRange, oppColumn);
+        }
     }
 
 }
