@@ -63,11 +63,33 @@ public class AI
     }
 
     public void randomMove(World world) {
-        Hero selectedHero = getRandomHero(world);
-        Cell heroCell = selectedHero.getCurrentCell();
-        Cell selectedObjectiveCell = getRandomObjectiveCell(world, heroCell);
-        Direction direction = world.getPathMoveDirections(heroCell, selectedObjectiveCell)[0];
-        world.moveHero(selectedHero, direction);
+
+        Hero[] myHeroes = world.getMyHeroes();
+        for (Hero myHero: myHeroes) {
+
+            if (myHero.getCurrentCell().isInObjectiveZone()) {
+                continue;
+            }
+            Direction[] directions;
+            while (true) {
+                Cell heroCell = myHero.getCurrentCell();
+
+                Cell selectedObjectiveCell = getRandomObjectiveCell(world, heroCell);
+                if (heroCell.getColumn() != selectedObjectiveCell.getColumn() && heroCell.getRow() != selectedObjectiveCell.getRow()) {
+                    directions = world.getPathMoveDirections(heroCell, selectedObjectiveCell, getMyHeroesCells(world));
+                    break;
+                }
+            }
+            if (directions != null) {
+                try {
+
+                    Direction direction = directions[0];
+                    world.moveHero(myHero, direction);
+                } catch (Exception e) {
+                    System.out.println("\n\n\n ERROR:  " + directions.length+ "\n\n\n\n");
+                }
+            }
+        }
     }
 
     public Hero getRandomHero(World world) {
@@ -95,6 +117,15 @@ public class AI
             }
             return objectiveCells[randomNumber];
         }
+    }
+
+    public Cell[] getMyHeroesCells(World world) {
+        Hero[] myHeroes = world.getMyHeroes();
+        Cell[] heroCells = new Cell[4];
+        for (int i = 0; i < myHeroes.length; i++) {
+            heroCells[i] = myHeroes[i].getCurrentCell();
+        }
+        return heroCells;
     }
 
     public void randomAction(World world) {
@@ -129,6 +160,7 @@ public class AI
             Integer myHeroID = effectiveHero.getMyHero().getId();
             if (!targetHeroIDs.contains(myHeroID)) {
                 targetForEachMyHero.add(effectiveHero);
+                targetHeroIDs.add(myHeroID);
             }
         }
         return targetForEachMyHero;
@@ -176,12 +208,12 @@ public class AI
                 return HeroName.BLASTER;
             }
             case 2: {
-                return HeroName.SENTRY;
+                return HeroName.BLASTER;
             }case 3:{
-                return HeroName.HEALER;
+                return HeroName.BLASTER;
             }
             default: {
-                return HeroName.GUARDIAN;
+                return HeroName.BLASTER;
 
             }
 
@@ -240,17 +272,17 @@ public class AI
         for (Hero hero: world.getMyHeroes()) {
             Cell heroCell = hero.getCurrentCell();
             if (cell.equals(heroCell)) {
-                if (hero.getName() == HeroName.SENTRY) {
+                if (hero.getName() == HeroName.BLASTER) {
                     System.out.print(" S");
                     return true;
                 }
                 else if (hero.getName() == HeroName.BLASTER) {
                     System.out.print(" B");
                     return true;
-                }else if (hero.getName() == HeroName.HEALER) {
+                }else if (hero.getName() == HeroName.BLASTER) {
                     System.out.print(" H");
                     return true;
-                }else if (hero.getName() == HeroName.GUARDIAN) {
+                }else if (hero.getName() == HeroName.BLASTER) {
                     System.out.print(" G");
                     return true;
                 }
