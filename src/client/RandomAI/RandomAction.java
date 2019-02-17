@@ -18,8 +18,7 @@ public class RandomAction {
         for (EffectiveHero effectiveHero: effectiveHeroes) {
             Hero myHero = effectiveHero.getMyHero();
             Hero oppHero = effectiveHero.getOppHero();
-            Ability randomAbility = getRandomAbility(myHero);
-            doAction(world, myHero, oppHero, randomAbility);
+            doAction(world, myHero, oppHero, effectiveHero.getRandomAbility());
         }
     }
 
@@ -65,8 +64,13 @@ public class RandomAction {
         for (Hero myHero: myHeroes) {
             for (Hero oppHero: inVisionOppHeroes) {
                 if (world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
-                    if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) <= 4) {
-                        effectiveHeroes.add(new EffectiveHero(myHero, oppHero));
+//                    Ability randomAbility = getRandomAbility(myHero);
+                    Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
+                    for (Ability ability: myHeroAbilities) {
+                        int range = ability.getRange() + ability.getAreaOfEffect();
+                        if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) <= range) {
+                            effectiveHeroes.add(new EffectiveHero(myHero, oppHero, ability));
+                        }
                     }
                 }
             }
