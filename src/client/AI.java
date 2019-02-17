@@ -213,7 +213,7 @@ public class AI
                 return HeroName.BLASTER;
             }
             default: {
-                return HeroName.SENTRY;
+                return HeroName.BLASTER;
 
             }
 
