@@ -1,15 +1,13 @@
 package client;
 
+import client.RandomAI.RandomAction;
+import client.RandomAI.RandomMove;
 import client.model.*;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
 
 public class AI
 {
-    RandomAI randomAI;
+    RandomMove randomMove;
+    RandomAction randomAction;
     Printer printer;
     private int pickNumber = 1;
     private String mapSizeStatus; // normal, small, big
@@ -23,7 +21,8 @@ public class AI
         System.out.println("pre process started");
         System.out.println("world Columns: " + world.getMap().getColumnNum());
         System.out.println("world Columns: " + world.getMap().getRowNum());
-        randomAI = new RandomAI();
+        randomMove = new RandomMove();
+        randomAction = new RandomAction();
         printer = new Printer();
     }
 
@@ -39,7 +38,7 @@ public class AI
     public void moveTurn(World world) {
         System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
 
-        randomAI.randomMove(world);
+        randomMove.randomMove(world);
 
 
         printer.printMap(world);
@@ -50,7 +49,7 @@ public class AI
         printer.printHeroList(world);
         printer.printOppHeroList(world);
 
-        randomAI.randomAction(world);
+        randomAction.randomAction(world);
     }
 
     public HeroName pickHero() {
