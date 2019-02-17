@@ -1,9 +1,6 @@
 package client;
 
-import client.model.Cell;
-import client.model.Hero;
-import client.model.HeroName;
-import client.model.World;
+import client.model.*;
 
 public class Printer {
 
@@ -97,6 +94,13 @@ public class Printer {
             }
         }
         return false;
+    }
+
+    public void printDirections(Direction[] directions) {
+        System.out.print("\n\nDirections: ");
+        for (Direction direction: directions) {
+            System.out.print(direction.name() + " ");
+        }
     }
 
 }

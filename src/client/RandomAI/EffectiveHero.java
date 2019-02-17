@@ -1,4 +1,6 @@
-package client.model;
+package client.RandomAI;
+
+import client.model.Hero;
 
 public class EffectiveHero {
     private Hero myHero;

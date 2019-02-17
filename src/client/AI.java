@@ -1,12 +1,16 @@
 package client;
 
+import client.RandomAI.Moving;
 import client.RandomAI.RandomAction;
 import client.RandomAI.RandomMove;
 import client.model.*;
 
+import java.util.ArrayList;
+
 public class AI
 {
-    RandomMove randomMove;
+    static RandomMove randomMove;
+    static ArrayList<Moving> movingHeroes;
     RandomAction randomAction;
     Printer printer;
     private int pickNumber = 1;
@@ -21,7 +25,6 @@ public class AI
         System.out.println("pre process started");
         System.out.println("world Columns: " + world.getMap().getColumnNum());
         System.out.println("world Columns: " + world.getMap().getRowNum());
-        randomMove = new RandomMove();
         randomAction = new RandomAction();
         printer = new Printer();
     }
@@ -36,9 +39,13 @@ public class AI
     }
 
     public void moveTurn(World world) {
-        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
+        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getMovePhaseNum());
 
-        randomMove.randomMove(world);
+        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
+            randomMove = new RandomMove(world);
+        }
+
+        randomMove.moveToObjectiveZone(world);
 
 
         printer.printMap(world);
