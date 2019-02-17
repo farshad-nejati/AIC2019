@@ -184,7 +184,7 @@ public class AI
         for (Hero myHero: myHeroes) {
             for (Hero oppHero: inVisionOppHeroes) {
                 if (world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
-                    if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) < 4) {
+                    if (world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell()) <= 4) {
                         effectiveHeroes.add(new EffectiveHero(myHero, oppHero));
                     }
                 }
@@ -213,7 +213,7 @@ public class AI
                 return HeroName.BLASTER;
             }
             default: {
-                return HeroName.BLASTER;
+                return HeroName.SENTRY;
 
             }
 
@@ -272,17 +272,17 @@ public class AI
         for (Hero hero: world.getMyHeroes()) {
             Cell heroCell = hero.getCurrentCell();
             if (cell.equals(heroCell)) {
-                if (hero.getName() == HeroName.BLASTER) {
+                if (hero.getName() == HeroName.SENTRY) {
                     System.out.print(" S");
                     return true;
                 }
                 else if (hero.getName() == HeroName.BLASTER) {
                     System.out.print(" B");
                     return true;
-                }else if (hero.getName() == HeroName.BLASTER) {
+                }else if (hero.getName() == HeroName.HEALER) {
                     System.out.print(" H");
                     return true;
-                }else if (hero.getName() == HeroName.BLASTER) {
+                }else if (hero.getName() == HeroName.GUARDIAN) {
                     System.out.print(" G");
                     return true;
                 }
