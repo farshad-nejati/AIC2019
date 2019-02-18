@@ -33,7 +33,7 @@ public class EffectiveHero {
         this.oppHero = oppHero;
     }
 
-    public Ability getRandomAbility() {
+    public Ability getAbility() {
         return randomAbility;
     }
 
