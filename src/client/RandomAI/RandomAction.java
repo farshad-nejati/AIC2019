@@ -62,7 +62,7 @@ public class RandomAction {
         Hero[] myHeroes = world.getMyHeroes();
         for (Hero myHero: myHeroes) {
             for (Hero oppHero: inVisionOppHeroes) {
-                if (world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
+//                if (world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
 //                    Ability randomAbility = getRandomAbility(myHero);
                     Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
                     for (Ability ability: myHeroAbilities) {
@@ -77,7 +77,7 @@ public class RandomAction {
                             }
                         }
                     }
-                }
+//                }
             }
         }
         return effectiveHeroes;
