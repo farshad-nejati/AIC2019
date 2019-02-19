@@ -72,6 +72,9 @@ public class RandomAction {
                                 continue;
                             }
                         }
+                        if (!ability.isReady()) {
+                            continue;
+                        }
                         int range = ability.getRange() + ability.getAreaOfEffect();
                         int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
                         if (distance <= range) {
