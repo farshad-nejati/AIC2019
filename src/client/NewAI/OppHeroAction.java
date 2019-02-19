@@ -7,6 +7,7 @@ import client.model.Hero;
 import client.model.World;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class OppHeroAction {
@@ -17,10 +18,11 @@ public class OppHeroAction {
     private Integer virtualHP ;
     private boolean possibleDead = false;
 
-    public OppHeroAction(World world, Hero oppHero, ArrayList<Hero> activeMyHeroes) {
+    public OppHeroAction(World world, Hero oppHero, ArrayList<ActiveMyHeroes> activeMyHeroes) {
         this.oppHero = oppHero;
         this.virtualHP = oppHero.getCurrentHP();
         this.setCandidateMyHeroes(world, activeMyHeroes);
+        killerOppHeroes = new ArrayList<>();
     }
 
 
@@ -61,11 +63,10 @@ public class OppHeroAction {
         return this.candidateMyHeroes;
     }
 
-    public void setCandidateMyHeroes(World world, ArrayList<Hero> activeMyHeroes) {
+    public void setCandidateMyHeroes(World world, ArrayList<ActiveMyHeroes> activeMyHeroes) {
         Hero oppHero = this.oppHero;
-        ArrayList<Hero> myHeroes = activeMyHeroes;
-        for (Hero myHero : myHeroes) {
-
+        for (ActiveMyHeroes activeMyHero : activeMyHeroes) {
+            Hero myHero = activeMyHero.getMyHero();
             ArrayList possibleAbilities = new ArrayList();
             Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
 
@@ -91,4 +92,58 @@ public class OppHeroAction {
             }
         }
     }
+
+    public boolean isPossibleDead() {
+        return possibleDead;
+    }
+
+    public void setPossibleDead(boolean possibleDead) {
+        this.possibleDead = possibleDead;
+    }
+
+    public List<KillerOppHero> getKillerOppHeroes() {
+        return killerOppHeroes;
+    }
+
+    public void setKillerOppHeroes(List<KillerOppHero> killerOppHeroes) {
+        this.killerOppHeroes = killerOppHeroes;
+    }
+
+    public Hero getOppHero() {
+        return oppHero;
+    }
+
+    public void setOppHero(Hero oppHero) {
+        this.oppHero = oppHero;
+    }
+
+    /*Comparator for sorting the list by Student Name*/
+    public static Comparator<OppHeroAction> KillerOppHeroesComparator = new Comparator<OppHeroAction>() {
+
+        public int compare(OppHeroAction o1, OppHeroAction o2) {
+            int killerOppHeroSize1 = o1.getKillerOppHeroes().size();
+            int killerOppHeroSize2 = o2.getKillerOppHeroes().size();
+
+            //ascending order
+            return killerOppHeroSize1-killerOppHeroSize2;
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }};
+
+//
+//    @Override
+//    public int compareTo(Object o) {
+//        int killerSize=((OppHeroAction)o).getKillerOppHeroes().size();
+//        /* For Ascending order*/
+//        return this.size-killerSize;
+//
+//        /* For Descending order do like this */
+//        //return compareage-this.studentage;
+//    }
+//
+//    @Override
+//    public int compareTo(Object o) {
+//        return 0;
+//    }
 }

@@ -2,6 +2,10 @@ package client.NewAI;
 
 import client.model.Hero;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 public class TakingParts {
     private Hero myHero;
     private Integer numberOFCollaboration;
@@ -39,4 +43,5 @@ public class TakingParts {
     public void setMinPartners(Integer minPartners) {
         this.minPartners = minPartners;
     }
+
 }

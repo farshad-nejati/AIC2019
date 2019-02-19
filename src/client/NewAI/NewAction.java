@@ -6,14 +6,13 @@ import client.model.Cell;
 import client.model.Hero;
 import client.model.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class NewAction {
 
     public void Action(World world) {
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
-        ArrayList<Hero> activeMyHeroes = getActiveMyHeroes(world, inVisionOppHeroes);
+        ArrayList<ActiveMyHeroes> activeMyHeroes = getActiveMyHeroes(world, inVisionOppHeroes);
 
         while (activeMyHeroes.size() != 0 ) {
             ArrayList<TakingParts> takingParts = initializeTakingParts(activeMyHeroes);
@@ -24,20 +23,59 @@ public class NewAction {
                 takingParts = oppHeroAction.getAllPossibleAbilities(takingParts);
                 oppHeroActions.add(oppHeroAction);
             }
+
+            Collections.sort(takingParts, (o1, o2) -> o1.getMinPartners().compareTo(o2.getMinPartners()));
+
+            TakingParts firstTakingPart = takingParts.get(0);
+            Hero selectedMyHero = firstTakingPart.getMyHero();
+            ActiveMyHeroes selectedActiveMyHero = findActiveMyHeroByHero(activeMyHeroes, selectedMyHero);
+            boolean canKill = false;
+            for (OppHeroAction oppHeroAction: oppHeroActions) {
+                if (oppHeroAction.isPossibleDead()) {
+                    canKill = true;
+                }
+            }
+            if (canKill) {
+                Hero selectedOppHero = null;
+                if (selectedActiveMyHero != null) {
+                    Collections.sort(oppHeroActions, OppHeroAction.KillerOppHeroesComparator);
+                    for (OppHeroAction oppHeroAction : oppHeroActions) {
+                        Hero oppHero = oppHeroAction.getOppHero();
+                        if (selectedActiveMyHero.getPossibleOppHeroes().contains(oppHero) && oppHeroAction.getKillerOppHeroes().size() > 0) {
+                            selectedOppHero = oppHero;
+                            break;
+                        }
+                    }
+                }
+            }
+
+//            Cell targetCell = getCellInRangeOfHeroAttack(world, )
+            activeMyHeroes.remove(selectedActiveMyHero);
         }
     }
 
-    public ArrayList<TakingParts> initializeTakingParts(ArrayList<Hero> activeMyHeroes) {
+    public ActiveMyHeroes findActiveMyHeroByHero(ArrayList<ActiveMyHeroes> activeMyHeroes, Hero hero) {
+        for (ActiveMyHeroes activeMyHero : activeMyHeroes) {
+            if (activeMyHero.getMyHero().getId() == hero.getId()) {
+                return activeMyHero;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<TakingParts> initializeTakingParts(ArrayList<ActiveMyHeroes> activeMyHeroes) {
         ArrayList<TakingParts> takingParts = new ArrayList<>();
-        for (Hero myHero : activeMyHeroes) {
+        for (ActiveMyHeroes activeMyHero : activeMyHeroes) {
+            Hero myHero = activeMyHero.getMyHero();
             takingParts.add(new TakingParts(myHero, 10, 10));
         }
         return takingParts;
     }
 
-    public ArrayList<Hero> getActiveMyHeroes(World world, ArrayList<Hero> inVisionOppHeroes) {
-        ArrayList<Hero> activeMyHeroes = new ArrayList<>();
+    public ArrayList<ActiveMyHeroes> getActiveMyHeroes(World world, ArrayList<Hero> inVisionOppHeroes) {
+        ArrayList<ActiveMyHeroes> activeMyHeroes = new ArrayList<>();
         for (Hero myHero : world.getMyHeroes()) {
+            ArrayList<Hero> oppHeroes = new ArrayList<>();
             for (Hero oppHero: inVisionOppHeroes) {
                 ArrayList possibleAbilities = new ArrayList();
                 Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
@@ -55,12 +93,12 @@ public class NewAction {
                     int range = ability.getRange() + ability.getAreaOfEffect();
                     int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
                     if (distance <= range) {
-                        if (!activeMyHeroes.contains(myHero)) {
-                            activeMyHeroes.add(myHero);
-                        }
+                        oppHeroes.add(oppHero);
                     }
                 }
-
+            }
+            if (oppHeroes.size() > 0) {
+                activeMyHeroes.add(new ActiveMyHeroes(myHero, oppHeroes));
             }
         }
         return activeMyHeroes;
@@ -76,6 +114,53 @@ public class NewAction {
             }
         }
         return availableOppHeroes;
+    }
+
+
+    public Cell getCellInRangeOfHeroAttack(World world, Hero myHero, Hero oppHero, Ability ability) {
+        Cell myCell = myHero.getCurrentCell();
+        int myRow = myCell.getRow();
+        int myColumn = myCell.getColumn();
+
+        Cell oppCell = oppHero.getCurrentCell();
+        int oppRow = oppCell.getRow();
+        int oppColumn = oppCell.getColumn();
+
+        int areaEffect = ability.getAreaOfEffect();
+        int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
+        int bestPlaceRange = areaEffect - ((ability.getRange() + areaEffect) - distance);
+
+        if (oppColumn > myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
+            return world.getMap().getCell(oppRow, oppColumn - bestPlaceRange);
+        } else if (oppColumn < myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
+            return world.getMap().getCell(oppRow, oppColumn + bestPlaceRange);
+        } else if (oppRow > myRow && Math.abs(oppRow - myRow) >= areaEffect) {
+            return world.getMap().getCell(oppRow - bestPlaceRange, oppColumn);
+        } else  {
+            return world.getMap().getCell(oppRow + bestPlaceRange, oppColumn);
+        }
+    }
+
+
+
+    public ArrayList<TakingParts> sortTakingPartsByMinPartners(ArrayList<TakingParts> takingParts) {
+
+        Collections.sort(takingParts, new Comparator<TakingParts>(){
+            public int compare(TakingParts t1, TakingParts t2) {
+                return t1.getMinPartners().compareTo(t2.getMinPartners());
+            }
+        });
+        return takingParts;
+    }
+
+    public ArrayList<TakingParts> sortTakingPartsByNumberOfCollaborations(ArrayList<TakingParts> takingParts) {
+
+        Collections.sort(takingParts, new Comparator<TakingParts>(){
+            public int compare(TakingParts t1, TakingParts t2) {
+                return t1.getNumberOFCollaboration().compareTo(t2.getNumberOFCollaboration());
+            }
+        });
+        return takingParts;
     }
 
 }
