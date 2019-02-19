@@ -17,18 +17,21 @@ public class OppHeroAction {
     private Integer virtualHP ;
     private boolean possibleDead = false;
 
-    public OppHeroAction(World world, Hero oppHero) {
+    public OppHeroAction(World world, Hero oppHero, ArrayList<Hero> activeMyHeroes) {
         this.oppHero = oppHero;
         this.virtualHP = oppHero.getCurrentHP();
-        this.setCandidateMyHeroes(world);
+        this.setCandidateMyHeroes(world, activeMyHeroes);
     }
 
 
-    public void getAllPossibleAbilities() {
+    public ArrayList<TakingParts> getAllPossibleAbilities(ArrayList<TakingParts> takingParts) {
         // TODO: full killerOppHeroes based on candidateHeroes
         // TODO: possibleDead must set to true if size of killerOppHeroes > 0
             // TODO: set target for use ability
         Hero oppHero = this.oppHero;
+
+
+        return takingParts;
     }
 
     private Cell getCellInRangeOfHeroAttack(World world, Hero myHero, Hero oppHero, Ability ability) {
@@ -54,10 +57,13 @@ public class OppHeroAction {
             return world.getMap().getCell(oppRow + bestPlaceRange, oppColumn);
         }
     }
+    public ArrayList<HeroPossibleAbilities> getCandidateMyHeroes() {
+        return this.candidateMyHeroes;
+    }
 
-    public void setCandidateMyHeroes(World world) {
+    public void setCandidateMyHeroes(World world, ArrayList<Hero> activeMyHeroes) {
         Hero oppHero = this.oppHero;
-        Hero[] myHeroes = world.getMyHeroes();
+        ArrayList<Hero> myHeroes = activeMyHeroes;
         for (Hero myHero : myHeroes) {
 
             ArrayList possibleAbilities = new ArrayList();
