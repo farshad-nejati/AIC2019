@@ -14,7 +14,7 @@ public class OppHeroAction {
     private Hero oppHero;
     ArrayList<HeroPossibleAbilities> candidateMyHeroes;
     private List<KillerOppHero> killerOppHeroes;
-    private Integer virtualHP ;
+    private Integer virtualHP;
     private boolean possibleDead = false;
 
     public OppHeroAction(World world, Hero oppHero, ArrayList<ActiveMyHeroes> activeMyHeroes) {
@@ -28,36 +28,35 @@ public class OppHeroAction {
     public ArrayList<TakingParts> getAllPossibleAbilities(ArrayList<TakingParts> takingParts) {
         // TODO: full killerOppHeroes based on candidateHeroes
         // TODO: possibleDead must set to true if size of killerOppHeroes > 0
-            // TODO: set target for use ability
-        Hero oppHero = this.oppHero;
-
-
+        // TODO: set target for use ability
+        takingParts = createKillerOppHeroes(takingParts);
         return takingParts;
     }
 
-    private Cell getCellInRangeOfHeroAttack(World world, Hero myHero, Hero oppHero, Ability ability) {
-        Cell myCell = myHero.getCurrentCell();
-        int myRow = myCell.getRow();
-        int myColumn = myCell.getColumn();
+//    private Cell getCellInRangeOfHeroAttack(World world, Hero myHero, Hero oppHero, Ability ability) {
+//        Cell myCell = myHero.getCurrentCell();
+//        int myRow = myCell.getRow();
+//        int myColumn = myCell.getColumn();
+//
+//        Cell oppCell = oppHero.getCurrentCell();
+//        int oppRow = oppCell.getRow();
+//        int oppColumn = oppCell.getColumn();
+//
+//        int areaEffect = ability.getAreaOfEffect();
+//        int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
+//        int bestPlaceRange = areaEffect - ((ability.getRange() + areaEffect) - distance);
+//
+//        if (oppColumn > myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
+//            return world.getMap().getCell(oppRow, oppColumn - bestPlaceRange);
+//        } else if (oppColumn < myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
+//            return world.getMap().getCell(oppRow, oppColumn + bestPlaceRange);
+//        } else if (oppRow > myRow && Math.abs(oppRow - myRow) >= areaEffect) {
+//            return world.getMap().getCell(oppRow - bestPlaceRange, oppColumn);
+//        } else {
+//            return world.getMap().getCell(oppRow + bestPlaceRange, oppColumn);
+//        }
+//    }
 
-        Cell oppCell = oppHero.getCurrentCell();
-        int oppRow = oppCell.getRow();
-        int oppColumn = oppCell.getColumn();
-
-        int areaEffect = ability.getAreaOfEffect();
-        int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
-        int bestPlaceRange = areaEffect - ((ability.getRange() + areaEffect) - distance);
-
-        if (oppColumn > myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
-            return world.getMap().getCell(oppRow, oppColumn - bestPlaceRange);
-        } else if (oppColumn < myColumn && Math.abs(oppColumn - myColumn) >= areaEffect) {
-            return world.getMap().getCell(oppRow, oppColumn + bestPlaceRange);
-        } else if (oppRow > myRow && Math.abs(oppRow - myRow) >= areaEffect) {
-            return world.getMap().getCell(oppRow - bestPlaceRange, oppColumn);
-        } else  {
-            return world.getMap().getCell(oppRow + bestPlaceRange, oppColumn);
-        }
-    }
     public ArrayList<HeroPossibleAbilities> getCandidateMyHeroes() {
         return this.candidateMyHeroes;
     }
@@ -145,11 +144,12 @@ public class OppHeroAction {
             int killerOppHeroSize2 = o2.getKillerOppHeroes().size();
 
             //ascending order
-            return killerOppHeroSize1-killerOppHeroSize2;
+            return killerOppHeroSize1 - killerOppHeroSize2;
 
             //descending order
             //return StudentName2.compareTo(StudentName1);
-        }};
+        }
+    };
 
 //
 //    @Override
@@ -166,4 +166,149 @@ public class OppHeroAction {
 //    public int compareTo(Object o) {
 //        return 0;
 //    }
+
+    public ArrayList<ArrayList<HeroPossibleAbilities>> getSubsets() {
+        int n = this.candidateMyHeroes.size();
+        ArrayList<ArrayList<HeroPossibleAbilities>> combinations = new ArrayList<>();
+
+        // Run a loop for printing all 2^n
+        // subsets one by obe
+        for (int i = 0; i < (1 << n); i++) {
+            ArrayList<HeroPossibleAbilities> combination = new ArrayList<>();
+
+            // Print current subset
+            for (int j = 0; j < n; j++)
+
+                // (1<<j) is a number with jth bit 1
+                // so when we 'and' them with the
+                // subset number we get which numbers
+                // are present in the subset and which
+                // are not
+                if ((i & (1 << j)) > 0)
+                    combination.add(this.candidateMyHeroes.get(j));
+
+            if (combination.size() != 0) {
+                combinations.add(combination);
+            }
+        }
+        return combinations;
+    }
+
+
+    public ArrayList<TakingParts> createKillerOppHeroes(ArrayList<TakingParts> takingParts) {
+
+        ArrayList<ArrayList<HeroPossibleAbilities>> res = getSubsets();
+
+        for (ArrayList<HeroPossibleAbilities> heroPossibleAbilitiesArrayList : res) {
+
+            HeroPossibleAbilities heroPossibleAbility1, heroPossibleAbility2, heroPossibleAbility3, heroPossibleAbility4;
+
+            switch (heroPossibleAbilitiesArrayList.size()) {
+                case 1:
+                    heroPossibleAbility1 = heroPossibleAbilitiesArrayList.get(0);
+
+                    for (Ability ability : heroPossibleAbility1.getAbilities()) {
+                        ArrayList<HeroAbility> heroAbilities = new ArrayList<>();
+                        heroAbilities.add(new HeroAbility(heroPossibleAbility1.getHero(), ability));
+                        takingParts = addKillerOppHeroes(heroAbilities, takingParts);
+                    }
+
+                    break;
+                case 2:
+                    heroPossibleAbility1 = heroPossibleAbilitiesArrayList.get(0);
+                    heroPossibleAbility2 = heroPossibleAbilitiesArrayList.get(1);
+
+                    for (Ability ability1 : heroPossibleAbility1.getAbilities()) {
+                        for (Ability ability2 : heroPossibleAbility2.getAbilities()) {
+
+                            ArrayList<HeroAbility> heroAbilities = new ArrayList<>();
+                            heroAbilities.add(new HeroAbility(heroPossibleAbility1.getHero(), ability1));
+                            heroAbilities.add(new HeroAbility(heroPossibleAbility2.getHero(), ability2));
+                            takingParts = addKillerOppHeroes(heroAbilities, takingParts);
+                        }
+                    }
+
+                    break;
+                case 3:
+                    heroPossibleAbility1 = heroPossibleAbilitiesArrayList.get(0);
+                    heroPossibleAbility2 = heroPossibleAbilitiesArrayList.get(1);
+                    heroPossibleAbility3 = heroPossibleAbilitiesArrayList.get(2);
+
+                    for (Ability ability1 : heroPossibleAbility1.getAbilities()) {
+                        for (Ability ability2 : heroPossibleAbility2.getAbilities()) {
+                            for (Ability ability3 : heroPossibleAbility3.getAbilities()) {
+
+                                ArrayList<HeroAbility> heroAbilities = new ArrayList<>();
+                                heroAbilities.add(new HeroAbility(heroPossibleAbility1.getHero(), ability1));
+                                heroAbilities.add(new HeroAbility(heroPossibleAbility2.getHero(), ability2));
+                                heroAbilities.add(new HeroAbility(heroPossibleAbility3.getHero(), ability3));
+                                takingParts = addKillerOppHeroes(heroAbilities, takingParts);
+
+                            }
+                        }
+                    }
+
+                    break;
+                case 4:
+
+                    heroPossibleAbility1 = heroPossibleAbilitiesArrayList.get(0);
+                    heroPossibleAbility2 = heroPossibleAbilitiesArrayList.get(1);
+                    heroPossibleAbility3 = heroPossibleAbilitiesArrayList.get(2);
+                    heroPossibleAbility4 = heroPossibleAbilitiesArrayList.get(3);
+
+                    for (Ability ability1 : heroPossibleAbility1.getAbilities()) {
+                        for (Ability ability2 : heroPossibleAbility2.getAbilities()) {
+                            for (Ability ability3 : heroPossibleAbility3.getAbilities()) {
+                                for (Ability ability4 : heroPossibleAbility4.getAbilities()) {
+
+                                    ArrayList<HeroAbility> heroAbilities = new ArrayList<>();
+                                    heroAbilities.add(new HeroAbility(heroPossibleAbility1.getHero(), ability1));
+                                    heroAbilities.add(new HeroAbility(heroPossibleAbility2.getHero(), ability2));
+                                    heroAbilities.add(new HeroAbility(heroPossibleAbility3.getHero(), ability3));
+                                    heroAbilities.add(new HeroAbility(heroPossibleAbility4.getHero(), ability4));
+                                    takingParts = addKillerOppHeroes(heroAbilities, takingParts);
+
+                                }
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return takingParts;
+    }
+
+    public ArrayList<TakingParts> addKillerOppHeroes(ArrayList<HeroAbility> heroAbilities, ArrayList<TakingParts> takingParts) {
+        Integer abilityPowerSum = 0;
+        Integer apSum = 0;
+        Integer numOfHeroes = heroAbilities.size();
+
+        for (HeroAbility heroAbility : heroAbilities) {
+            abilityPowerSum += heroAbility.getAbility().getPower();
+            apSum += heroAbility.getAbility().getAPCost();
+        }
+
+        if (abilityPowerSum >= this.virtualHP) {
+            this.possibleDead = true;
+            KillerOppHero killerOppHero = new KillerOppHero(heroAbilities, apSum, numOfHeroes);
+            killerOppHeroes.add(killerOppHero);
+
+            for (HeroAbility heroAbility : heroAbilities) {
+                for (TakingParts takingPart : takingParts) {
+                    if (heroAbility.getMyHero() == takingPart.getMyHero()) {
+                        if ((numOfHeroes - 1) < takingPart.getMinPartners()) {
+                            takingPart.setMinPartners(numOfHeroes - 1);
+                        }
+
+                        Integer preNumberOfCollaboration = takingPart.getNumberOFCollaboration();
+                        takingPart.setNumberOFCollaboration(preNumberOfCollaboration + 1);
+                    }
+                }
+            }
+        }
+        return takingParts;
+    }
 }
