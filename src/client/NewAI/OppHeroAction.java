@@ -12,7 +12,7 @@ import java.util.List;
 
 public class OppHeroAction {
     private Hero oppHero;
-    ArrayList<HeroPossibleAbilities> candidateMyHeroes;
+    ArrayList<HeroPossibleAbilities> candidateMyHeroes = new ArrayList<>();
     private List<KillerOppHero> killerOppHeroes;
     private Integer virtualHP;
     private boolean possibleDead = false;

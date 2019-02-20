@@ -11,14 +11,21 @@ import java.util.*;
 
 public class NewAction {
 
-    public void Action(World world) {
+    public void action(World world) {
+
+        HashMap<Hero, Boolean> fuckedOppHEro = new HashMap<Hero, Boolean>();
+
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
         ArrayList<ActiveMyHeroes> activeMyHeroes = getActiveMyHeroes(world, inVisionOppHeroes);
 
-        // remove this variable after start else of cannot dead
-        boolean tempFlag = true;
+
+        for (Hero oppHero : inVisionOppHeroes) {
+            fuckedOppHEro.put(oppHero, false);
+        }
 
         while (activeMyHeroes.size() != 0 ) {
+
+            System.out.println("\n\n\n while worked!!!!! \n\n\n");
 
             EffectiveHero effectiveHero = null;
             ArrayList<OppHeroAction> candidateOppHeroes = new ArrayList<>();
@@ -26,7 +33,10 @@ public class NewAction {
             ArrayList<TakingParts> takingParts = initializeTakingParts(activeMyHeroes);
             List<OppHeroAction> oppHeroActions = new ArrayList<>();
 
-            for (Hero oppHero: world.getOppHeroes()) {
+            for (Hero oppHero: inVisionOppHeroes) {
+                if (fuckedSearchOppHero(oppHero, fuckedOppHEro)) {
+                    continue;
+                }
                 OppHeroAction oppHeroAction = new OppHeroAction(world, oppHero, activeMyHeroes);
                 takingParts = oppHeroAction.getAllPossibleAbilities(takingParts);
                 oppHeroActions.add(oppHeroAction);
@@ -45,6 +55,8 @@ public class NewAction {
             }
 
             if (canKill) {
+
+                System.out.println("\n\n\n is can kill worked!!!!! \n\n\n");
                 Hero selectedOppHero = null;
                 if (selectedActiveMyHero != null) {
 //                    Collections.sort(oppHeroActions, OppHeroAction.KillerOppHeroesComparator);
@@ -102,11 +114,14 @@ public class NewAction {
                 if (effectiveHero != null) {
                     Ability ability2 = effectiveHero.getAbility();
                     world.castAbility(effectiveHero.getMyHero(), ability2, effectiveHero.getTargetCell());
-                    tempFlag = false;
                     Hero oppHero2 = effectiveHero.getOppHero();
+                    System.out.println("\n\n\n is Killed worked!!!!! \n\n\n");
                     for (OppHeroAction oppHeroAction: candidateOppHeroes) {
                         if (oppHeroAction.getOppHero().equals(oppHero2)) {
                             Integer virtualHP = oppHeroAction.getVirtualHP();
+                            if (virtualHP - ability2.getPower() <=0) {
+                                fuckedOppHEro.put(oppHero2, true);
+                            }
                             oppHeroAction.setVirtualHP(virtualHP - ability2.getPower());
                             break;
                         }
@@ -115,14 +130,15 @@ public class NewAction {
                 }
             } else {
                 //TODO: my algorithm for if opp hero not dead
+
+                System.out.println("random action inpted!!");
+                    RandomAction randomAction = new RandomAction();
+                    randomAction.randomAction(world);
+                    break;
             }
             activeMyHeroes.remove(selectedActiveMyHero);
         }
 
-        if (tempFlag) {
-            RandomAction randomAction = new RandomAction();
-            randomAction.randomAction(world);
-        }
     }
 
 
@@ -153,6 +169,7 @@ public class NewAction {
                 ArrayList possibleAbilities = new ArrayList();
                 Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
 
+                boolean flag = false;
                 for (Ability ability : myHeroAbilities) {
                     if (!ability.isLobbing()) {
                         if (!world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
@@ -166,8 +183,12 @@ public class NewAction {
                     int range = ability.getRange() + ability.getAreaOfEffect();
                     int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
                     if (distance <= range) {
-                        oppHeroes.add(oppHero);
+                        flag = true;
+                        break;
                     }
+                }
+                if (flag) {
+                    oppHeroes.add(oppHero);
                 }
             }
             if (oppHeroes.size() > 0) {
@@ -236,4 +257,7 @@ public class NewAction {
         return takingParts;
     }
 
+    public boolean fuckedSearchOppHero(Hero hero, HashMap<Hero, Boolean> fuckedOppHero) {
+        return fuckedOppHero.get(hero);
+    }
 }

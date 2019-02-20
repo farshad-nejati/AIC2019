@@ -1,5 +1,6 @@
 package client;
 
+import client.NewAI.NewAction;
 import client.RandomAI.Moving;
 import client.RandomAI.RandomAction;
 import client.RandomAI.RandomMove;
@@ -12,6 +13,7 @@ public class AI
     static RandomMove randomMove;
     static ArrayList<Moving> movingHeroes;
     RandomAction randomAction;
+    NewAction newAction;
     Printer printer;
     private int pickNumber = 1;
     private String mapSizeStatus; // normal, small, big
@@ -26,6 +28,7 @@ public class AI
         System.out.println("world Columns: " + world.getMap().getColumnNum());
         System.out.println("world Columns: " + world.getMap().getRowNum());
         randomAction = new RandomAction();
+        newAction = new NewAction();
         printer = new Printer();
     }
 
@@ -56,7 +59,8 @@ public class AI
         printer.printHeroList(world);
         printer.printOppHeroList(world);
 
-        randomAction.randomAction(world);
+//        randomAction.randomAction(world);
+        newAction.action(world);
     }
 
     public HeroName pickHero() {
