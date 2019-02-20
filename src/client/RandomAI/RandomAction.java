@@ -23,6 +23,7 @@ public class RandomAction {
 
 
 
+
     public void doAction(World world, Hero myHero, Cell targetCell, Ability ability) {
         world.castAbility(myHero, ability.getName(), targetCell);
         int row =targetCell.getRow();

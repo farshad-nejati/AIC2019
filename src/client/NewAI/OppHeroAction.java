@@ -298,7 +298,7 @@ public class OppHeroAction {
 
             for (HeroAbility heroAbility : heroAbilities) {
                 for (TakingParts takingPart : takingParts) {
-                    if (heroAbility.getMyHero() == takingPart.getMyHero()) {
+                    if (heroAbility.getMyHero().equals(takingPart.getMyHero())) {
                         if ((numOfHeroes - 1) < takingPart.getMinPartners()) {
                             takingPart.setMinPartners(numOfHeroes - 1);
                         }

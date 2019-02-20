@@ -1,6 +1,7 @@
 package client.NewAI;
 
 import client.RandomAI.EffectiveHero;
+import client.RandomAI.RandomAction;
 import client.model.Ability;
 import client.model.Cell;
 import client.model.Hero;
@@ -13,6 +14,9 @@ public class NewAction {
     public void Action(World world) {
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
         ArrayList<ActiveMyHeroes> activeMyHeroes = getActiveMyHeroes(world, inVisionOppHeroes);
+
+        // remove this variable after start else of cannot dead
+        boolean tempFlag = true;
 
         while (activeMyHeroes.size() != 0 ) {
 
@@ -98,6 +102,7 @@ public class NewAction {
                 if (effectiveHero != null) {
                     Ability ability2 = effectiveHero.getAbility();
                     world.castAbility(effectiveHero.getMyHero(), ability2, effectiveHero.getTargetCell());
+                    tempFlag = false;
                     Hero oppHero2 = effectiveHero.getOppHero();
                     for (OppHeroAction oppHeroAction: candidateOppHeroes) {
                         if (oppHeroAction.getOppHero().equals(oppHero2)) {
@@ -112,6 +117,11 @@ public class NewAction {
                 //TODO: my algorithm for if opp hero not dead
             }
             activeMyHeroes.remove(selectedActiveMyHero);
+        }
+
+        if (tempFlag) {
+            RandomAction randomAction = new RandomAction();
+            randomAction.randomAction(world);
         }
     }
 
