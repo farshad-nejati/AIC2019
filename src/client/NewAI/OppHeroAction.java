@@ -12,7 +12,6 @@ import java.util.List;
 
 public class OppHeroAction {
     private Hero oppHero;
-    private Cell targetCell;
     ArrayList<HeroPossibleAbilities> candidateMyHeroes;
     private List<KillerOppHero> killerOppHeroes;
     private Integer virtualHP ;
@@ -115,6 +114,27 @@ public class OppHeroAction {
 
     public void setOppHero(Hero oppHero) {
         this.oppHero = oppHero;
+    }
+
+    public void setCandidateMyHeroes(ArrayList<HeroPossibleAbilities> candidateMyHeroes) {
+        this.candidateMyHeroes = candidateMyHeroes;
+    }
+
+    public static Comparator<OppHeroAction> getKillerOppHeroesComparator() {
+        return KillerOppHeroesComparator;
+    }
+
+    public static void setKillerOppHeroesComparator(Comparator<OppHeroAction> killerOppHeroesComparator) {
+        KillerOppHeroesComparator = killerOppHeroesComparator;
+    }
+
+    public Integer getVirtualHP() {
+
+        return virtualHP;
+    }
+
+    public void setVirtualHP(Integer virtualHP) {
+        this.virtualHP = virtualHP;
     }
 
     /*Comparator for sorting the list by Student Name*/

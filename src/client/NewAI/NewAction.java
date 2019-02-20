@@ -15,6 +15,10 @@ public class NewAction {
         ArrayList<ActiveMyHeroes> activeMyHeroes = getActiveMyHeroes(world, inVisionOppHeroes);
 
         while (activeMyHeroes.size() != 0 ) {
+
+            EffectiveHero effectiveHero = null;
+            ArrayList<OppHeroAction> candidateOppHeroes = new ArrayList<>();
+
             ArrayList<TakingParts> takingParts = initializeTakingParts(activeMyHeroes);
             List<OppHeroAction> oppHeroActions = new ArrayList<>();
 
@@ -35,24 +39,83 @@ public class NewAction {
                     canKill = true;
                 }
             }
+
             if (canKill) {
                 Hero selectedOppHero = null;
                 if (selectedActiveMyHero != null) {
-                    Collections.sort(oppHeroActions, OppHeroAction.KillerOppHeroesComparator);
+//                    Collections.sort(oppHeroActions, OppHeroAction.KillerOppHeroesComparator);
                     for (OppHeroAction oppHeroAction : oppHeroActions) {
                         Hero oppHero = oppHeroAction.getOppHero();
                         if (selectedActiveMyHero.getPossibleOppHeroes().contains(oppHero) && oppHeroAction.getKillerOppHeroes().size() > 0) {
-                            selectedOppHero = oppHero;
-                            break;
+                            candidateOppHeroes.add(oppHeroAction);
                         }
                     }
                 }
-            }
+                ArrayList<MyHeroTargets> myHeroTargets = new ArrayList<>();
 
-//            Cell targetCell = getCellInRangeOfHeroAttack(world, )
+                if (candidateOppHeroes.size() > 0) {
+                    for (OppHeroAction oppHeroAction: candidateOppHeroes) {
+                        ArrayList<KillerOppHero> candidateKillers = new ArrayList<>();
+                        ArrayList<KillerOppHero> killerOppHeroes = (ArrayList<KillerOppHero>) oppHeroAction.getKillerOppHeroes();
+                        for (KillerOppHero killerOppHero : killerOppHeroes) {
+                            ArrayList<HeroAbility> innerKillers = killerOppHero.getHeroAbilities();
+                            if (firstTakingPart.getMinPartners() + 1 == killerOppHero.getNumOfHeroes()) {
+                                for (HeroAbility innerKiller : innerKillers) {
+                                    if (innerKiller.getMyHero().equals(selectedMyHero)) {
+                                        Hero oppHero = oppHeroAction.getOppHero();
+                                        MyHeroTargets myHeroTarget = new MyHeroTargets(oppHero, killerOppHero, killerOppHero.getApSum());
+                                        myHeroTargets.add(myHeroTarget);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Collections.sort(myHeroTargets, MyHeroTargets.myHeroTargetsComparator);
+                MyHeroTargets selectedMyHeroTarget = myHeroTargets.get(0);
+
+                Hero myHero = selectedMyHero;
+                Hero oppHero = selectedMyHeroTarget.getOppHero();
+                ArrayList<HeroAbility> heroAbilities = selectedMyHeroTarget.getKillerOppHero().getHeroAbilities();
+                Ability ability = null;
+                for (HeroAbility heroAbility : heroAbilities) {
+                    if (heroAbility.getMyHero().equals(myHero)) {
+                        ability = heroAbility.getAbility();
+                        break;
+                    }
+                }
+                Cell targetCell = null;
+                if (ability != null) {
+
+                    targetCell = getCellInRangeOfHeroAttack(world, myHero, oppHero, ability);
+                }
+                effectiveHero = new EffectiveHero(myHero, oppHero, ability, targetCell);
+
+
+
+                if (effectiveHero != null) {
+                    Ability ability2 = effectiveHero.getAbility();
+                    world.castAbility(effectiveHero.getMyHero(), ability2, effectiveHero.getTargetCell());
+                    Hero oppHero2 = effectiveHero.getOppHero();
+                    for (OppHeroAction oppHeroAction: candidateOppHeroes) {
+                        if (oppHeroAction.getOppHero().equals(oppHero2)) {
+                            Integer virtualHP = oppHeroAction.getVirtualHP();
+                            oppHeroAction.setVirtualHP(virtualHP - ability2.getPower());
+                            break;
+                        }
+                    }
+
+                }
+            } else {
+                //TODO: my algorithm for if opp hero not dead
+            }
             activeMyHeroes.remove(selectedActiveMyHero);
         }
     }
+
+
 
     public ActiveMyHeroes findActiveMyHeroByHero(ArrayList<ActiveMyHeroes> activeMyHeroes, Hero hero) {
         for (ActiveMyHeroes activeMyHero : activeMyHeroes) {
