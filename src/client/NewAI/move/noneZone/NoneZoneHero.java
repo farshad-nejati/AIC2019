@@ -17,4 +17,16 @@ public class NoneZoneHero {
     public Hero getHero() {
         return hero;
     }
+
+    public void setHero(Hero hero) {
+        this.hero = hero;
+    }
+
+    public Cell getTargetCell() {
+        return targetCell;
+    }
+
+    public void setTargetCell(Cell targetCell) {
+        this.targetCell = targetCell;
+    }
 }
