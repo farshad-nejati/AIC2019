@@ -125,11 +125,12 @@ public class AI
         Cell[] respawnCells = world.getMap().getMyRespawnZone();
 
         for (Cell respawnCell : respawnCells) {
-            int nearestCellColumn = 10000;
-            int nearestCellRaw = 10000;
-            int nearestManhattan = 10000;
+            Integer nearestCellColumn = 10000;
+            Integer nearestCellRaw = 10000;
+            Integer nearestManhattan = 10000;
             boolean flag = true;
 
+            System.out.println("ReSpawn Zeno Cell: " + respawnCell.getRow() + " , " + respawnCell.getColumn());
             for (Cell objectiveZoneCell : objectiveZoneCells) {
                 if (this.blockedCells.contains(objectiveZoneCell)) {
                     continue;
@@ -143,10 +144,13 @@ public class AI
                 int rawDistance = Math.abs(respawnCell.getRow() - objectiveZoneCell.getRow());
                 int columnDistance = Math.abs(respawnCell.getColumn() - objectiveZoneCell.getColumn());
                 int newManhattan = world.manhattanDistance(respawnCell, objectiveZoneCell);
-                if (newManhattan < nearestCellColumn) {
+                System.out.println("new distance: " + newManhattan);
+                System.out.println("old distance: " + nearestManhattan);
+                if (newManhattan < nearestManhattan) {
                     nearestCellColumn = objectiveZoneCell.getColumn();
                     nearestCellRaw = objectiveZoneCell.getRow();
                     nearestManhattan = newManhattan;
+                    System.out.println(nearestManhattan + " selected! \n\n");
                 }
             }
             Cell bestObjectiveCell = world.getMap().getCell(nearestCellRaw, nearestCellColumn);
