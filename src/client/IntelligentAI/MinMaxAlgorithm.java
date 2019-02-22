@@ -26,8 +26,7 @@ public class MinMaxAlgorithm {
         for (Hero myHero : this.myHeroes) {
             ArrayList<Hero> otherOurHeroes = new ArrayList<>(this.myHeroes);
             otherOurHeroes.remove(myHero);
-            ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(myHero, virtualMap, otherOurHeroes);
-            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, possibleDirections, oppHeroes, virtualMap);
+            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualMap);
             MyDirection direction = minMaxMove.getDirection();
             heroDirectionHashMap.put(myHero, direction);
             // TODO: updateVirtualMapByHeroMove()
