@@ -33,7 +33,7 @@ public class AI
     private ArrayList<Hero> inZoneHeroes;
 
     private NoneZoneMoving noneZoneMoving;
-    private InZoneMoving inZoneMoving = new InZoneMoving();
+    private InZoneMoving inZoneMoving;
     private Cell[] objectiveZoneCells;
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
@@ -75,7 +75,8 @@ public class AI
             noneZoneMoving.move(world, noneZoneHeroes, blockedCells);
         }
         if (inZoneHeroes.size() > 0) {
-            inZoneMoving.move(world, inZoneMoving);
+            inZoneMoving = new InZoneMoving(inZoneHeroes, world);
+            inZoneMoving.move(world);
         }
 
 //        newMove.move(world);
