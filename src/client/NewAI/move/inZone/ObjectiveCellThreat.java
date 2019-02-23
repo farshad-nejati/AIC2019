@@ -3,6 +3,7 @@ package client.NewAI.move.inZone;
 import client.model.Cell;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 public class ObjectiveCellThreat {
     private Cell cell;
@@ -50,4 +51,34 @@ public class ObjectiveCellThreat {
     public static ObjectiveCellThreat findByCell(Collection<ObjectiveCellThreat> list, Cell cell) {
         return list.stream().filter(object -> cell.equals(object.getCell())).findFirst().orElse(null);
     }
+
+
+    /*Comparator for sorting the list by Student Name*/
+    public static Comparator<ObjectiveCellThreat> threatHPComparator = new Comparator<ObjectiveCellThreat>() {
+
+        public int compare(ObjectiveCellThreat o1, ObjectiveCellThreat o2) {
+            int killerOppHeroSize1 = o1.threatHP;
+            int killerOppHeroSize2 = o2.threatHP;
+
+            //ascending order
+            return killerOppHeroSize1-killerOppHeroSize2;
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }};
+
+    /*Comparator for sorting the list by Student Name*/
+    public static Comparator<ObjectiveCellThreat> threatNumberComparator = new Comparator<ObjectiveCellThreat>() {
+
+        public int compare(ObjectiveCellThreat o1, ObjectiveCellThreat o2) {
+            int killerOppHeroSize1 = o1.threatNumber;
+            int killerOppHeroSize2 = o2.threatNumber;
+
+            //ascending order
+            return killerOppHeroSize1-killerOppHeroSize2;
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }};
+
 }
