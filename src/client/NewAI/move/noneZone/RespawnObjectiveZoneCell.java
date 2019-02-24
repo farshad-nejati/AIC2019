@@ -3,6 +3,8 @@ package client.NewAI.move.noneZone;
 import client.model.Cell;
 import client.model.Hero;
 
+import java.util.Collection;
+
 public class RespawnObjectiveZoneCell {
     private Cell objectiveZoneCell;
     private Cell respawnZoneCell;
@@ -43,5 +45,10 @@ public class RespawnObjectiveZoneCell {
 
     public void setHero(Hero hero) {
         this.hero = hero;
+    }
+
+
+    public static RespawnObjectiveZoneCell findByHero(Collection<RespawnObjectiveZoneCell> list, Hero hero) {
+        return list.stream().filter(object -> hero.equals(object.getHero())).findFirst().orElse(null);
     }
 }

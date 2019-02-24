@@ -1,10 +1,12 @@
 package client;
 
 import client.NewAI.NewAction;
+import client.NewAI.SortClass;
 import client.NewAI.move.inZone.InZoneMoving;
 import client.NewAI.move.Move;
 import client.NewAI.move.noneZone.NoneZoneHero;
 import client.NewAI.move.noneZone.NoneZoneMoving;
+import client.NewAI.move.noneZone.ObjectiveCellsDistance;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.RandomAI.Moving;
 import client.RandomAI.RandomAction;
@@ -12,6 +14,8 @@ import client.RandomAI.RandomMove;
 import client.model.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class AI
 {
@@ -37,6 +41,7 @@ public class AI
     private Cell[] objectiveZoneCells;
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
+    int maxAreaEffect = 3;
 
     public void preProcess(World world) {
         System.out.println("pre process started");
@@ -66,10 +71,12 @@ public class AI
 
         inZoneHeroes = new ArrayList<>();
         noneZoneHeroes = new ArrayList<>();
-        findZoneStatusOfHeroes(world);
 
         if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
+            firstZoneStatusOfHeroes(world);
             setHeroesInReSpawnCell();
+        } else {
+            findZoneStatusOfHeroes(world);
         }
         if (noneZoneHeroes.size() > 0 ) {
             noneZoneMoving.move(world, noneZoneHeroes, blockedCells);
@@ -126,38 +133,41 @@ public class AI
         Cell[] respawnCells = world.getMap().getMyRespawnZone();
 
         for (Cell respawnCell : respawnCells) {
-            Integer nearestCellColumn = 10000;
-            Integer nearestCellRaw = 10000;
-            Integer nearestManhattan = 10000;
-            boolean flag = true;
-
+            ArrayList<ObjectiveCellsDistance> objectiveCellsDistances = new ArrayList<>();
             System.out.println("ReSpawn Zeno Cell: " + respawnCell.getRow() + " , " + respawnCell.getColumn());
             for (Cell objectiveZoneCell : objectiveZoneCells) {
                 if (this.blockedCells.contains(objectiveZoneCell)) {
                     continue;
                 }
-                if (flag) {
-                    nearestCellColumn = objectiveZoneCell.getColumn();
-                    nearestCellRaw = objectiveZoneCell.getRow();
-                    nearestManhattan = world.manhattanDistance(respawnCell, objectiveZoneCell);
-                    flag = false;
+                int manhattanDistance = world.manhattanDistance(respawnCell, objectiveZoneCell);
+                objectiveCellsDistances.add(new ObjectiveCellsDistance(objectiveZoneCell, manhattanDistance));
+            }
+            Collections.sort(objectiveCellsDistances, SortClass.ObjectiveCellComparator);
+
+            if (this.respawnObjectiveZoneCells.size() == 0) {
+                ObjectiveCellsDistance bestObjectiveDistanceCell = objectiveCellsDistances.get(0);
+                this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveDistanceCell.getObjectiveCell(), respawnCell));
+                continue;
+            }
+            for (ObjectiveCellsDistance objectiveCellsDistance : objectiveCellsDistances) {
+                Cell bestCell = objectiveCellsDistance.getObjectiveCell();
+                boolean mustAdd = true;
+                for (RespawnObjectiveZoneCell obj : this.respawnObjectiveZoneCells) {
+                    Cell selectedSoFarCell = obj.getObjectiveZoneCell();
+                    int distance = world.manhattanDistance(selectedSoFarCell, bestCell);
+                    if (distance <= this.maxAreaEffect) {
+                        mustAdd = false;
+                        break;
+                    }
                 }
-                int rawDistance = Math.abs(respawnCell.getRow() - objectiveZoneCell.getRow());
-                int columnDistance = Math.abs(respawnCell.getColumn() - objectiveZoneCell.getColumn());
-                int newManhattan = world.manhattanDistance(respawnCell, objectiveZoneCell);
-                System.out.println("new distance: " + newManhattan);
-                System.out.println("old distance: " + nearestManhattan);
-                if (newManhattan < nearestManhattan) {
-                    nearestCellColumn = objectiveZoneCell.getColumn();
-                    nearestCellRaw = objectiveZoneCell.getRow();
-                    nearestManhattan = newManhattan;
-                    System.out.println(nearestManhattan + " selected! \n\n");
+                if (mustAdd) {
+                    this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestCell, respawnCell));
+                    this.blockedCells.add(bestCell);
+                    break;
                 }
             }
-            Cell bestObjectiveCell = world.getMap().getCell(nearestCellRaw, nearestCellColumn);
-            this.blockedCells.add(bestObjectiveCell);
 
-            respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveCell, respawnCell));
+//            respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveCell, respawnCell));
         }
     }
 
@@ -180,6 +190,19 @@ public class AI
 
     private void findZoneStatusOfHeroes(World world) {
         for (Hero hero: world.getMyHeroes()) {
+            RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(this.respawnObjectiveZoneCells, hero);
+            if (hero.getCurrentCell().equals(respawnObjectiveZoneCell.getObjectiveZoneCell()) && hero.getCurrentHP() > 0) {
+                inZoneHeroes.add(hero);
+            } else {
+                if (hero.getCurrentHP() > 0)
+//                    noneZoneHeroes.removeIf(obj -> obj.getHero().getId() == hero.getId());
+                    noneZoneHeroes.add(hero);
+            }
+        }
+    }
+    private void firstZoneStatusOfHeroes(World world) {
+        for (Hero hero: world.getMyHeroes()) {
+
             if (hero.getCurrentCell().isInObjectiveZone()) {
                 inZoneHeroes.add(hero);
 //                noneZoneHeroes.removeIf(obj -> obj.getHero().getId() == hero.getId());

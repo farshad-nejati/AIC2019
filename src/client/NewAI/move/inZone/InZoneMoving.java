@@ -65,9 +65,9 @@ public class InZoneMoving {
     private boolean updateHeroPosition(Hero myHero, Direction bestDirection) {
         Cell newCell = findCellWithDirection(myHero.getCurrentCell(), bestDirection);
 
-        ObjectiveCellThreat currentThreat = ObjectiveCellThreat.findByCell(this .objectiveCellThreats, myHero.getCurrentCell());
-        ObjectiveCellThreat newCellThreat = ObjectiveCellThreat.findByCell(this .objectiveCellThreats, newCell);
-        if (currentThreat.getThreatNumber() > newCellThreat.getThreatNumber()) {
+        ObjectiveCellThreat currentThreat = ObjectiveCellThreat.findByCell(this.objectiveCellThreats, myHero.getCurrentCell());
+        ObjectiveCellThreat newCellThreat = ObjectiveCellThreat.findByCell(this.objectiveCellThreats, newCell);
+        if (currentThreat.getThreatNumber() > newCellThreat.getThreatNumber() && currentThreat.getThreatNumber() >= 1) {
             HeroPosition heroPosition = HeroPosition.findByHero(this.heroPositions, myHero);
             int index = this.heroPositions.indexOf(heroPosition);
             heroPosition.setCell(newCell);
