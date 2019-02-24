@@ -92,5 +92,20 @@ class MinMaxMove {
     private Integer evaluateScore() {
         // TODO: evaluateScore()
         return new Random().nextInt(10);
+
+//        Integer score = 0;
+//        Cell myherocell = myHero.getCurrentCell(); //ToDo: this must be updated of my hero cell
+//        if (myherocell.isInObjectiveZone()){
+//            score += Score.inZone;
+//        }
+//        Cell selectedObjectiveCell = move.getRandomObjectiveCell(world, myHero.getCurrentCell(), new ArrayList<>());
+//        //Todo:above code must be replace with nearest objective zone cell
+//        score += -Score.distanceCost *(world.manhattanDistance(myherocell,selectedObjectiveCell));
+//        if (!direction.equals(MyDirection.FIX)){
+//            score += Score.movecost;
+//        }
+//        System.out.println("score= " +score);
+//        return score;
+
     }
 }
