@@ -46,4 +46,24 @@ public class Utility {
 
         return myDirections;
     }
+
+    public static Cell getCellFromDirection(Cell cell, MyDirection direction, Map map) {
+        int row = cell.getRow();
+        int column = cell.getColumn();
+
+        if (direction.equals(MyDirection.LEFT)) {
+            return map.getCell(row, column - 1);
+        }
+        if (direction.equals(MyDirection.RIGHT)) {
+            return map.getCell(row, column + 1);
+        }
+        if (direction.equals(MyDirection.DOWN)) {
+            return map.getCell(row + 1, column);
+        }
+        if (direction.equals(MyDirection.LEFT)) {
+            return map.getCell(row - 1, column);
+        }
+
+        return cell;
+    }
 }
