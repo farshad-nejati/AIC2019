@@ -30,22 +30,27 @@ public class InZoneMoving {
         findHeroNeighborCells(world);
     }
     public void move(World world, ArrayList<Cell> blockedCellsNoneZoneHeroes) {
-        for (Hero myHero : myHeroes) {
-            addBlockedCells(myHeroes,myHero, blockedCellsNoneZoneHeroes);
+        for (HeroPosition heroPosition : this.heroPositions){
+            Hero myHero = heroPosition.getHero();
+//        for (Hero myHero : myHeroes) {
+            addBlockedCells(myHeroes, myHero, blockedCellsNoneZoneHeroes);
             Direction bestDirection = findBestCellToMove(myHero);
             if (bestDirection != null) {
 //                Direction[] directions = world.getPathMoveDirections(myHero.getCurrentCell(), );
 //                new Printer().printDirections(directions);
 //                if (directions.length > 0) {
-                    System.out.println("Hero Move " + myHero.getName() + myHero.getId() + " in ");
+                System.out.println("Hero Move " + myHero.getName() + myHero.getId() + " in ");
 //                    world.moveHero(myHero, directions[0]);
+                if (updateHeroPosition(myHero, bestDirection)) {
                     world.moveHero(myHero, bestDirection);
-                    updateHeroPosition(myHero, bestDirection);
+    //                updateHeroPosition(myHero, bestDirection);
                     System.out.println("Hero Move successfully");
+                }
 //                }
             } else {
                 System.out.println("\n\nBest Cell not Found! \n");
             }
+//        }
         }
     }
 
@@ -57,12 +62,19 @@ public class InZoneMoving {
     }
 
 
-    private void updateHeroPosition(Hero myHero, Direction bestDirection) {
+    private boolean updateHeroPosition(Hero myHero, Direction bestDirection) {
         Cell newCell = findCellWithDirection(myHero.getCurrentCell(), bestDirection);
-        HeroPosition heroPosition = HeroPosition.findByHero(this.heroPositions, myHero);
-        int index = this.heroPositions.indexOf(heroPosition);
-        heroPosition.setCell(newCell);
-        this.heroPositions.set(index, heroPosition);
+
+        ObjectiveCellThreat currentThreat = ObjectiveCellThreat.findByCell(this .objectiveCellThreats, myHero.getCurrentCell());
+        ObjectiveCellThreat newCellThreat = ObjectiveCellThreat.findByCell(this .objectiveCellThreats, newCell);
+        if (currentThreat.getThreatNumber() > newCellThreat.getThreatNumber()) {
+            HeroPosition heroPosition = HeroPosition.findByHero(this.heroPositions, myHero);
+            int index = this.heroPositions.indexOf(heroPosition);
+            heroPosition.setCell(newCell);
+            this.heroPositions.set(index, heroPosition);
+            return true;
+        } else
+            return false;
 
     }
 

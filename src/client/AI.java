@@ -156,6 +156,7 @@ public class AI
             }
             Cell bestObjectiveCell = world.getMap().getCell(nearestCellRaw, nearestCellColumn);
             this.blockedCells.add(bestObjectiveCell);
+
             respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveCell, respawnCell));
         }
     }
