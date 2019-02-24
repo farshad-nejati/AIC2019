@@ -7,15 +7,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class MinMaxAlgorithm {
+    private ArrayList<Move> myHeroesMove = new ArrayList<>();
     private HashMap<Hero, MyDirection> heroDirectionHashMap = new HashMap<>();
     private ArrayList<Hero> myHeroes;
     private ArrayList<Hero> oppHeroes; // in vision opp heroes in world
-    private Map virtualMap; // update by assumptive my hero directions
+    private World virtualWorld; // update by assumptive my hero directions
 
-    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, Map virtualMap) {
+    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, World virtualWorld) {
         this.myHeroes = myHeroes;
         this.oppHeroes = oppHeroes;
-        this.virtualMap = virtualMap;
+        this.virtualWorld = virtualWorld;
     }
 
     public HashMap<Hero, MyDirection> getHeroDirectionHashMap() {
@@ -24,12 +25,16 @@ public class MinMaxAlgorithm {
 
     public void maxMove() {
         for (Hero myHero : this.myHeroes) {
+            Move move = new Move(myHero,myHero.getCurrentCell());
+            myHeroesMove.add(move);
+        }
+        for (Hero myHero : this.myHeroes) {
             ArrayList<Hero> otherOurHeroes = new ArrayList<>(this.myHeroes);
             otherOurHeroes.remove(myHero);
-            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualMap);
-            MyDirection direction = minMaxMove.getDirection();
+            //TODO: check call by reference
+            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld);
+            MyDirection direction = minMaxMove.getDirection(myHeroesMove);
             heroDirectionHashMap.put(myHero, direction);
-            // TODO: updateVirtualMapByHeroMove()
         }
     }
 

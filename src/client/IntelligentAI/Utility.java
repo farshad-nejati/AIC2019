@@ -1,9 +1,6 @@
 package client.IntelligentAI;
 
-import client.model.Cell;
-import client.model.Direction;
-import client.model.Hero;
-import client.model.Map;
+import client.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,22 +12,22 @@ public class Utility {
         int row = cell.getRow();
         int column = cell.getColumn();
 
-        cellNeighbors.put(map.getCell(row - 1, column), Direction.LEFT);
-        cellNeighbors.put(map.getCell(row + 1, column), Direction.RIGHT);
-        cellNeighbors.put(map.getCell(row, column - 1), Direction.DOWN);
-        cellNeighbors.put(map.getCell(row, column + 1), Direction.UP);
+        cellNeighbors.put(map.getCell(row - 1, column), Direction.UP);
+        cellNeighbors.put(map.getCell(row + 1, column), Direction.DOWN);
+        cellNeighbors.put(map.getCell(row, column - 1), Direction.LEFT);
+        cellNeighbors.put(map.getCell(row, column + 1), Direction.RIGHT);
 
         return cellNeighbors;
     }
 
-    public static ArrayList<MyDirection> getPossibleDirections(Hero myHero, Map virtualMap, ArrayList<Hero> otherOurHeroes) {
+    public static ArrayList<MyDirection> getPossibleDirections(Hero myHero, World virtualWorld, ArrayList<Hero> otherOurHeroes) {
         ArrayList<MyDirection> myDirections = new ArrayList<>(Arrays.asList(MyDirection.values()));
 
         Cell myHeroCurrentCell = myHero.getCurrentCell();
         int row = myHeroCurrentCell.getRow();
         int column = myHeroCurrentCell.getColumn();
 
-        HashMap<Cell, Direction> cellNeighbors = Utility.getCellNeighbors(myHeroCurrentCell, virtualMap);
+        HashMap<Cell, Direction> cellNeighbors = Utility.getCellNeighbors(myHeroCurrentCell, virtualWorld.getMap());
         for (Cell cellNeighbor : cellNeighbors.keySet()) {
             if (cellNeighbor.isWall()) {
                 myDirections.remove(cellNeighbors.get(cellNeighbor));
