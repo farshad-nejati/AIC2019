@@ -16,19 +16,19 @@ public class InZoneMoving {
     private ArrayList<HeroNeighbors> heroNeighbors = new ArrayList<>();
     private ArrayList<Cell> blockedCells;
     int maxAreaEffect = 5;
+    ArrayList<HeroPosition> heroPositions = new ArrayList<>();
 
     public InZoneMoving(ArrayList<Hero> inZoneHeroes, World world) {
         this.myHeroes = inZoneHeroes;
         this.world = world;
         this.objectiveCells = world.getMap().getObjectiveZone();
         this.phaseNumber = world.getMovePhaseNum();
+        initializeHeroPositions();
         getInVisionOppHeroes(world);
         initializeObjectiveCellThreats();
         findObjectiveCellThreat();
         findHeroNeighborCells(world);
     }
-
-
     public void move(World world, ArrayList<Cell> blockedCellsNoneZoneHeroes) {
         for (Hero myHero : myHeroes) {
             addBlockedCells(myHeroes,myHero, blockedCellsNoneZoneHeroes);
@@ -40,12 +40,30 @@ public class InZoneMoving {
                     System.out.println("Hero Move " + myHero.getName() + myHero.getId() + " in ");
 //                    world.moveHero(myHero, directions[0]);
                     world.moveHero(myHero, bestDirection);
+                    updateHeroPosition(myHero, bestDirection);
                     System.out.println("Hero Move successfully");
 //                }
             } else {
                 System.out.println("\n\nBest Cell not Found! \n");
             }
         }
+    }
+
+
+    private void initializeHeroPositions() {
+        for (Hero myHero : this.myHeroes) {
+            heroPositions.add(new HeroPosition(myHero, myHero.getCurrentCell()));
+        }
+    }
+
+
+    private void updateHeroPosition(Hero myHero, Direction bestDirection) {
+        Cell newCell = findCellWithDirection(myHero.getCurrentCell(), bestDirection);
+        HeroPosition heroPosition = HeroPosition.findByHero(this.heroPositions, myHero);
+        int index = this.heroPositions.indexOf(heroPosition);
+        heroPosition.setCell(newCell);
+        this.heroPositions.set(index, heroPosition);
+
     }
 
     private Direction findBestCellToMove(Hero myHero) {
@@ -88,16 +106,18 @@ public class InZoneMoving {
     private ArrayList<ObjectiveCellThreat> getObjectsWithThreeDistance(Hero currentHero, ArrayList<ObjectiveCellThreat> objectiveCellThreats) {
         ArrayList<ObjectiveCellThreat> returnObject = new ArrayList<>();
 
-        ArrayList<Hero> currentMyHeroes = new ArrayList<>(this.myHeroes);
-        currentMyHeroes.remove(currentHero);
+        ArrayList<HeroPosition> currentHeroPositions = new ArrayList<>(this.heroPositions);
+        HeroPosition currentHeroPosition = HeroPosition.findByHero(currentHeroPositions, currentHero);
+        currentHeroPositions.remove(currentHeroPosition);
 
         int maxEffect = this.maxAreaEffect;
         while (returnObject.size() == 0 && maxEffect > this.maxAreaEffect - 2) {
 
             for (ObjectiveCellThreat threatObject : objectiveCellThreats) {
                 boolean flag = true;
-                for (Hero hero : currentMyHeroes) {
-                    int distance = world.manhattanDistance(threatObject.getCell(), hero.getCurrentCell());
+                for (HeroPosition heroPosition : currentHeroPositions) {
+                    Hero hero = heroPosition.getHero();
+                    int distance = world.manhattanDistance(threatObject.getCell(), heroPosition.getCell());
                     if (distance < maxEffect) {
                         flag = false;
                     }
