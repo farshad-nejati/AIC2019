@@ -39,7 +39,11 @@ public class ScoreStrategy {
                 Ability maxLosingHealthAbility = null;
                 int maxLosingHealth = 0;
                 for (Ability ability : oppHero.getOffensiveAbilities()) {
+                    if (maxLosingHealthAbility ==null){
+                        maxLosingHealthAbility = ability;
+                    }
                     int distance = virtualWorld.manhattanDistance(myHeroCell, oppHeroCell);
+
                     boolean canHit = distance < (maxLosingHealthAbility.getRange() + maxLosingHealthAbility.getAreaOfEffect());
                     if ((ability.getPower() > maxLosingHealth)&& canHit) {
                         maxLosingHealthAbility = ability;
