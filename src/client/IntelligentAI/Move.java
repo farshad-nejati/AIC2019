@@ -9,6 +9,15 @@ public class Move {
     private Hero hero;
     private Cell currentCell;
     private Cell nextCell;
+
+    public Cell getTargetZoneCell() {
+        return targetZoneCell;
+    }
+
+    public void setTargetZoneCell(Cell targetZoneCell) {
+        this.targetZoneCell = targetZoneCell;
+    }
+
     private Cell targetZoneCell;
 
     public Move() {

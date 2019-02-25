@@ -4,6 +4,7 @@ import common.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -19,10 +20,30 @@ public class Main {
     private static final String[] argDefaults = {"localhost", "7099", "00000000000000000000000000000000", "1000"};
 
     public static void main(String[] args) {
+        ArrayList<Integer> arrayList = new ArrayList<Integer>();
+        arrayList.add(1);
+        arrayList.add(2);
+        arrayList.add(3);
+        System.out.println("first array:" + arrayList);
+        chaneVal(arrayList);
+        System.out.println("final array:" + arrayList);
+
         try {
             run(getArgs());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    public static void chaneVal(ArrayList<Integer> arrayList){
+
+        for (Integer val: arrayList){
+            int i=0;
+            for (Integer val2: arrayList){
+                if (val==val2){
+                    arrayList.set(i,i+2);
+                }
+                i++;
+            }
         }
     }
 

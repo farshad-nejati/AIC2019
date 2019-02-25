@@ -5,9 +5,8 @@ import client.model.Hero;
 import client.model.Map;
 import client.model.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.lang.reflect.Array;
+import java.util.*;
 
 class MinMaxMove {
 
@@ -31,10 +30,15 @@ class MinMaxMove {
             oppHeroesMove.add(move);
         }
 
-        Hero oppHero = oppHeroes.remove(0);
+        Hero oppHero = null;
+        if (!oppHeroes.isEmpty()){
+            oppHero = oppHeroes.remove(0);
+        }
+
         ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(this.myHero, this.virtualWorld, this.otherOurHeroes);
         HashMap<MyDirection, Integer> scoreHashMap = new HashMap<>();
 
+        System.out.println("my hero is = " + myHero + "\n");
         for (MyDirection direction : possibleDirections) {
             Cell heroMoveNextCell = Utility.getCellFromDirection(myHero.getCurrentCell(), direction, this.virtualWorld.getMap());
             Move move = Move.findByHero(myHeroesMove, myHero);
@@ -47,7 +51,9 @@ class MinMaxMove {
             //TODO: setTarget
 
             scoreHashMap.put(direction, 0);
-            Integer score = eval(this.myHero, this.otherOurHeroes, oppHero, this.oppHeroes, this.virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, Integer.MAX_VALUE);
+
+            Integer score = eval(this.myHero,MyDirection.FIX, this.otherOurHeroes, oppHero, this.oppHeroes, this.virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, Integer.MAX_VALUE);
+            System.out.println("direction = " +direction + "\n score = "+ score + "\n");
             scoreHashMap.put(direction, score);
         }
 
@@ -62,50 +68,59 @@ class MinMaxMove {
         return maxEntry != null ? maxEntry.getKey() : null;
     }
 
-    private Integer eval(Hero myHero, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, int minScore) {
+    private Integer eval(Hero myHero,MyDirection mydirection , ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, int minScore) {
         if (oppHeroes.isEmpty()) {
-            return evaluateScore();
+            return evaluateScore(myHero, mydirection,otherOurHeroes,oppHero,oppHeroes,virtualWorld,copyOfMyHeroesMove,copyOfOppHeroesMove,minScore);
         }
 
         Hero newOppHero = oppHeroes.remove(0);
-        ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, oppHeroes);
 
-        for (MyDirection direction : possibleDirections) {
+//        ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, oppHeroes);
+        if (!oppHeroes.isEmpty()){
+            ArrayList<Hero> otherOurOppHeroes = new ArrayList<>(Arrays.asList(virtualWorld.getOppHeroes()));
 
-            Cell heroMoveNextCell = Utility.getCellFromDirection(oppHero.getCurrentCell(), direction, this.virtualWorld.getMap());
-            Move move = Move.findByHero(copyOfOppHeroesMove, oppHero);
-            Integer index = copyOfOppHeroesMove.indexOf(move);
-            move.setNextCell(heroMoveNextCell);
-            copyOfOppHeroesMove.set(index, move);
+            ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, otherOurOppHeroes);
 
-            ArrayList<Move> copyOfOppHeroesMove2 = new ArrayList<>(copyOfOppHeroesMove);
+            for (MyDirection direction : possibleDirections) {
 
-            Integer score = eval(myHero, otherOurHeroes, newOppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove2, minScore);
-            if (score < minScore) {
-                minScore = score;
+                Cell heroMoveNextCell = Utility.getCellFromDirection(oppHero.getCurrentCell(), direction, this.virtualWorld.getMap());
+                Move move = Move.findByHero(copyOfOppHeroesMove, oppHero);
+                Integer index = copyOfOppHeroesMove.indexOf(move);
+                move.setNextCell(heroMoveNextCell);
+                copyOfOppHeroesMove.set(index, move);
+
+                ArrayList<Move> copyOfOppHeroesMove2 = new ArrayList<>(copyOfOppHeroesMove);
+
+                Integer score = eval(myHero,direction, otherOurHeroes, newOppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove2, minScore);
+                System.out.println("score = "+score + " minScore= " + minScore);
+                if (score < minScore) {
+                    minScore = score;
+                }
             }
         }
 
         return minScore;
     }
 
-    private Integer evaluateScore() {
+    private Integer evaluateScore(Hero myHero, MyDirection direction, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, int minScore) {
         // TODO: evaluateScore()
-        return new Random().nextInt(10);
+//        return new Random().nextInt(10);
 
-//        Integer score = 0;
-//        Cell myherocell = myHero.getCurrentCell(); //ToDo: this must be updated of my hero cell
-//        if (myherocell.isInObjectiveZone()){
-//            score += Score.inZone;
-//        }
-//        Cell selectedObjectiveCell = move.getRandomObjectiveCell(world, myHero.getCurrentCell(), new ArrayList<>());
-//        //Todo:above code must be replace with nearest objective zone cell
-//        score += -Score.distanceCost *(world.manhattanDistance(myherocell,selectedObjectiveCell));
-//        if (!direction.equals(MyDirection.FIX)){
-//            score += Score.movecost;
-//        }
-//        System.out.println("score= " +score);
-//        return score;
+        Integer score = 0;
+        Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
+        Integer index = copyOfMyHeroesMove.indexOf(move);
+        Cell myherocell = move.getCurrentCell(); //ToDo: this must be updated of my hero cell
+        if (myherocell.isInObjectiveZone()){
+            score += Score.inZone;
+        }
+        Cell selectedObjectiveCell = move.getTargetZoneCell();
+        //Todo:above code must be replace with nearest objective zone cell
+        score += Score.distanceCost *(virtualWorld.manhattanDistance(myherocell,selectedObjectiveCell));
+        if (!direction.equals(MyDirection.FIX)){
+            score += Score.movecost;
+        }
+        System.out.println("score= " +score);
+        return score;
 
     }
 }

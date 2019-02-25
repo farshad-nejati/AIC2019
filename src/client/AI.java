@@ -1,5 +1,6 @@
 package client;
 
+import client.IntelligentAI.MinMaxAlgorithm;
 import client.NewAI.NewAction;
 import client.RandomAI.Moving;
 import client.RandomAI.RandomAction;
@@ -7,6 +8,7 @@ import client.RandomAI.RandomMove;
 import client.model.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AI
 {
@@ -44,15 +46,25 @@ public class AI
     public void moveTurn(World world) {
         System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getMovePhaseNum());
 
-        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
-            randomMove = new RandomMove(world);
-        }
+//        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
+//            randomMove = new RandomMove(world);
+//        }
 
-        randomMove.moveToObjectiveZone(world);
+//        randomMove.moveToObjectiveZone(world);
+
+        ArrayList<Hero> myHeros = new ArrayList<>(Arrays.asList(world.getMyHeroes()));
+
+        ArrayList<Hero> oppHeros = new ArrayList<>(Arrays.asList(world.getOppHeroes()));
+        oppHeros.removeIf(obj -> (obj.getCurrentCell().getColumn()== -1 || obj.getCurrentCell().getRow()== -1));
+
+
+        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros,oppHeros,world);
+        minMaxAlgorithm.maxMove();
 
 
         printer.printMap(world);
     }
+
 
     public void actionTurn(World world) {
         System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
