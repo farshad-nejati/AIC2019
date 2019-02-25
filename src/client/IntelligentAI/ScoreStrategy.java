@@ -11,7 +11,7 @@ public class ScoreStrategy {
         Integer score = 0;
         Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
         Integer index = copyOfMyHeroesMove.indexOf(move);
-        Cell myherocell = move.getCurrentCell(); //ToDo: this must be updated of my hero cell
+        Cell myherocell = move.getNextCell(); //ToDo: this must be updated of my hero cell
         if (myherocell.isInObjectiveZone()) {
             score += Score.IN_ZONE;
         }
@@ -23,5 +23,9 @@ public class ScoreStrategy {
         }
         System.out.println("score= " + score);
         return score;
+    }
+
+    public static Integer losingHealth(){
+        return 0;
     }
 }
