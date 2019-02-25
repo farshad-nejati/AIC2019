@@ -15,10 +15,26 @@ public class Utility {
         if (row < 0 || column < 0) {
             return null;
         }
-        cellNeighbors.put(map.getCell(row - 1, column), Direction.UP);
-        cellNeighbors.put(map.getCell(row + 1, column), Direction.DOWN);
-        cellNeighbors.put(map.getCell(row, column - 1), Direction.LEFT);
-        cellNeighbors.put(map.getCell(row, column + 1), Direction.RIGHT);
+
+        Cell upCellNeighbor = map.getCell(row - 1, column);
+        if (upCellNeighbor != null) {
+            cellNeighbors.put(upCellNeighbor, Direction.UP);
+        }
+
+        Cell downCellNeighbor = map.getCell(row + 1, column);
+        if (downCellNeighbor != null) {
+            cellNeighbors.put(downCellNeighbor, Direction.DOWN);
+        }
+
+        Cell leftCellNeighbor = map.getCell(row, column - 1);
+        if (leftCellNeighbor != null) {
+            cellNeighbors.put(leftCellNeighbor, Direction.LEFT);
+        }
+
+        Cell rightCellNeighbor = map.getCell(row, column + 1);
+        if (rightCellNeighbor != null) {
+            cellNeighbors.put(rightCellNeighbor, Direction.RIGHT);
+        }
 
         return cellNeighbors;
     }
