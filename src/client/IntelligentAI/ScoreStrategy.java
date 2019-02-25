@@ -30,7 +30,6 @@ public class ScoreStrategy {
         Integer score = 0;
 
         Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
-        Integer index = copyOfMyHeroesMove.indexOf(move);
         Cell myHeroCell = move.getNextCell(); //TODO: this must be updated of my hero cell
 
         for (Move oppHeroMove : copyOfOppHeroesMove) {
@@ -40,13 +39,14 @@ public class ScoreStrategy {
                 Ability maxLosingHealthAbility = null;
                 int maxLosingHealth = 0;
                 for (Ability ability : oppHero.getOffensiveAbilities()) {
-                    if (ability.getPower() > maxLosingHealth) {
+                    int distance = virtualWorld.manhattanDistance(myHeroCell, oppHeroCell);
+                    boolean canHit = distance < (maxLosingHealthAbility.getRange() + maxLosingHealthAbility.getAreaOfEffect());
+                    if ((ability.getPower() > maxLosingHealth)&& canHit) {
                         maxLosingHealthAbility = ability;
                         maxLosingHealth = ability.getPower();
                     }
                 }
-                int distance = virtualWorld.manhattanDistance(myHeroCell, oppHeroCell);
-                if (maxLosingHealthAbility != null && (distance < (maxLosingHealthAbility.getRange() + maxLosingHealthAbility.getAreaOfEffect()))) {
+                if (maxLosingHealthAbility != null) {
                     score += maxLosingHealth;
                 }
             }
