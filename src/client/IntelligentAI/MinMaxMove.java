@@ -2,10 +2,8 @@ package client.IntelligentAI;
 
 import client.model.Cell;
 import client.model.Hero;
-import client.model.Map;
 import client.model.World;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 class MinMaxMove {
@@ -107,19 +105,9 @@ class MinMaxMove {
 //        return new Random().nextInt(10);
 
         Integer score = 0;
-        Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
-        Integer index = copyOfMyHeroesMove.indexOf(move);
-        Cell myherocell = move.getCurrentCell(); //ToDo: this must be updated of my hero cell
-        if (myherocell.isInObjectiveZone()){
-            score += Score.inZone;
-        }
-        Cell selectedObjectiveCell = move.getTargetZoneCell();
-        //Todo:above code must be replace with nearest objective zone cell
-        score += Score.distanceCost *(virtualWorld.manhattanDistance(myherocell,selectedObjectiveCell));
-        if (!direction.equals(MyDirection.FIX)){
-            score += Score.movecost;
-        }
-        System.out.println("score= " +score);
+
+        score += ScoreStrategy.distanceToZone(myHero,direction, virtualWorld,copyOfMyHeroesMove);
+
         return score;
 
     }

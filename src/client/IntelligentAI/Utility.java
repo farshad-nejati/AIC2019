@@ -12,7 +12,7 @@ public class Utility {
         int row = cell.getRow();
         int column = cell.getColumn();
 
-        if (row<0 || column<0){
+        if (row < 0 || column < 0) {
             return null;
         }
         cellNeighbors.put(map.getCell(row - 1, column), Direction.UP);

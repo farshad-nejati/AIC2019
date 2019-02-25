@@ -1,9 +1,10 @@
 package client.IntelligentAI;
 
-public class Score {
-    public static Integer inZone = 50;
-    public static Integer movecost = -4;
-    public static  Integer distanceCost = -5;
-    // distance to zone = -4 * (manhatan distance)
+class Score {
+    final static Integer IN_ZONE = 50;
+    final static Integer MOVE_COST = -4;
+    final static Integer DISTANCE_COST = -5;
+    final static Integer HEALTH_COST = -5;
 
+    // distance to zone = -4 * (manhatan distance)
 }
