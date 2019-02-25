@@ -43,9 +43,10 @@ public class InZoneMoving {
 //                    world.moveHero(myHero, directions[0]);
                 if (updateHeroPosition(myHero, bestDirection)) {
                     world.moveHero(myHero, bestDirection);
-    //                updateHeroPosition(myHero, bestDirection);
+                    //                updateHeroPosition(myHero, bestDirection);
                     System.out.println("Hero Move successfully");
                 }
+
 //                }
             } else {
                 System.out.println("\n\nBest Cell not Found! \n");
@@ -67,7 +68,7 @@ public class InZoneMoving {
 
         ObjectiveCellThreat currentThreat = ObjectiveCellThreat.findByCell(this.objectiveCellThreats, myHero.getCurrentCell());
         ObjectiveCellThreat newCellThreat = ObjectiveCellThreat.findByCell(this.objectiveCellThreats, newCell);
-        if (currentThreat.getThreatNumber() > newCellThreat.getThreatNumber() && currentThreat.getThreatNumber() >= 1) {
+        if (currentThreat.getThreatNumber() > newCellThreat.getThreatNumber() && currentThreat.getThreatNumber() > 1) {
             HeroPosition heroPosition = HeroPosition.findByHero(this.heroPositions, myHero);
             int index = this.heroPositions.indexOf(heroPosition);
             heroPosition.setCell(newCell);
