@@ -1,9 +1,11 @@
 package client.IntelligentAI;
 
 import client.model.Cell;
+import client.model.Direction;
 import client.model.Hero;
 import client.model.World;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ScoreStrategy {
@@ -17,7 +19,8 @@ public class ScoreStrategy {
         }
         Cell selectedObjectiveCell = move.getTargetZoneCell();
         //Todo:above code must be replace with nearest objective zone cell
-        score += Score.DISTANCE_COST * (virtualWorld.manhattanDistance(myherocell, selectedObjectiveCell));
+        Direction[] distancepath = virtualWorld.getPathMoveDirections(myherocell,selectedObjectiveCell);
+        score += Score.DISTANCE_COST * (distancepath.length);
         if (!direction.equals(MyDirection.FIX)) {
             score += Score.MOVE_COST;
         }
