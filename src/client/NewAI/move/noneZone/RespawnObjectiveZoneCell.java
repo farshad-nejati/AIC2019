@@ -9,10 +9,12 @@ public class RespawnObjectiveZoneCell {
     private Cell objectiveZoneCell;
     private Cell respawnZoneCell;
     private Hero hero;
+    private boolean arrival;
 
-    public RespawnObjectiveZoneCell(Cell objectiveZoneCell, Cell respawnZoneCell) {
+    public RespawnObjectiveZoneCell(Cell objectiveZoneCell, Cell respawnZoneCell, boolean arrival) {
         this.objectiveZoneCell = objectiveZoneCell;
         this.respawnZoneCell = respawnZoneCell;
+        this.arrival = arrival;
     }
 
     public Cell getRespawnZoneCell(Cell objectiveZoneCell) {
@@ -47,6 +49,13 @@ public class RespawnObjectiveZoneCell {
         this.hero = hero;
     }
 
+    public boolean isArrival() {
+        return arrival;
+    }
+
+    public void setArrival(boolean arrival) {
+        this.arrival = arrival;
+    }
 
     public static RespawnObjectiveZoneCell findByHero(Collection<RespawnObjectiveZoneCell> list, Hero hero) {
         return list.stream().filter(object -> hero.equals(object.getHero())).findFirst().orElse(null);

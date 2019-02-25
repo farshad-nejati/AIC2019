@@ -155,7 +155,7 @@ public class AI
 
                     if (this.respawnObjectiveZoneCells.size() == 0) {
                         ObjectiveCellsDistance bestObjectiveDistanceCell = objectiveCellsDistances.get(0);
-                        this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveDistanceCell.getObjectiveCell(), respawnCell));
+                        this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveDistanceCell.getObjectiveCell(), respawnCell, false));
                         blocked.add(bestObjectiveDistanceCell.getObjectiveCell());
                         continue;
                     }
@@ -171,7 +171,7 @@ public class AI
                             }
                         }
                         if (mustAdd) {
-                            this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestCell, respawnCell));
+                            this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestCell, respawnCell, false));
                             this.blockedCells.add(bestCell);
                             break;
                         }
@@ -205,18 +205,31 @@ public class AI
     private void findZoneStatusOfHeroes(World world) {
         for (Hero hero: world.getMyHeroes()) {
             RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(this.respawnObjectiveZoneCells, hero);
-            if (hero.getCurrentCell().equals(respawnObjectiveZoneCell.getObjectiveZoneCell()) && hero.getCurrentHP() > 0) {
-                inZoneHeroes.add(hero);
+            if (hero.getCurrentCell().equals(respawnObjectiveZoneCell.getObjectiveZoneCell())){
+                int index = respawnObjectiveZoneCells.indexOf(respawnObjectiveZoneCell);
+                respawnObjectiveZoneCell.setArrival(true);
+                respawnObjectiveZoneCells.set(index, respawnObjectiveZoneCell);
+            }
+            if (respawnObjectiveZoneCell.isArrival()) {
+                isArrivalStatus(hero, respawnObjectiveZoneCell, inZoneHeroes);
             } else {
-                if (hero.getCurrentHP() > 0)
-//                    noneZoneHeroes.removeIf(obj -> obj.getHero().getId() == hero.getId());
-                    noneZoneHeroes.add(hero);
+                isArrivalStatus(hero, respawnObjectiveZoneCell, noneZoneHeroes);
             }
         }
     }
+
+    private void isArrivalStatus(Hero hero, RespawnObjectiveZoneCell respawnObjectiveZoneCell, ArrayList<Hero> inZoneHeroes) {
+        if (hero.getCurrentHP() > 0) {
+            inZoneHeroes.add(hero);
+        } else {
+            int index = respawnObjectiveZoneCells.indexOf(respawnObjectiveZoneCell);
+            respawnObjectiveZoneCell.setArrival(false);
+            respawnObjectiveZoneCells.set(index, respawnObjectiveZoneCell);
+        }
+    }
+
     private void firstZoneStatusOfHeroes(World world) {
         for (Hero hero: world.getMyHeroes()) {
-
             if (hero.getCurrentCell().isInObjectiveZone()) {
                 inZoneHeroes.add(hero);
 //                noneZoneHeroes.removeIf(obj -> obj.getHero().getId() == hero.getId());
