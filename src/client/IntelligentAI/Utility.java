@@ -16,24 +16,24 @@ public class Utility {
             return null;
         }
 
-        Cell upCellNeighbor = map.getCell(row - 1, column);
-        if (upCellNeighbor != null) {
-            cellNeighbors.put(upCellNeighbor, Direction.UP);
+//        Cell upCellNeighbor = map.getCell(row - 1, column);
+        if (map.isInMap(row - 1, column)) {
+            cellNeighbors.put( map.getCell(row - 1, column), Direction.UP);
         }
 
-        Cell downCellNeighbor = map.getCell(row + 1, column);
-        if (downCellNeighbor != null) {
-            cellNeighbors.put(downCellNeighbor, Direction.DOWN);
+//        Cell downCellNeighbor = map.getCell(row + 1, column);
+        if (map.isInMap(row + 1, column)) {
+            cellNeighbors.put(map.getCell(row + 1, column), Direction.DOWN);
         }
 
-        Cell leftCellNeighbor = map.getCell(row, column - 1);
-        if (leftCellNeighbor != null) {
-            cellNeighbors.put(leftCellNeighbor, Direction.LEFT);
+//        Cell leftCellNeighbor = map.getCell(row, column - 1);
+        if (map.isInMap(row, column - 1)) {
+            cellNeighbors.put(map.getCell(row, column - 1), Direction.LEFT);
         }
 
-        Cell rightCellNeighbor = map.getCell(row, column + 1);
-        if (rightCellNeighbor != null) {
-            cellNeighbors.put(rightCellNeighbor, Direction.RIGHT);
+//        Cell rightCellNeighbor = map.getCell(row, column + 1);
+        if (map.isInMap(row, column + 1)) {
+            cellNeighbors.put(map.getCell(row, column + 1), Direction.RIGHT);
         }
 
         return cellNeighbors;
@@ -47,18 +47,20 @@ public class Utility {
         int column = myHeroCurrentCell.getColumn();
 
         HashMap<Cell, Direction> cellNeighbors = Utility.getCellNeighbors(myHeroCurrentCell, virtualWorld.getMap());
-
         for (Cell cellNeighbor : cellNeighbors.keySet()) {
             if (cellNeighbor.isWall()) {
                 myDirections.remove(castDirectionToMyDirection(cellNeighbors.get(cellNeighbor)));
                 continue;
             }
-            for (Hero otherOurHero : otherOurHeroes) {
-                if (otherOurHero.getCurrentCell().equals(cellNeighbor)) {
-                    myDirections.remove(castDirectionToMyDirection(cellNeighbors.get(cellNeighbor)));
-                    break;
+            if (!otherOurHeroes.isEmpty()){
+                for (Hero otherOurHero : otherOurHeroes) {
+                    if (otherOurHero.getCurrentCell().equals(cellNeighbor)) {
+                        myDirections.remove(castDirectionToMyDirection(cellNeighbors.get(cellNeighbor)));
+                        break;
+                    }
                 }
             }
+
         }
 
         return myDirections;

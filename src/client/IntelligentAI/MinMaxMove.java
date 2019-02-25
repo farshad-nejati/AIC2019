@@ -33,6 +33,7 @@ class MinMaxMove {
             oppHero = oppHeroes.remove(0);
         }
 
+        System.out.println("my hero possible direction \n");
         ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(this.myHero, this.virtualWorld, this.otherOurHeroes);
         HashMap<MyDirection, Integer> scoreHashMap = new HashMap<>();
 
@@ -74,8 +75,9 @@ class MinMaxMove {
         Hero newOppHero = oppHeroes.remove(0);
 
 //        ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, oppHeroes);
-        if (!oppHeroes.isEmpty()) {
+//        if (!oppHeroes.isEmpty()){
             ArrayList<Hero> otherOurOppHeroes = new ArrayList<>(Arrays.asList(virtualWorld.getOppHeroes()));
+            otherOurOppHeroes.removeIf(obj -> (obj.getCurrentCell().getColumn()== -1 || obj.getCurrentCell().getRow()== -1));
 
             ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, otherOurOppHeroes);
 
@@ -95,7 +97,7 @@ class MinMaxMove {
                     minScore = score;
                 }
             }
-        }
+//        }
 
         return minScore;
     }

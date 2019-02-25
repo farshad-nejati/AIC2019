@@ -52,7 +52,12 @@ public class AI
 
 //        randomMove.moveToObjectiveZone(world);
 
-        ArrayList<Hero> myHeros = new ArrayList<>(Arrays.asList(world.getMyHeroes()));
+        ArrayList<Hero> myHeros = new ArrayList<>();
+        for (Hero myhero: world.getMyHeroes()){
+            if (myhero.getCurrentHP()> 0){
+                myHeros.add(myhero);
+            }
+        }
 
         ArrayList<Hero> oppHeros = new ArrayList<>(Arrays.asList(world.getOppHeroes()));
         oppHeros.removeIf(obj -> (obj.getCurrentCell().getColumn()== -1 || obj.getCurrentCell().getRow()== -1));
