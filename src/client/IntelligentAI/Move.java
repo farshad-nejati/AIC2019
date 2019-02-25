@@ -61,7 +61,19 @@ public class Move {
         this.nextCell = nextCell;
     }
 
-    public static Move findByHero(Collection<Move> list, Hero hero){
+    public static Move findByHero(Collection<Move> list, Hero hero) {
         return list.stream().filter(object -> hero.equals(object.getHero())).findFirst().orElse(null);
+    }
+
+    @Override
+    public String toString() {
+        if (currentCell == null)
+            return "";
+
+        return "Move{" +
+                "hero=" + hero +
+                ", currentCell=" + currentCell +
+                ", nextCell=" + nextCell +
+                '}';
     }
 }

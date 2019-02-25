@@ -29,7 +29,7 @@ class MinMaxMove {
         }
 
         Hero oppHero = null;
-        if (!oppHeroes.isEmpty()){
+        if (!oppHeroes.isEmpty()) {
             oppHero = oppHeroes.remove(0);
         }
 
@@ -50,8 +50,8 @@ class MinMaxMove {
 
             scoreHashMap.put(direction, 0);
 
-            Integer score = eval(this.myHero,MyDirection.FIX, this.otherOurHeroes, oppHero, this.oppHeroes, this.virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, Integer.MAX_VALUE);
-            System.out.println("direction = " +direction + "\n score = "+ score + "\n");
+            Integer score = eval(this.myHero, MyDirection.FIX, this.otherOurHeroes, oppHero, this.oppHeroes, this.virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, Integer.MAX_VALUE);
+            System.out.println("direction = " + direction + "\n score = " + score + "\n");
             scoreHashMap.put(direction, score);
         }
 
@@ -66,15 +66,15 @@ class MinMaxMove {
         return maxEntry != null ? maxEntry.getKey() : null;
     }
 
-    private Integer eval(Hero myHero,MyDirection mydirection , ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, int minScore) {
+    private Integer eval(Hero myHero, MyDirection mydirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, int minScore) {
         if (oppHeroes.isEmpty()) {
-            return evaluateScore(myHero, mydirection,otherOurHeroes,oppHero,oppHeroes,virtualWorld,copyOfMyHeroesMove,copyOfOppHeroesMove,minScore);
+            return evaluateScore(myHero, mydirection, otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, minScore);
         }
 
         Hero newOppHero = oppHeroes.remove(0);
 
 //        ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, oppHeroes);
-        if (!oppHeroes.isEmpty()){
+        if (!oppHeroes.isEmpty()) {
             ArrayList<Hero> otherOurOppHeroes = new ArrayList<>(Arrays.asList(virtualWorld.getOppHeroes()));
 
             ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, otherOurOppHeroes);
@@ -89,8 +89,8 @@ class MinMaxMove {
 
                 ArrayList<Move> copyOfOppHeroesMove2 = new ArrayList<>(copyOfOppHeroesMove);
 
-                Integer score = eval(myHero,direction, otherOurHeroes, newOppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove2, minScore);
-                System.out.println("score = "+score + " minScore= " + minScore);
+                Integer score = eval(myHero, direction, otherOurHeroes, newOppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove2, minScore);
+                System.out.println("score = " + score + " minScore= " + minScore);
                 if (score < minScore) {
                     minScore = score;
                 }
@@ -106,7 +106,8 @@ class MinMaxMove {
 
         Integer score = 0;
 
-        score += ScoreStrategy.distanceToZone(myHero,direction, virtualWorld,copyOfMyHeroesMove);
+        score += ScoreStrategy.distanceToZone(myHero, direction, virtualWorld, copyOfMyHeroesMove);
+        score += ScoreStrategy.losingHealth(myHero, oppHero, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
 
         return score;
 
