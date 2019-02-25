@@ -1,7 +1,7 @@
 package client;
 
-import client.NewAI.NewAction;
 import client.NewAI.SortClass;
+import client.NewAI.action.NewAction;
 import client.NewAI.move.inZone.InZoneMoving;
 import client.NewAI.move.Move;
 import client.NewAI.move.noneZone.NoneZoneHero;
@@ -48,7 +48,6 @@ public class AI
         System.out.println("world Columns: " + world.getMap().getColumnNum());
         System.out.println("world Columns: " + world.getMap().getRowNum());
         randomAction = new RandomAction();
-        newAction = new NewAction();
         printer = new Printer();
         newMove = new Move();
 
@@ -106,8 +105,9 @@ public class AI
 
         printer.printMap(world);
 
-//        randomAction.randomAction(world);
+        newAction = new NewAction(inZoneHeroes, world);
         newAction.action(world);
+//        randomAction.randomAction(world);
     }
 
     public HeroName pickHero() {

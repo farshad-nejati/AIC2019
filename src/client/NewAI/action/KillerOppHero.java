@@ -1,4 +1,4 @@
-package client.NewAI;
+package client.NewAI.action;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,5 @@
 package client.NewAI.move;
 
-import client.NewAI.ActiveMyHeroes;
-import client.NewAI.OppHeroAction;
 import client.model.Ability;
 import client.model.Hero;
 import client.model.World;

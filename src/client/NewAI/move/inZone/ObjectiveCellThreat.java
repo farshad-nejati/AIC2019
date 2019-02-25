@@ -1,7 +1,9 @@
 package client.NewAI.move.inZone;
 
 import client.model.Cell;
+import client.model.Hero;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -9,6 +11,7 @@ public class ObjectiveCellThreat {
     private Cell cell;
     private int threatNumber;
     private int threatHP;
+    ArrayList<Hero> oppHeroSees = new ArrayList<>();
 
     public ObjectiveCellThreat(Cell cell) {
         this.cell = cell;
@@ -52,6 +55,17 @@ public class ObjectiveCellThreat {
         return list.stream().filter(object -> cell.equals(object.getCell())).findFirst().orElse(null);
     }
 
+    public ArrayList<Hero> getOppHeroSees() {
+        return oppHeroSees;
+    }
+
+    public void setOppHeroSees(ArrayList<Hero> oppHeroSees) {
+        this.oppHeroSees = oppHeroSees;
+    }
+
+    public void addToOppHeroSees(Hero oppHero) {
+        this.oppHeroSees.add(oppHero);
+    }
 
     /*Comparator for sorting the list by Student Name*/
     public static Comparator<ObjectiveCellThreat> threatHPComparator = new Comparator<ObjectiveCellThreat>() {
@@ -79,6 +93,8 @@ public class ObjectiveCellThreat {
 
             //descending order
             //return StudentName2.compareTo(StudentName1);
-        }};
+        }
+    };
+
 
 }

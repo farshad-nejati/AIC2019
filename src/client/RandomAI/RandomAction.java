@@ -41,6 +41,14 @@ public class RandomAction {
             if (!targetHeroIDs.contains(myHeroID)) {
                 targetForEachMyHero.add(effectiveHero);
                 targetHeroIDs.add(myHeroID);
+            } else {
+                EffectiveHero currentEffective = EffectiveHero.findByHero(targetForEachMyHero, effectiveHero.getMyHero());
+                int currentHP =  currentEffective.getOppHero().getCurrentHP();
+                int newHP = effectiveHero.getOppHero().getCurrentHP();
+                if (newHP < currentHP) {
+                    int index = targetForEachMyHero.indexOf(currentEffective);
+                    targetForEachMyHero.set(index, effectiveHero);
+                }
             }
         }
         return targetForEachMyHero;
