@@ -25,7 +25,7 @@ public class ScoreStrategy {
         return score;
     }
 
-    public static Integer losingHealth(Hero myHero, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
+    public static Integer losingHealth(Hero myHero,MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
 
         Integer score = 0;
 
@@ -58,6 +58,9 @@ public class ScoreStrategy {
 
         if (score > myHero.getCurrentHP()) {
             score = Score.KILL_COST;
+            if (direction.equals(MyDirection.FIX)){
+                score += 2*Score.MOVE_COST;
+            }
         } else {
             score = Score.HEALTH_COST * score;
         }
