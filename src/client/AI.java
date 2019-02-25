@@ -41,7 +41,7 @@ public class AI
     private Cell[] objectiveZoneCells;
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
-    int maxAreaEffect = 3;
+    int maxAreaEffect = 5;
 
     public void preProcess(World world) {
         System.out.println("pre process started");
@@ -131,41 +131,55 @@ public class AI
 
     private void findNearestCellToHeroes(World world) {
         Cell[] respawnCells = world.getMap().getMyRespawnZone();
+        int maxArea = this.maxAreaEffect;
 
-        for (Cell respawnCell : respawnCells) {
-            ArrayList<ObjectiveCellsDistance> objectiveCellsDistances = new ArrayList<>();
-            System.out.println("ReSpawn Zeno Cell: " + respawnCell.getRow() + " , " + respawnCell.getColumn());
-            for (Cell objectiveZoneCell : objectiveZoneCells) {
-                if (this.blockedCells.contains(objectiveZoneCell)) {
-                    continue;
-                }
-                int manhattanDistance = world.manhattanDistance(respawnCell, objectiveZoneCell);
-                objectiveCellsDistances.add(new ObjectiveCellsDistance(objectiveZoneCell, manhattanDistance));
-            }
-            Collections.sort(objectiveCellsDistances, SortClass.ObjectiveCellComparator);
-
-            if (this.respawnObjectiveZoneCells.size() == 0) {
-                ObjectiveCellsDistance bestObjectiveDistanceCell = objectiveCellsDistances.get(0);
-                this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveDistanceCell.getObjectiveCell(), respawnCell));
-                continue;
-            }
-            for (ObjectiveCellsDistance objectiveCellsDistance : objectiveCellsDistances) {
-                Cell bestCell = objectiveCellsDistance.getObjectiveCell();
-                boolean mustAdd = true;
-                for (RespawnObjectiveZoneCell obj : this.respawnObjectiveZoneCells) {
-                    Cell selectedSoFarCell = obj.getObjectiveZoneCell();
-                    int distance = world.manhattanDistance(selectedSoFarCell, bestCell);
-                    if (distance <= this.maxAreaEffect) {
-                        mustAdd = false;
-                        break;
-                    }
-                }
-                if (mustAdd) {
-                    this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestCell, respawnCell));
-                    this.blockedCells.add(bestCell);
+        while(this.respawnObjectiveZoneCells.size() != 4) {
+            int i = 0;
+            ArrayList<Cell> blocked = new ArrayList<>();
+            while (i < objectiveZoneCells.length) {
+                if (this.respawnObjectiveZoneCells.size() == 4){
                     break;
                 }
+                this.respawnObjectiveZoneCells = new ArrayList<>();
+                for (Cell respawnCell : respawnCells) {
+                    ArrayList<ObjectiveCellsDistance> objectiveCellsDistances = new ArrayList<>();
+                    System.out.println("ReSpawn Zeno Cell: " + respawnCell.getRow() + " , " + respawnCell.getColumn());
+                    for (Cell objectiveZoneCell : objectiveZoneCells) {
+                        if (blocked.contains(objectiveZoneCell)) {
+                            continue;
+                        }
+                        int manhattanDistance = world.manhattanDistance(respawnCell, objectiveZoneCell);
+                        objectiveCellsDistances.add(new ObjectiveCellsDistance(objectiveZoneCell, manhattanDistance));
+                    }
+                    Collections.sort(objectiveCellsDistances, SortClass.ObjectiveCellComparator);
+
+                    if (this.respawnObjectiveZoneCells.size() == 0) {
+                        ObjectiveCellsDistance bestObjectiveDistanceCell = objectiveCellsDistances.get(0);
+                        this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveDistanceCell.getObjectiveCell(), respawnCell));
+                        blocked.add(bestObjectiveDistanceCell.getObjectiveCell());
+                        continue;
+                    }
+                    for (ObjectiveCellsDistance objectiveCellsDistance : objectiveCellsDistances) {
+                        Cell bestCell = objectiveCellsDistance.getObjectiveCell();
+                        boolean mustAdd = true;
+                        for (RespawnObjectiveZoneCell obj : this.respawnObjectiveZoneCells) {
+                            Cell selectedSoFarCell = obj.getObjectiveZoneCell();
+                            int distance = world.manhattanDistance(selectedSoFarCell, bestCell);
+                            if (distance <= maxArea) {
+                                mustAdd = false;
+                                break;
+                            }
+                        }
+                        if (mustAdd) {
+                            this.respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestCell, respawnCell));
+                            this.blockedCells.add(bestCell);
+                            break;
+                        }
+                    }
+                }
+                i++;
             }
+            maxArea--;
 
 //            respawnObjectiveZoneCells.add(new RespawnObjectiveZoneCell(bestObjectiveCell, respawnCell));
         }
