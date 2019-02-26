@@ -15,7 +15,7 @@ public class RandomAction {
             return;
         }
 
-        effectiveHeroes = getTargetForEachMyHeroes(effectiveHeroes);
+//        effectiveHeroes = getTargetForEachMyHeroes(effectiveHeroes);
         for (EffectiveHero effectiveHero: effectiveHeroes) {
             Hero myHero = effectiveHero.getMyHero();
             doAction(world, myHero, effectiveHero.getTargetCell(), effectiveHero.getAbility());
@@ -97,32 +97,14 @@ public class RandomAction {
         ArrayList<EffectiveHero> effectiveHeroes = new ArrayList<>();
         Hero[] myHeroes = world.getMyHeroes();
         for (Hero myHero: myHeroes) {
-            for (Hero oppHero: inVisionOppHeroes) {
 
-//                if (world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
-//                    Ability randomAbility = getRandomAbility(myHero);
-                    Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
-                    for (Ability ability: myHeroAbilities) {
-                        if (!ability.isLobbing()) {
-                            if (!world.isInVision(myHero.getCurrentCell(), oppHero.getCurrentCell())) {
-                                continue;
-                            }
-                        }
-                        if (!ability.isReady()) {
-                            continue;
-                        }
-                        int range = ability.getRange() + ability.getAreaOfEffect();
-                        int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
-                        if (distance <= range) {
-                            if (distance <= ability.getRange()) {
-                                Cell targetCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, oppHero, ability);
-                                effectiveHeroes.add(new EffectiveHero(myHero, oppHero, ability, targetCell));
-                            } else {
-                                effectiveHeroes.add(new EffectiveHero(myHero, oppHero, ability, oppHero.getCurrentCell()));
-                            }
-                        }
-                    }
-//                }
+            Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
+            for (Ability ability: myHeroAbilities) {
+                if (!ability.isReady())
+                    continue;
+
+                Cell targetCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability);
+                effectiveHeroes.add(new EffectiveHero(myHero, ability, targetCell));
             }
         }
         return effectiveHeroes;
@@ -158,10 +140,7 @@ public class RandomAction {
             return world.getMap().getCell(oppRow + bestPlaceRange, oppColumn);
         }
     }
-    public Cell getBestCellToAttack(World world, ArrayList<Hero> inVisionOppHeroes, Hero myHero, Hero oppHero, Ability ability) {
-        if (! ability.isLobbing()) {
-            return oppHero.getCurrentCell();
-        }
+    public Cell getBestCellToAttack(World world, ArrayList<Hero> inVisionOppHeroes, Hero myHero, Ability ability) {
 
         ArrayList<CandidateActionCell> candidateCells = new ArrayList<>();
         ArrayList<Cell> inDistanceCells = new ArrayList<>();
@@ -197,7 +176,7 @@ public class RandomAction {
     private ArrayList<Cell> findInRangeObjectiveCells(World world, Hero myHero, Ability ability) {
         ArrayList<Cell> inRangeCells = new ArrayList<>();
         for (Cell cell : world.getMap().getObjectiveZone()) {
-            int range = ability.getRange() + ability.getAreaOfEffect();
+            int range = ability.getRange();
             int distance = world.manhattanDistance(myHero.getCurrentCell(), cell);
             if (distance <= range) {
                 inRangeCells.add(cell);
@@ -208,16 +187,10 @@ public class RandomAction {
 
     public ArrayList<Cell> LobbingAbilityImpactCells(World world, Cell targetCell, Ability ability) {
         ArrayList<Cell> lobbingAbilityImpactCells = new ArrayList<>();
-        int raw = targetCell.getRow();
-        int column = targetCell.getColumn();
-        int areaEffect = ability.getAreaOfEffect() /2;
-        int negativeAreaEffect = areaEffect * (-1);
-        for (int i = negativeAreaEffect ; i <= areaEffect; i++) {
-            for (int j = negativeAreaEffect; j <= areaEffect; j++) {
-                Cell neighborCell = world.getMap().getCell(raw+i, column + j);
-                if (neighborCell.isInObjectiveZone()) {
-                    lobbingAbilityImpactCells.add(neighborCell);
-                }
+        for (Cell cell : world.getMap().getObjectiveZone()) {
+            int distance = world.manhattanDistance(targetCell, cell);
+            if (distance <= ability.getAreaOfEffect()) {
+                lobbingAbilityImpactCells.add(cell);
             }
         }
         return lobbingAbilityImpactCells;
