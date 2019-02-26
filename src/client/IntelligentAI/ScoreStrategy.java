@@ -17,6 +17,7 @@ public class ScoreStrategy {
         Cell selectedObjectiveCell = move.getTargetZoneCell();
         //Todo:above code must be replace with nearest objective zone cell
         Direction[] distancepath = virtualWorld.getPathMoveDirections(myherocell, selectedObjectiveCell);
+        //TODO: find distacePath based on block cell
         score += Score.DISTANCE_COST * (distancepath.length);
         if (!direction.equals(MyDirection.FIX)) {
             score += Score.MOVE_COST;
@@ -25,6 +26,23 @@ public class ScoreStrategy {
         return score;
     }
 
+    public static Integer otherMyHeroCell(Hero myHero,MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove){
+        Integer score=0;
+        for (Move myOtherHeroMove: copyOfMyHeroesMove){
+            if (myOtherHeroMove.getCurrentCell().equals(Utility.getCellFromDirection(myHero.getCurrentCell(),direction,virtualWorld.getMap())));{
+                score += Score.MY_HERO_CELL;
+            }
+        }
+        return score;
+    }
+    public static Integer otherWallCell(Hero myHero, MyDirection direction,World virtualWorld) {
+        Integer score = 0;
+        if (Utility.getCellFromDirection(myHero.getCurrentCell(),direction,virtualWorld.getMap()).isWall()){
+            score += Score.WALL_SCORE;
+        }
+        return  score;
+    }
+    public static Integer losingHealth(Hero myHero,MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
     public static Integer hitByOppHeroes(Hero myHero, MyDirection direction, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
 
         Integer losingHealthSum = 0;
@@ -81,4 +99,6 @@ public class ScoreStrategy {
 
         return losingHealthScore + killDistanceScore + canHitScore;
     }
+
+
 }
