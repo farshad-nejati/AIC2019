@@ -12,6 +12,13 @@ public class EffectiveHero {
     private Ability randomAbility;
     private Cell targetCell;
 
+    public EffectiveHero(Hero myHero, Hero oppHero, Ability randomAbility) {
+        this.myHero = myHero;
+        this.oppHero = oppHero;
+        this.randomAbility = randomAbility;
+        this.targetCell = oppHero.getCurrentCell();
+    }
+
     public EffectiveHero(Hero myHero, Hero oppHero, Ability randomAbility, Cell targetCell) {
         this.myHero = myHero;
         this.oppHero = oppHero;

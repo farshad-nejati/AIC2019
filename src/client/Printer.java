@@ -37,7 +37,7 @@ public class Printer {
         for (Hero hero: heroes){
             int row = hero.getCurrentCell().getRow();
             int column = hero.getCurrentCell().getColumn();
-            System.out.print("hero " + hero.getName() + ": " + row + " , " + column);
+            System.out.print("hero " + hero.getName() + hero.getId() + ": " + row + " , " + column);
             System.out.println("  HP: " + hero.getCurrentHP());
         }
     }
@@ -47,7 +47,7 @@ public class Printer {
         for (Hero hero: heroes){
             int row = hero.getCurrentCell().getRow();
             int column = hero.getCurrentCell().getColumn();
-            System.out.print("Opp hero " + hero.getName() + ": " + row + " , " + column);
+            System.out.print("Opp hero " + hero.getName()+ hero.getId() + ": " + row + " , " + column);
             System.out.println("  HP: " + hero.getCurrentHP());
         }
     }
