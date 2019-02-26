@@ -35,6 +35,7 @@ public class ScoreStrategy {
         }
         return score;
     }
+
     public static Integer otherWallCell(Hero myHero, MyDirection direction,World virtualWorld) {
         Integer score = 0;
         if (Utility.getCellFromDirection(myHero.getCurrentCell(),direction,virtualWorld.getMap()).isWall()){
@@ -42,7 +43,7 @@ public class ScoreStrategy {
         }
         return  score;
     }
-    public static Integer losingHealth(Hero myHero,MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
+
     public static Integer hitByOppHeroes(Hero myHero, MyDirection direction, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
 
         Integer losingHealthSum = 0;
