@@ -5,11 +5,11 @@ import client.model.Cell;
 import java.util.Collection;
 import java.util.Comparator;
 
-public class ImpactCell {
+public class CandidateActionCell {
     private Cell impactCell;
     private int affectedOppHeroes;
 
-    public ImpactCell(Cell impactCell, int affectedOppHeroes) {
+    public CandidateActionCell(Cell impactCell, int affectedOppHeroes) {
 
         this.impactCell = impactCell;
         this.affectedOppHeroes = affectedOppHeroes;
@@ -32,15 +32,18 @@ public class ImpactCell {
     }
 
 
-    public static ImpactCell findByCell(Collection<ImpactCell> list, Cell cell) {
+    public static CandidateActionCell findByCell(Collection<CandidateActionCell> list, Cell cell) {
         return list.stream().filter(object -> cell.equals(object.getImpactCell())).findFirst().orElse(null);
     }
 
+    public void increaseAffectedHeroes() {
+        this.affectedOppHeroes ++;
+    }
 
     /*Comparator for sorting the list by Student Name*/
-    public static Comparator<ImpactCell> affectedNumberOppHeroComparator = new Comparator<ImpactCell>() {
+    public static Comparator<CandidateActionCell> affectedNumberOppHeroComparator = new Comparator<CandidateActionCell>() {
 
-        public int compare(ImpactCell o1, ImpactCell o2) {
+        public int compare(CandidateActionCell o1, CandidateActionCell o2) {
             int killerOppHeroSize1 = o1.affectedOppHeroes;
             int killerOppHeroSize2 = o2.affectedOppHeroes;
 

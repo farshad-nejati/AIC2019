@@ -12,11 +12,11 @@ public class EffectiveHero {
     private Ability randomAbility;
     private Cell targetCell;
 
-    public EffectiveHero(Hero myHero, Hero oppHero, Ability randomAbility) {
+    public EffectiveHero(Hero myHero, Ability randomAbility, Cell targetCell) {
         this.myHero = myHero;
-        this.oppHero = oppHero;
+        this.oppHero = null;
         this.randomAbility = randomAbility;
-        this.targetCell = oppHero.getCurrentCell();
+        this.targetCell = targetCell;
     }
 
     public EffectiveHero(Hero myHero, Hero oppHero, Ability randomAbility, Cell targetCell) {
