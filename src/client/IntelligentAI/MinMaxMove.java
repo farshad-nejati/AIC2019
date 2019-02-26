@@ -110,6 +110,8 @@ class MinMaxMove {
 
         score += ScoreStrategy.distanceToZone(myHero, direction, virtualWorld, copyOfMyHeroesMove);
         score += ScoreStrategy.hitByOppHeroes(myHero,direction, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+        score += ScoreStrategy.otherMyHeroCell(myHero,direction, oppHero, virtualWorld, copyOfMyHeroesMove);
+        score += ScoreStrategy.otherWallCell(myHero,direction,virtualWorld);
 
         return score;
 
