@@ -6,6 +6,8 @@ class Score {
     final static Integer DISTANCE_COST = -5;
     final static Integer HEALTH_COST = -10;
     final static Integer KILL_COST = -10000;
+    final static Integer KILL_DISTANCE_COST = 100;
+    final static Integer CAN_HIT_COST = -10;
 
     // distance to zone = -4 * (manhatan distance)
 }

@@ -25,7 +25,7 @@ public class MinMaxAlgorithm {
 
     public void maxMove() {
         for (Hero myHero : this.myHeroes) {
-            Move move = new Move(myHero,myHero.getCurrentCell());
+            Move move = new Move(myHero, myHero.getCurrentCell());
             myHeroesMove.add(move);
         }
         for (Hero myHero : this.myHeroes) {
@@ -33,11 +33,15 @@ public class MinMaxAlgorithm {
             otherOurHeroes.remove(myHero);
             //TODO: check call by reference
             Cell[] objCell = virtualWorld.getMap().getObjectiveZone();
-            Cell targetcell= objCell[0];
+            Cell targetcell = objCell[0];
             Move move = Move.findByHero(myHeroesMove, myHero);
             Integer index = myHeroesMove.indexOf(move);
+            Cell checkTargetCell = move.getCurrentCell();
+            if (checkTargetCell.isInObjectiveZone()) {
+                targetcell = checkTargetCell;
+            }
             move.setTargetZoneCell(targetcell);
-            myHeroesMove.set(index,move);
+            myHeroesMove.set(index, move);
             // TODO: find best object cell for this hero
 
             MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld);
@@ -46,12 +50,12 @@ public class MinMaxAlgorithm {
 
             Move move2 = Move.findByHero(myHeroesMove, myHero);
             Integer index2 = myHeroesMove.indexOf(move2);
-            Cell updatedCell = Utility.getCellFromDirection(myHero.getCurrentCell(),direction,virtualWorld.getMap());
+            Cell updatedCell = Utility.getCellFromDirection(myHero.getCurrentCell(), direction, virtualWorld.getMap());
             move2.setCurrentCell(updatedCell);
-            myHeroesMove.set(index2,move2);
+            myHeroesMove.set(index2, move2);
 
-            if (!direction.equals(MyDirection.FIX)){
-                virtualWorld.moveHero(myHero,Utility.castMyDirectionToDirection(direction));
+            if (!direction.equals(MyDirection.FIX)) {
+                virtualWorld.moveHero(myHero, Utility.castMyDirectionToDirection(direction));
             }
         }
     }

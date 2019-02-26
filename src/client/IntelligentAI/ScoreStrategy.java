@@ -25,9 +25,15 @@ public class ScoreStrategy {
         return score;
     }
 
-    public static Integer losingHealth(Hero myHero,MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
+    public static Integer hitByOppHeroes(Hero myHero, MyDirection direction, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
 
-        Integer score = 0;
+        Integer losingHealthSum = 0;
+        Integer killDistanceSum = 0;
+        Integer canHitSum = 0;
+
+        Integer losingHealthScore = 0;
+        Integer killDistanceScore = 0;
+        Integer canHitScore = 0;
 
         Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
         Cell myHeroCell = move.getNextCell(); //TODO: this must be updated of my hero cell
@@ -38,33 +44,41 @@ public class ScoreStrategy {
             if (oppHeroCell.isInVision()) {
                 Ability maxLosingHealthAbility = null;
                 int maxLosingHealth = 0;
-                for (Ability ability : oppHero.getOffensiveAbilities()) {
-                    if (maxLosingHealthAbility ==null){
+                for (Ability ability : hero.getOffensiveAbilities()) {
+                    if (maxLosingHealthAbility == null) {
                         maxLosingHealthAbility = ability;
                     }
                     int distance = virtualWorld.manhattanDistance(myHeroCell, oppHeroCell);
 
                     boolean canHit = distance < (maxLosingHealthAbility.getRange() + maxLosingHealthAbility.getAreaOfEffect());
-                    if ((ability.getPower() > maxLosingHealth)&& canHit) {
-                        maxLosingHealthAbility = ability;
-                        maxLosingHealth = ability.getPower();
+
+                    if (canHit) {
+                        canHitSum++;
+                        if (ability.getPower() > maxLosingHealth) {
+                            killDistanceSum += distance;
+                            maxLosingHealthAbility = ability;
+                            maxLosingHealth = ability.getPower();
+                        }
                     }
                 }
                 if (maxLosingHealthAbility != null) {
-                    score += maxLosingHealth;
+                    losingHealthSum += maxLosingHealth;
                 }
             }
         }
 
-        if (score > myHero.getCurrentHP()) {
-            score = Score.KILL_COST;
-            if (direction.equals(MyDirection.FIX)){
-                score += 2*Score.MOVE_COST;
+        canHitScore = canHitSum * Score.CAN_HIT_COST;
+
+        if (losingHealthSum > myHero.getCurrentHP()) {
+            losingHealthScore = Score.KILL_COST;
+            if (direction.equals(MyDirection.FIX)) {
+                losingHealthScore += 2 * Score.MOVE_COST;
             }
+            killDistanceScore = killDistanceSum * Score.KILL_DISTANCE_COST;
         } else {
-            score = Score.HEALTH_COST * score;
+            losingHealthScore = Score.HEALTH_COST * losingHealthSum;
         }
 
-        return score;
+        return losingHealthScore + killDistanceScore + canHitScore;
     }
 }

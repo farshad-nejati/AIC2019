@@ -109,7 +109,7 @@ class MinMaxMove {
         Integer score = 0;
 
         score += ScoreStrategy.distanceToZone(myHero, direction, virtualWorld, copyOfMyHeroesMove);
-        score += ScoreStrategy.losingHealth(myHero,direction, oppHero, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+        score += ScoreStrategy.hitByOppHeroes(myHero,direction, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
 
         return score;
 
