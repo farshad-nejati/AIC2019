@@ -32,14 +32,11 @@ public class MinMaxAlgorithm {
             ArrayList<Hero> otherOurHeroes = new ArrayList<>(this.myHeroes);
             otherOurHeroes.remove(myHero);
             //TODO: check call by reference
-            Cell[] objCell = virtualWorld.getMap().getObjectiveZone();
-            Cell targetcell = objCell[0];
+//            Cell[] objCell = virtualWorld.getMap().getObjectiveZone();
+//            Cell targetcell = objCell[0];
+            Cell targetcell = null;
             Move move = Move.findByHero(myHeroesMove, myHero);
             Integer index = myHeroesMove.indexOf(move);
-            Cell checkTargetCell = move.getCurrentCell();
-            if (checkTargetCell.isInObjectiveZone()) {
-                targetcell = checkTargetCell;
-            }
             move.setTargetZoneCell(targetcell);
             myHeroesMove.set(index, move);
             // TODO: find best object cell for this hero
