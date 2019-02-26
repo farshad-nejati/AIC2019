@@ -41,9 +41,43 @@ public class RandomAction {
             if (!targetHeroIDs.contains(myHeroID)) {
                 targetForEachMyHero.add(effectiveHero);
                 targetHeroIDs.add(myHeroID);
+            } else {
+                EffectiveHero currentEffective = EffectiveHero.findByHero(targetForEachMyHero, effectiveHero.getMyHero());
+                int currentHP =  currentEffective.getOppHero().getCurrentHP();
+                int newHP = effectiveHero.getOppHero().getCurrentHP();
+                if (newHP < currentHP) {
+                    int index = targetForEachMyHero.indexOf(currentEffective);
+                    targetForEachMyHero.set(index, effectiveHero);
+                } else if (currentHP == newHP) {
+                    int index = targetForEachMyHero.indexOf(currentEffective);
+                    targetForEachMyHero.set(index, effectiveHero);
+                    EffectiveHero effectiveHeroMaxOppHero = findMaxOppHeroWithEqualHP(targetForEachMyHero,currentEffective, effectiveHero);
+                    targetForEachMyHero.set(index, effectiveHeroMaxOppHero);
+                }
             }
         }
         return targetForEachMyHero;
+    }
+
+    private EffectiveHero findMaxOppHeroWithEqualHP(ArrayList<EffectiveHero> targetForEachMyHero, EffectiveHero currentEffective, EffectiveHero newEffective) {
+        int currentChance = 0;
+        int newChance = 0;
+        Hero currentEffectiveTarget = currentEffective.getOppHero();
+        Hero newEffectiveTarget = newEffective.getOppHero();
+
+        for (EffectiveHero effectiveHero : targetForEachMyHero) {
+            Hero heroEffective = effectiveHero.getOppHero();
+            if (heroEffective.getId() == currentEffectiveTarget.getId()) {
+                currentChance++;
+            } else if (heroEffective.getId() == newEffectiveTarget.getId()) {
+                newChance++;
+            }
+        }
+        if (newChance > currentChance) {
+            return newEffective;
+        }
+
+        return currentEffective;
     }
 
     public ArrayList<Hero> getInVisionOppHeroes(World world) {

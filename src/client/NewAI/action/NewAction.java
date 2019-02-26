@@ -1,5 +1,6 @@
-package client.NewAI;
+package client.NewAI.action;
 
+import client.NewAI.Utility;
 import client.RandomAI.EffectiveHero;
 import client.RandomAI.RandomAction;
 import client.model.Ability;
@@ -10,6 +11,12 @@ import client.model.World;
 import java.util.*;
 
 public class NewAction {
+
+
+    private Utility utility;
+    public NewAction(ArrayList<Hero> inZoneHeroes, World world) {
+        this.utility = new Utility(inZoneHeroes, world);
+    }
 
     public void action(World world) {
 
@@ -130,7 +137,7 @@ public class NewAction {
                 }
             } else {
                 //TODO: my algorithm for if opp hero not dead
-
+                for (Hero hero : utility.myHeroes)
                 System.out.println("random action inpted!!");
                     RandomAction randomAction = new RandomAction();
                     randomAction.randomAction(world);

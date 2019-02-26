@@ -1,8 +1,6 @@
-package client.NewAI;
+package client.NewAI.action;
 
-import client.RandomAI.EffectiveHero;
 import client.model.Ability;
-import client.model.Cell;
 import client.model.Hero;
 import client.model.World;
 

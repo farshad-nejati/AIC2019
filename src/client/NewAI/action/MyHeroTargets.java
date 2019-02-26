@@ -1,8 +1,7 @@
-package client.NewAI;
+package client.NewAI.action;
 
 import client.model.Hero;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class MyHeroTargets {

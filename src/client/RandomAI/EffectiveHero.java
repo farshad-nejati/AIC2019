@@ -4,6 +4,8 @@ import client.model.Ability;
 import client.model.Cell;
 import client.model.Hero;
 
+import java.util.Collection;
+
 public class EffectiveHero {
     private Hero myHero;
     private Hero oppHero;
@@ -48,4 +50,8 @@ public class EffectiveHero {
     public void setTargetCell(Cell targetCell) {
         this.targetCell = targetCell;
     }
-}
+
+
+    public static EffectiveHero findByHero(Collection<EffectiveHero> list, Hero hero) {
+        return list.stream().filter(object -> hero.getId() == object.getMyHero().getId()).findFirst().orElse(null);
+    }}
