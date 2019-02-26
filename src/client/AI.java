@@ -9,7 +9,7 @@ import client.NewAI.move.noneZone.NoneZoneMoving;
 import client.NewAI.move.noneZone.ObjectiveCellsDistance;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.IntelligentAI.MinMaxAlgorithm;
-import client.NewAI.NewAction;
+import client.NewAI.action.NewAction;
 import client.RandomAI.Moving;
 import client.RandomAI.RandomAction;
 import client.RandomAI.RandomMove;
@@ -74,11 +74,12 @@ public class AI
         inZoneHeroes = new ArrayList<>();
         noneZoneHeroes = new ArrayList<>();
 
-        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
-            firstZoneStatusOfHeroes(world);
-            setHeroesInReSpawnCell();
-        } else {
-            findZoneStatusOfHeroes(world);
+//        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
+//            firstZoneStatusOfHeroes(world);
+//            setHeroesInReSpawnCell();
+//        } else {
+//            findZoneStatusOfHeroes(world);
+//        }
 //        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
 //            randomMove = new RandomMove(world);
 //        }
@@ -91,13 +92,13 @@ public class AI
                 myHeros.add(myhero);
             }
         }
-        if (noneZoneHeroes.size() > 0 ) {
-            noneZoneMoving.move(world, noneZoneHeroes, blockedCells);
-        }
-        if (inZoneHeroes.size() > 0) {
-            inZoneMoving = new InZoneMoving(inZoneHeroes, world);
-            inZoneMoving.move(world, this.blockedCells);
-        }
+//        if (noneZoneHeroes.size() > 0 ) {
+//            noneZoneMoving.move(world, noneZoneHeroes, blockedCells);
+//        }
+//        if (inZoneHeroes.size() > 0) {
+//            inZoneMoving = new InZoneMoving(inZoneHeroes, world);
+//            inZoneMoving.move(world, this.blockedCells);
+//        }
 
 //        newMove.move(world);
         ArrayList<Hero> oppHeros = new ArrayList<>(Arrays.asList(world.getOppHeroes()));

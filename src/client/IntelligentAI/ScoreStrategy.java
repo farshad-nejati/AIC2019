@@ -28,19 +28,35 @@ public class ScoreStrategy {
 
     public static Integer otherMyHeroCell(Hero myHero,MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove){
         Integer score=0;
-        for (Move myOtherHeroMove: copyOfMyHeroesMove){
-            if (myOtherHeroMove.getCurrentCell().equals(Utility.getCellFromDirection(myHero.getCurrentCell(),direction,virtualWorld.getMap())));{
-                score += Score.MY_HERO_CELL;
+        Cell myHeroNextCell=null;
+        for (Move myHeroMove:copyOfMyHeroesMove){
+            if (myHeroMove.getHero().equals(myHero)){
+                myHeroNextCell = myHeroMove.getNextCell();
             }
         }
+        for (Move myOtherHeroMove: copyOfMyHeroesMove){
+            if (myOtherHeroMove.getCurrentCell().equals(myHeroNextCell));{
+                score += Score.MY_HERO_CELL;
+
+            }
+        }
+        System.out.println("other hero cell score= " + score );
         return score;
     }
 
-    public static Integer otherWallCell(Hero myHero, MyDirection direction,World virtualWorld) {
+    public static Integer otherWallCell(Hero myHero, MyDirection direction, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove) {
         Integer score = 0;
-        if (Utility.getCellFromDirection(myHero.getCurrentCell(),direction,virtualWorld.getMap()).isWall()){
+        Cell myHeroNextCell=null;
+        for (Move myHeroMove:copyOfMyHeroesMove){
+            if (myHeroMove.getHero().equals(myHero)){
+                myHeroNextCell = myHeroMove.getNextCell();
+            }
+        }
+        if (myHeroNextCell.isWall()){
             score += Score.WALL_SCORE;
         }
+        System.out.println("wall cell score= " + score );
+
         return  score;
     }
 

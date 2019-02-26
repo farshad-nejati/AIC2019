@@ -33,11 +33,9 @@ class MinMaxMove {
             oppHero = oppHeroes.remove(0);
         }
 
-        System.out.println("my hero possible direction \n");
         ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(this.myHero, this.virtualWorld, this.otherOurHeroes);
         HashMap<MyDirection, Integer> scoreHashMap = new HashMap<>();
 
-        System.out.println("my hero is = " + myHero + "\n");
         for (MyDirection direction : possibleDirections) {
             Cell heroMoveNextCell = Utility.getCellFromDirection(myHero.getCurrentCell(), direction, this.virtualWorld.getMap());
             Move move = Move.findByHero(myHeroesMove, myHero);
@@ -52,7 +50,7 @@ class MinMaxMove {
             scoreHashMap.put(direction, 0);
 
             Integer score = eval(this.myHero, MyDirection.FIX, this.otherOurHeroes, oppHero, this.oppHeroes, this.virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, Integer.MAX_VALUE);
-            System.out.println("direction = " + direction + "\n score = " + score + "\n");
+            System.out.println("direction = " + direction + " and Score= " + score+ "\n");
             scoreHashMap.put(direction, score);
         }
 
@@ -92,7 +90,6 @@ class MinMaxMove {
                 ArrayList<Move> copyOfOppHeroesMove2 = new ArrayList<>(copyOfOppHeroesMove);
 
                 Integer score = eval(myHero, direction, otherOurHeroes, newOppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove2, minScore);
-                System.out.println("score = " + score + " minScore= " + minScore);
                 if (score < minScore) {
                     minScore = score;
                 }
@@ -109,9 +106,9 @@ class MinMaxMove {
         Integer score = 0;
 
         score += ScoreStrategy.distanceToZone(myHero, direction, virtualWorld, copyOfMyHeroesMove);
-        score += ScoreStrategy.hitByOppHeroes(myHero,direction, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+//        score += ScoreStrategy.hitByOppHeroes(myHero,direction, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
         score += ScoreStrategy.otherMyHeroCell(myHero,direction, oppHero, virtualWorld, copyOfMyHeroesMove);
-        score += ScoreStrategy.otherWallCell(myHero,direction,virtualWorld);
+        score += ScoreStrategy.otherWallCell(myHero,direction,virtualWorld,copyOfMyHeroesMove);
 
         return score;
 
