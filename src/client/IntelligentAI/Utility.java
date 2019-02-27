@@ -148,10 +148,18 @@ public class Utility {
         return null;
     }
 
-    public static Cell getMyHeroTargetCell(Hero myHero, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld) {
+    public static Cell getMyHeroTargetCell(Hero myHero, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival) {
         RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(respawnObjectiveZoneCells, myHero);
-        if (!respawnObjectiveZoneCell.isArrival())
-            return respawnObjectiveZoneCell.getObjectiveZoneCell();
-        return null;
+        if (respawnObjectiveZoneCell.isArrival()){
+            for (Hero hashHero : heroHashArrival.keySet()) {
+                if (hashHero.equals(myHero)){
+                    heroHashArrival.put(hashHero,true);
+                }
+            }
+        }
+        if (heroHashArrival.get(myHero).equals(true))
+            return null;
+        return respawnObjectiveZoneCell.getObjectiveZoneCell();
+
     }
 }

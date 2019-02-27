@@ -34,6 +34,7 @@ public class Main {
             Log.outputFile = new FileOutputStream("client.log", false);
         }
 
+
         try {
             Controller c = new Controller(args[0], Integer.parseInt(args[1]), args[2], Long.parseLong(args[3]));
             c.start();

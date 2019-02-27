@@ -15,13 +15,9 @@ import client.RandomAI.RandomAction;
 import client.RandomAI.RandomMove;
 import client.model.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Arrays;
+import java.util.*;
 
-public class AI
-{
+public class AI {
     static RandomMove randomMove;
     private Move newMove;
 
@@ -44,6 +40,13 @@ public class AI
     private Cell[] objectiveZoneCells;
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
+
+
+    //farshid add this things
+    HashMap<Hero, Boolean> heroHashArrival = new HashMap<>();
+    // to here
+
+
     int maxAreaEffect = 5;
 
     public void preProcess(World world) {
@@ -86,11 +89,24 @@ public class AI
 
 //        randomMove.moveToObjectiveZone(world);
 
+
         ArrayList<Hero> myHeros = new ArrayList<>();
-        for (Hero myhero: world.getMyHeroes()){
-            if (myhero.getCurrentHP()> 0){
-                myHeros.add(myhero);
+        if (world.getCurrentTurn() == 1 || world.getCurrentTurn() == 4) {
+            for (Hero myhero : world.getMyHeroes()) {
+                this.heroHashArrival.put(myhero, false);
             }
+        }
+        for (Hero myhero : world.getMyHeroes()) {
+            if (myhero.getCurrentHP() > 0) {
+                myHeros.add(myhero);
+            } else {
+                for (Hero hashHero : this.heroHashArrival.keySet()) {
+                    if (hashHero.equals(myhero)) {
+                        this.heroHashArrival.put(hashHero, false);
+                    }
+                }
+            }
+
         }
 //        if (noneZoneHeroes.size() > 0 ) {
 //            noneZoneMoving.move(world, noneZoneHeroes, blockedCells);
@@ -102,9 +118,9 @@ public class AI
 
 //        newMove.move(world);
         ArrayList<Hero> oppHeros = new ArrayList<>(Arrays.asList(world.getOppHeroes()));
-        oppHeros.removeIf(obj -> (obj.getCurrentCell().getColumn()== -1 || obj.getCurrentCell().getRow()== -1));
+        oppHeros.removeIf(obj -> (obj.getCurrentCell().getColumn() == -1 || obj.getCurrentCell().getRow() == -1));
 
-        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros,oppHeros,respawnObjectiveZoneCells,world);
+        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival);
         minMaxAlgorithm.maxMove();
 
         printer.printMap(world);
@@ -125,12 +141,13 @@ public class AI
 
     public HeroName pickHero() {
         switch (pickNumber) {
-            case 1:{
+            case 1: {
                 return HeroName.BLASTER;
             }
             case 2: {
                 return HeroName.BLASTER;
-            }case 3:{
+            }
+            case 3: {
                 return HeroName.BLASTER;
             }
             default: {
@@ -146,11 +163,11 @@ public class AI
         Cell[] respawnCells = world.getMap().getMyRespawnZone();
         int maxArea = this.maxAreaEffect;
 
-        while(this.respawnObjectiveZoneCells.size() != 4) {
+        while (this.respawnObjectiveZoneCells.size() != 4) {
             int i = 0;
             ArrayList<Cell> blocked = new ArrayList<>();
             while (i < objectiveZoneCells.length) {
-                if (this.respawnObjectiveZoneCells.size() == 4){
+                if (this.respawnObjectiveZoneCells.size() == 4) {
                     break;
                 }
                 this.respawnObjectiveZoneCells = new ArrayList<>();
@@ -216,9 +233,9 @@ public class AI
     }
 
     private void findZoneStatusOfHeroes(World world) {
-        for (Hero hero: world.getMyHeroes()) {
+        for (Hero hero : world.getMyHeroes()) {
             RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(this.respawnObjectiveZoneCells, hero);
-            if (hero.getCurrentCell().equals(respawnObjectiveZoneCell.getObjectiveZoneCell())){
+            if (hero.getCurrentCell().equals(respawnObjectiveZoneCell.getObjectiveZoneCell())) {
                 int index = respawnObjectiveZoneCells.indexOf(respawnObjectiveZoneCell);
                 respawnObjectiveZoneCell.setArrival(true);
                 respawnObjectiveZoneCells.set(index, respawnObjectiveZoneCell);
@@ -242,7 +259,7 @@ public class AI
     }
 
     private void firstZoneStatusOfHeroes(World world) {
-        for (Hero hero: world.getMyHeroes()) {
+        for (Hero hero : world.getMyHeroes()) {
             if (hero.getCurrentCell().isInObjectiveZone()) {
                 inZoneHeroes.add(hero);
 //                noneZoneHeroes.removeIf(obj -> obj.getHero().getId() == hero.getId());

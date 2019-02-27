@@ -15,12 +15,14 @@ public class MinMaxAlgorithm {
     private ArrayList<Hero> oppHeroes; // in vision opp heroes in world
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells;
     private World virtualWorld; // update by assumptive my hero directions
+    private HashMap<Hero, Boolean> heroHashArrival = new HashMap<>();
 
-    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld) {
+    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival) {
         this.myHeroes = myHeroes;
         this.oppHeroes = oppHeroes;
         this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
         this.virtualWorld = virtualWorld;
+        this.heroHashArrival = heroHashArrival;
     }
 
     public HashMap<Hero, MyDirection> getHeroDirectionHashMap() {
@@ -37,7 +39,7 @@ public class MinMaxAlgorithm {
             otherOurHeroes.remove(myHero);
             //TODO: check call by reference
 //            Cell[] objCell = virtualWorld.getMap().getObjectiveZone();
-            Cell targetcell = Utility.getMyHeroTargetCell(myHero,this.respawnObjectiveZoneCells, virtualWorld);
+            Cell targetcell = Utility.getMyHeroTargetCell(myHero, this.respawnObjectiveZoneCells, virtualWorld, this.heroHashArrival);
 //            Cell targetcell = null;
             Move move = Move.findByHero(myHeroesMove, myHero);
             Integer index = myHeroesMove.indexOf(move);
