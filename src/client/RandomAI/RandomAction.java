@@ -1,5 +1,6 @@
 package client.RandomAI;
 
+import client.NewAI.action.ActiveMyHeroes;
 import client.model.*;
 
 import java.util.ArrayList;
@@ -8,9 +9,9 @@ import java.util.Random;
 
 public class RandomAction {
 
-    public void randomAction(World world) {
+    public void randomAction(World world, ArrayList<ActiveMyHeroes> activeMyHeroes) {
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
-        ArrayList<EffectiveHero> effectiveHeroes = getEffectiveHeroesForInVisionOppHeroes(world, inVisionOppHeroes);
+        ArrayList<EffectiveHero> effectiveHeroes = getEffectiveHeroesForInVisionOppHeroes(world, inVisionOppHeroes, activeMyHeroes);
         if (effectiveHeroes.isEmpty()) {
             return;
         }
@@ -26,7 +27,7 @@ public class RandomAction {
 
 
     public void doAction(World world, Hero myHero, Cell targetCell, Ability ability) {
-        world.castAbility(myHero, ability.getName(), targetCell);
+        world.castAbility(myHero, ability, targetCell);
         int row =targetCell.getRow();
         int column =targetCell.getColumn();
         System.out.println("\n\n" + ability.getName() + myHero.getId() + " ability used with " + myHero.getName());
@@ -93,21 +94,35 @@ public class RandomAction {
         return availableOppHeroes;
     }
 
-    public ArrayList<EffectiveHero> getEffectiveHeroesForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes) {
+    public ArrayList<EffectiveHero> getEffectiveHeroesForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes, ArrayList<ActiveMyHeroes> activeMyHeroes) {
         ArrayList<EffectiveHero> effectiveHeroes = new ArrayList<>();
-        Hero[] myHeroes = world.getMyHeroes();
-        for (Hero myHero: myHeroes) {
+        for (ActiveMyHeroes activeMyHero: activeMyHeroes) {
+            Hero myHero = activeMyHero.getMyHero();
 
-            Ability[] myHeroAbilities = myHero.getOffensiveAbilities();
-            for (Ability ability: myHeroAbilities) {
-                if (!ability.isReady())
-                    continue;
-
-                Cell targetCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability);
-                effectiveHeroes.add(new EffectiveHero(myHero, ability, targetCell));
-            }
+            Ability ability = getPowerfulAbility(myHero);
+            Cell targetCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability);
+            effectiveHeroes.add(new EffectiveHero(myHero, ability, targetCell));
         }
         return effectiveHeroes;
+    }
+
+    private Ability getPowerfulAbility(Hero myHero) {
+        Ability[] abilities = myHero.getOffensiveAbilities();
+        int maxPower = 0;
+        Ability returnAbility = null;
+        for (Ability ability : abilities) {
+            if (!ability.isReady()) {
+                continue;
+            }
+            int newPower = ability.getPower();
+            if (newPower > maxPower) {
+                maxPower = newPower;
+                returnAbility = ability;
+            }
+        }
+
+        return returnAbility;
+
     }
 
     public Ability getRandomAbility(Hero hero) {

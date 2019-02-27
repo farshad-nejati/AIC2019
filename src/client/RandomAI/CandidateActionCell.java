@@ -37,7 +37,7 @@ public class CandidateActionCell {
     }
 
     public void increaseAffectedHeroes() {
-        this.affectedOppHeroes ++;
+        this.affectedOppHeroes  = this.affectedOppHeroes+ 1;
     }
 
     /*Comparator for sorting the list by Student Name*/

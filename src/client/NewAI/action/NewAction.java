@@ -140,7 +140,7 @@ public class NewAction {
                 for (Hero hero : utility.myHeroes)
                 System.out.println("random action inpted!!");
                     RandomAction randomAction = new RandomAction();
-                    randomAction.randomAction(world);
+                    randomAction.randomAction(world, activeMyHeroes);
                     break;
             }
             activeMyHeroes.remove(selectedActiveMyHero);
