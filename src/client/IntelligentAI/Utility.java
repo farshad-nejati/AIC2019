@@ -1,5 +1,6 @@
 package client.IntelligentAI;
 
+import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
 
 import java.util.ArrayList;
@@ -117,6 +118,13 @@ public class Utility {
             return MyDirection.UP;
         }
 
+        return null;
+    }
+
+    public static Cell getMyHeroTargetCell(Hero myHero, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld) {
+        RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(respawnObjectiveZoneCells, myHero);
+        if (!respawnObjectiveZoneCell.isArrival())
+            return respawnObjectiveZoneCell.getObjectiveZoneCell();
         return null;
     }
 }

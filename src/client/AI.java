@@ -74,12 +74,12 @@ public class AI
         inZoneHeroes = new ArrayList<>();
         noneZoneHeroes = new ArrayList<>();
 
-//        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
-//            firstZoneStatusOfHeroes(world);
-//            setHeroesInReSpawnCell();
-//        } else {
-//            findZoneStatusOfHeroes(world);
-//        }
+        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
+            firstZoneStatusOfHeroes(world);
+            setHeroesInReSpawnCell();
+        } else {
+            findZoneStatusOfHeroes(world);
+        }
 //        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
 //            randomMove = new RandomMove(world);
 //        }
@@ -104,17 +104,8 @@ public class AI
         ArrayList<Hero> oppHeros = new ArrayList<>(Arrays.asList(world.getOppHeroes()));
         oppHeros.removeIf(obj -> (obj.getCurrentCell().getColumn()== -1 || obj.getCurrentCell().getRow()== -1));
 
-
-
-//        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
-//            randomMove = new RandomMove(world);
-//        }
-//        randomMove.moveToObjectiveZone(world);
-
-
-        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros,oppHeros,world);
+        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros,oppHeros,respawnObjectiveZoneCells,world);
         minMaxAlgorithm.maxMove();
-
 
         printer.printMap(world);
     }

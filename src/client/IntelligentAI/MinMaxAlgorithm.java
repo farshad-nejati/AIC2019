@@ -1,5 +1,7 @@
 package client.IntelligentAI;
 
+import client.AI;
+import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
 
 import java.util.ArrayList;
@@ -11,11 +13,13 @@ public class MinMaxAlgorithm {
     private HashMap<Hero, MyDirection> heroDirectionHashMap = new HashMap<>();
     private ArrayList<Hero> myHeroes;
     private ArrayList<Hero> oppHeroes; // in vision opp heroes in world
+    private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells;
     private World virtualWorld; // update by assumptive my hero directions
 
-    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, World virtualWorld) {
+    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld) {
         this.myHeroes = myHeroes;
         this.oppHeroes = oppHeroes;
+        this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
         this.virtualWorld = virtualWorld;
     }
 
@@ -32,20 +36,21 @@ public class MinMaxAlgorithm {
             ArrayList<Hero> otherOurHeroes = new ArrayList<>(this.myHeroes);
             otherOurHeroes.remove(myHero);
             //TODO: check call by reference
-            Cell[] objCell = virtualWorld.getMap().getObjectiveZone();
-            Cell targetcell = objCell[0];
+//            Cell[] objCell = virtualWorld.getMap().getObjectiveZone();
+            Cell targetcell = Utility.getMyHeroTargetCell(myHero,this.respawnObjectiveZoneCells, virtualWorld);
 //            Cell targetcell = null;
             Move move = Move.findByHero(myHeroesMove, myHero);
             Integer index = myHeroesMove.indexOf(move);
-            Cell checkTargetCell = move.getCurrentCell();
+//            Cell checkTargetCell = move.getCurrentCell();
 //            if (checkTargetCell.isInObjectiveZone()) {
 //                targetcell = checkTargetCell;
 //            }
+
             move.setTargetZoneCell(targetcell);
             myHeroesMove.set(index, move);
             // TODO: find best object cell for this hero
 
-            System.out.println("my hero = " + myHero.getId() + " row = " + myHero.getCurrentCell().getRow() + " column = " + myHero.getCurrentCell().getColumn() +"\n" );
+            System.out.println("my hero = " + myHero.getId() + " row = " + myHero.getCurrentCell().getRow() + " column = " + myHero.getCurrentCell().getColumn() + "\n");
             MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld);
             MyDirection direction = minMaxMove.getDirection(myHeroesMove);
             heroDirectionHashMap.put(myHero, direction);
@@ -56,7 +61,7 @@ public class MinMaxAlgorithm {
             move2.setCurrentCell(updatedCell);
             myHeroesMove.set(index2, move2);
 
-            System.out.println(" final direction= "+ direction + "\n \n \n");
+            System.out.println(" final direction= " + direction + "\n \n \n");
             if (!direction.equals(MyDirection.FIX)) {
                 virtualWorld.moveHero(myHero, Utility.castMyDirectionToDirection(direction));
             }

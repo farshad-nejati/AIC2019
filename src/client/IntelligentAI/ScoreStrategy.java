@@ -14,11 +14,13 @@ public class ScoreStrategy {
         if (myherocell.isInObjectiveZone()) {
             score += Score.IN_ZONE;
         }
-        Cell selectedObjectiveCell = move.getTargetZoneCell();
-        //Todo:above code must be replace with nearest objective zone cell
-        Direction[] distancepath = virtualWorld.getPathMoveDirections(myherocell, selectedObjectiveCell);
-        //TODO: find distacePath based on block cell
-        score += Score.DISTANCE_COST * (distancepath.length);
+        if (move.getTargetZoneCell() != null) {
+            Cell selectedObjectiveCell = move.getTargetZoneCell();
+            //Todo:above code must be replace with nearest objective zone cell
+            Direction[] distancepath = virtualWorld.getPathMoveDirections(myherocell, selectedObjectiveCell);
+            //TODO: find distacePath based on block cell
+            score += Score.DISTANCE_COST * (distancepath.length);
+        }
         if (!direction.equals(MyDirection.FIX)) {
             score += Score.MOVE_COST;
         }
@@ -26,38 +28,39 @@ public class ScoreStrategy {
         return score;
     }
 
-    public static Integer otherMyHeroCell(Hero myHero,MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove){
-        Integer score=0;
-        Cell myHeroNextCell=null;
-        for (Move myHeroMove:copyOfMyHeroesMove){
-            if (myHeroMove.getHero().equals(myHero)){
+    public static Integer otherMyHeroCell(Hero myHero, MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove) {
+        Integer score = 0;
+        Cell myHeroNextCell = null;
+        for (Move myHeroMove : copyOfMyHeroesMove) {
+            if (myHeroMove.getHero().equals(myHero)) {
                 myHeroNextCell = myHeroMove.getNextCell();
             }
         }
-        for (Move myOtherHeroMove: copyOfMyHeroesMove){
-            if (myOtherHeroMove.getCurrentCell().equals(myHeroNextCell));{
+        for (Move myOtherHeroMove : copyOfMyHeroesMove) {
+            if (myOtherHeroMove.getCurrentCell().equals(myHeroNextCell)) ;
+            {
                 score += Score.MY_HERO_CELL;
 
             }
         }
-        System.out.println("other hero cell score= " + score );
+        System.out.println("other hero cell score= " + score);
         return score;
     }
 
     public static Integer otherWallCell(Hero myHero, MyDirection direction, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove) {
         Integer score = 0;
-        Cell myHeroNextCell=null;
-        for (Move myHeroMove:copyOfMyHeroesMove){
-            if (myHeroMove.getHero().equals(myHero)){
+        Cell myHeroNextCell = null;
+        for (Move myHeroMove : copyOfMyHeroesMove) {
+            if (myHeroMove.getHero().equals(myHero)) {
                 myHeroNextCell = myHeroMove.getNextCell();
             }
         }
-        if (myHeroNextCell.isWall()){
+        if (myHeroNextCell.isWall()) {
             score += Score.WALL_SCORE;
         }
-        System.out.println("wall cell score= " + score );
+        System.out.println("wall cell score= " + score);
 
-        return  score;
+        return score;
     }
 
     public static Integer hitByOppHeroes(Hero myHero, MyDirection direction, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
