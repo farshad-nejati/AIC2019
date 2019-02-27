@@ -10,6 +10,8 @@ class Score {
     final static Integer CAN_HIT_COST = -10;
     final static Integer MY_HERO_CELL = -1000;
     final static Integer WALL_SCORE = -1000;
+    final static Integer MY_OTHER_HERO_AROUND_NEGATIVE_COST = -(((2 * MOVE_COST) + 1));
+    final static Integer MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE = -(((2 * MOVE_COST) + 1) + IN_ZONE);
 
     // distance to zone = -4 * (manhatan distance)
 }

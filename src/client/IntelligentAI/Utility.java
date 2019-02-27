@@ -19,7 +19,7 @@ public class Utility {
 
 //        Cell upCellNeighbor = map.getCell(row - 1, column);
         if (map.isInMap(row - 1, column)) {
-            cellNeighbors.put( map.getCell(row - 1, column), Direction.UP);
+            cellNeighbors.put(map.getCell(row - 1, column), Direction.UP);
         }
 
 //        Cell downCellNeighbor = map.getCell(row + 1, column);
@@ -53,7 +53,7 @@ public class Utility {
                 myDirections.remove(castDirectionToMyDirection(cellNeighbors.get(cellNeighbor)));
                 continue;
             }
-            if (!otherOurHeroes.isEmpty()){
+            if (!otherOurHeroes.isEmpty()) {
                 for (Hero otherOurHero : otherOurHeroes) {
                     if (otherOurHero.getCurrentCell().equals(cellNeighbor)) {
                         myDirections.remove(castDirectionToMyDirection(cellNeighbors.get(cellNeighbor)));
@@ -66,6 +66,7 @@ public class Utility {
 
         return myDirections;
     }
+
 
     public static Cell getCellFromDirection(Cell cell, MyDirection direction, Map map) {
         int row = cell.getRow();
@@ -85,6 +86,32 @@ public class Utility {
         }
 
         return cell;
+    }
+
+    public static MyDirection getDirectionFromCells(Cell currentCell, Cell nextCell) {
+        int row = currentCell.getRow();
+        int column = currentCell.getColumn();
+
+        int row2 = nextCell.getRow();
+        int column2 = nextCell.getColumn();
+
+        if (row > row2 && column == column2) {
+            return MyDirection.UP;
+        }
+        if (row < row2 && column == column2) {
+            return MyDirection.DOWN;
+        }
+        if (row == row2 && column > column2) {
+            return MyDirection.LEFT;
+        }
+        if (row == row2 && column < column2) {
+            return MyDirection.RIGHT;
+        }
+        if (row == row2 && column == column2) {
+            return MyDirection.FIX;
+        }
+
+        return MyDirection.FIX;
     }
 
     public static Direction castMyDirectionToDirection(MyDirection direction) {
