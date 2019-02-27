@@ -82,7 +82,7 @@ public class AI
         }
         if (inZoneHeroes.size() > 0) {
             inZoneMoving = new InZoneMoving(inZoneHeroes, world);
-            inZoneMoving.move(world, this.blockedCells);
+            inZoneMoving.move(world, this.blockedCells, noneZoneHeroes);
         }
 
 //        newMove.move(world);
