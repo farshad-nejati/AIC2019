@@ -78,7 +78,7 @@ public class AI
             findZoneStatusOfHeroes(world);
         }
         if (noneZoneHeroes.size() > 0 ) {
-            noneZoneMoving.move(world, noneZoneHeroes, blockedCells);
+            noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
         }
         if (inZoneHeroes.size() > 0) {
             inZoneMoving = new InZoneMoving(inZoneHeroes, world);
