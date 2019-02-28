@@ -1,5 +1,6 @@
 package client.IntelligentAI;
 
+import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.Cell;
 import client.model.Hero;
 import client.model.World;
@@ -11,16 +12,16 @@ class MinMaxMove {
     private Hero myHero;
     private ArrayList<Hero> otherOurHeroes;
     private ArrayList<Hero> oppHeroes;
-    private ArrayList<Cell> blockCells = new ArrayList<>();
+    ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
 
     private World virtualWorld;
 
-    public MinMaxMove(Hero myHero, ArrayList<Hero> otherOurHeroes, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Cell> blockCells) {
+    public MinMaxMove(Hero myHero, ArrayList<Hero> otherOurHeroes, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells) {
         this.myHero = myHero;
         this.otherOurHeroes = otherOurHeroes;
         this.oppHeroes = oppHeroes;
         this.virtualWorld = virtualWorld;
-        this.blockCells = blockCells;
+        this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
     }
 
     public MyDirection getDirection(ArrayList<Move> myHeroesMove) {
@@ -105,13 +106,12 @@ class MinMaxMove {
     private Integer evaluateScore(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, int minScore) {
         // TODO: evaluateScore()
 //        return new Random().nextInt(10);
+        ArrayList<Cell> blocks = new ArrayList<>();
+        blocks = getBlockCells(myHero);
 
         Integer score = 0;
 
-        if (virtualWorld.getCurrentTurn() == 13) {
-            int p = 0;
-        }
-        score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove,this.blockCells);
+        score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
         score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
         score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
@@ -120,5 +120,15 @@ class MinMaxMove {
 
         return score;
 
+    }
+
+    private ArrayList<Cell> getBlockCells(Hero myHero) {
+        ArrayList<Cell> blocks = new ArrayList<>();
+        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
+            if (!respawnObjectiveZoneCell.getHero().equals(myHero)) {
+                blocks.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
+            }
+        }
+        return blocks;
     }
 }

@@ -9,16 +9,9 @@ public class Move {
     private Hero hero;
     private Cell currentCell;
     private Cell nextCell;
-
-    public Cell getTargetZoneCell() {
-        return targetZoneCell;
-    }
-
-    public void setTargetZoneCell(Cell targetZoneCell) {
-        this.targetZoneCell = targetZoneCell;
-    }
-
     private Cell targetZoneCell;
+    private Cell beforeCell;
+
 
     public Move() {
         this.currentCell = null;
@@ -60,6 +53,23 @@ public class Move {
     public void setNextCell(Cell nextCell) {
         this.nextCell = nextCell;
     }
+
+    public Cell getBeforeCell() {
+        return beforeCell;
+    }
+
+    public void setBeforeCell(Cell beforeCell) {
+        this.beforeCell = beforeCell;
+    }
+
+    public Cell getTargetZoneCell() {
+        return targetZoneCell;
+    }
+
+    public void setTargetZoneCell(Cell targetZoneCell) {
+        this.targetZoneCell = targetZoneCell;
+    }
+
 
     public static Move findByHero(Collection<Move> list, Hero hero) {
         return list.stream().filter(object -> hero.equals(object.getHero())).findFirst().orElse(null);
