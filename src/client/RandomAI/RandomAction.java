@@ -101,7 +101,9 @@ public class RandomAction {
 
             Ability ability = getPowerfulAbility(myHero);
             CandidateActionCell candidateActionCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability, effectiveTargets);
-            effectiveTargets.add(new EffectiveTarget(myHero, ability, candidateActionCell));
+            if (candidateActionCell != null) {
+                effectiveTargets.add(new EffectiveTarget(myHero, ability, candidateActionCell));
+            }
         }
         return effectiveTargets;
     }
@@ -183,11 +185,12 @@ public class RandomAction {
             candidateCells.set(index, candidateCell);
         }
 
+        Collections.sort(candidateCells, CandidateActionCell.affectedNumberOppHeroComparator);
+        Collections.reverse(candidateCells);
         ArrayList<CandidateActionCell> equalCandidates = new ArrayList<>();
-        if (candidateCells.size() > 0 ) {
-            Collections.sort(candidateCells, CandidateActionCell.affectedNumberOppHeroComparator);
-            Collections.reverse(candidateCells);
-            equalCandidates = findEqualCandidate(candidateCells);
+        equalCandidates = findEqualCandidate(candidateCells);
+
+        if (equalCandidates.size() > 0) {
             CandidateActionCell bestCandidateCell = findBestCandidateCell(equalCandidates, effectiveTargets);
             return bestCandidateCell;
         }
@@ -263,7 +266,7 @@ public class RandomAction {
         int minImpact = 0;
         for (CandidateActionCell candidateActionCell : candidateCells) {
             int impactNumber = candidateActionCell.getAffectedNumber();
-            if (impactNumber >= minImpact) {
+            if (impactNumber > minImpact) {
                 minImpact = impactNumber;
                 equalCandidates.add(candidateActionCell);
             }
