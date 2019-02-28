@@ -11,15 +11,15 @@ public class RandomAction {
 
     public void randomAction(World world, ArrayList<ActiveMyHeroes> activeMyHeroes) {
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
-        ArrayList<EffectiveHero> effectiveHeroes = getEffectiveHeroesForInVisionOppHeroes(world, inVisionOppHeroes, activeMyHeroes);
-        if (effectiveHeroes.isEmpty()) {
+        ArrayList<EffectiveTarget> effectiveTargets = getEffectiveTargetForInVisionOppHeroes(world, inVisionOppHeroes, activeMyHeroes);
+        if (effectiveTargets.isEmpty()) {
             return;
         }
 
 //        effectiveHeroes = getTargetForEachMyHeroes(effectiveHeroes);
-        for (EffectiveHero effectiveHero: effectiveHeroes) {
-            Hero myHero = effectiveHero.getMyHero();
-            doAction(world, myHero, effectiveHero.getTargetCell(), effectiveHero.getAbility());
+        for (EffectiveTarget effectiveTarget: effectiveTargets) {
+            Hero myHero = effectiveTarget.getMyHero();
+            doAction(world, myHero, effectiveTarget.getTargetCell(), effectiveTarget.getAbility());
         }
     }
 
@@ -34,53 +34,53 @@ public class RandomAction {
         System.out.println("in Position: " + row + " , " + column + "\n\n");
     }
 
-    public ArrayList<EffectiveHero> getTargetForEachMyHeroes(ArrayList<EffectiveHero> effectiveHeroes) {
-        ArrayList<EffectiveHero> targetForEachMyHero = new ArrayList<>();
-        ArrayList<Integer> targetHeroIDs = new ArrayList();
-
-        for (EffectiveHero effectiveHero: effectiveHeroes) {
-            Integer myHeroID = effectiveHero.getMyHero().getId();
-            if (!targetHeroIDs.contains(myHeroID)) {
-                targetForEachMyHero.add(effectiveHero);
-                targetHeroIDs.add(myHeroID);
-            } else {
-                EffectiveHero currentEffective = EffectiveHero.findByHero(targetForEachMyHero, effectiveHero.getMyHero());
-                int currentHP =  currentEffective.getOppHero().getCurrentHP();
-                int newHP = effectiveHero.getOppHero().getCurrentHP();
-                if (newHP < currentHP) {
-                    int index = targetForEachMyHero.indexOf(currentEffective);
-                    targetForEachMyHero.set(index, effectiveHero);
-                } else if (currentHP == newHP) {
-                    int index = targetForEachMyHero.indexOf(currentEffective);
-                    targetForEachMyHero.set(index, effectiveHero);
-                    EffectiveHero effectiveHeroMaxOppHero = findMaxOppHeroWithEqualHP(targetForEachMyHero,currentEffective, effectiveHero);
-                    targetForEachMyHero.set(index, effectiveHeroMaxOppHero);
-                }
-            }
-        }
-        return targetForEachMyHero;
-    }
-
-    private EffectiveHero findMaxOppHeroWithEqualHP(ArrayList<EffectiveHero> targetForEachMyHero, EffectiveHero currentEffective, EffectiveHero newEffective) {
-        int currentChance = 0;
-        int newChance = 0;
-        Hero currentEffectiveTarget = currentEffective.getOppHero();
-        Hero newEffectiveTarget = newEffective.getOppHero();
-
-        for (EffectiveHero effectiveHero : targetForEachMyHero) {
-            Hero heroEffective = effectiveHero.getOppHero();
-            if (heroEffective.getId() == currentEffectiveTarget.getId()) {
-                currentChance++;
-            } else if (heroEffective.getId() == newEffectiveTarget.getId()) {
-                newChance++;
-            }
-        }
-        if (newChance > currentChance) {
-            return newEffective;
-        }
-
-        return currentEffective;
-    }
+//    public ArrayList<EffectiveHero> getTargetForEachMyHeroes(ArrayList<EffectiveHero> effectiveHeroes) {
+//        ArrayList<EffectiveHero> targetForEachMyHero = new ArrayList<>();
+//        ArrayList<Integer> targetHeroIDs = new ArrayList();
+//
+//        for (EffectiveHero effectiveHero: effectiveHeroes) {
+//            Integer myHeroID = effectiveHero.getMyHero().getId();
+//            if (!targetHeroIDs.contains(myHeroID)) {
+//                targetForEachMyHero.add(effectiveHero);
+//                targetHeroIDs.add(myHeroID);
+//            } else {
+//                EffectiveHero currentEffective = EffectiveHero.findByHero(targetForEachMyHero, effectiveHero.getMyHero());
+//                int currentHP =  currentEffective.getOppHero().getCurrentHP();
+//                int newHP = effectiveHero.getOppHero().getCurrentHP();
+//                if (newHP < currentHP) {
+//                    int index = targetForEachMyHero.indexOf(currentEffective);
+//                    targetForEachMyHero.set(index, effectiveHero);
+//                } else if (currentHP == newHP) {
+//                    int index = targetForEachMyHero.indexOf(currentEffective);
+//                    targetForEachMyHero.set(index, effectiveHero);
+//                    EffectiveHero effectiveHeroMaxOppHero = findMaxOppHeroWithEqualHP(targetForEachMyHero,currentEffective, effectiveHero);
+//                    targetForEachMyHero.set(index, effectiveHeroMaxOppHero);
+//                }
+//            }
+//        }
+//        return targetForEachMyHero;
+//    }
+//
+//    private EffectiveHero findMaxOppHeroWithEqualHP(ArrayList<EffectiveHero> targetForEachMyHero, EffectiveHero currentEffective, EffectiveHero newEffective) {
+//        int currentChance = 0;
+//        int newChance = 0;
+//        Hero currentEffectiveTarget = currentEffective.getOppHero();
+//        Hero newEffectiveTarget = newEffective.getOppHero();
+//
+//        for (EffectiveHero effectiveHero : targetForEachMyHero) {
+//            Hero heroEffective = effectiveHero.getOppHero();
+//            if (heroEffective.getId() == currentEffectiveTarget.getId()) {
+//                currentChance++;
+//            } else if (heroEffective.getId() == newEffectiveTarget.getId()) {
+//                newChance++;
+//            }
+//        }
+//        if (newChance > currentChance) {
+//            return newEffective;
+//        }
+//
+//        return currentEffective;
+//    }
 
     public ArrayList<Hero> getInVisionOppHeroes(World world) {
         Hero[] oppHeroes = world.getOppHeroes();
@@ -94,16 +94,16 @@ public class RandomAction {
         return availableOppHeroes;
     }
 
-    public ArrayList<EffectiveHero> getEffectiveHeroesForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes, ArrayList<ActiveMyHeroes> activeMyHeroes) {
-        ArrayList<EffectiveHero> effectiveHeroes = new ArrayList<>();
+    public ArrayList<EffectiveTarget> getEffectiveTargetForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes, ArrayList<ActiveMyHeroes> activeMyHeroes) {
+        ArrayList<EffectiveTarget> effectiveTargets = new ArrayList<>();
         for (ActiveMyHeroes activeMyHero: activeMyHeroes) {
             Hero myHero = activeMyHero.getMyHero();
 
             Ability ability = getPowerfulAbility(myHero);
-            Cell targetCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability);
-            effectiveHeroes.add(new EffectiveHero(myHero, ability, targetCell));
+            CandidateActionCell candidateActionCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability, effectiveTargets);
+            effectiveTargets.add(new EffectiveTarget(myHero, ability, candidateActionCell));
         }
-        return effectiveHeroes;
+        return effectiveTargets;
     }
 
     private Ability getPowerfulAbility(Hero myHero) {
@@ -155,7 +155,7 @@ public class RandomAction {
             return world.getMap().getCell(oppRow + bestPlaceRange, oppColumn);
         }
     }
-    public Cell getBestCellToAttack(World world, ArrayList<Hero> inVisionOppHeroes, Hero myHero, Ability ability) {
+    public CandidateActionCell getBestCellToAttack(World world, ArrayList<Hero> inVisionOppHeroes, Hero myHero, Ability ability, ArrayList<EffectiveTarget> effectiveTargets) {
 
         ArrayList<CandidateActionCell> candidateCells = new ArrayList<>();
         ArrayList<Cell> inDistanceCells = new ArrayList<>();
@@ -167,25 +167,108 @@ public class RandomAction {
         for (Cell cell : inDistanceCells) {
             candidateCells.add(new CandidateActionCell(cell, 0));
             ArrayList<Cell> impactCells = LobbingAbilityImpactCells(world, cell, ability);
+            ArrayList<Hero> impactHeroes = new ArrayList<>();
+
+            CandidateActionCell candidateCell = CandidateActionCell.findByCell(candidateCells, cell);
+            int index = candidateCells.indexOf(candidateCell);
             for (Hero inVisionHero : inVisionOppHeroes) {
 
                 // TODO: if see any enemy in impact cells, chance of select of findded cell increased
                 if (impactCells.contains(inVisionHero.getCurrentCell())) {
-                    CandidateActionCell candidateCell = CandidateActionCell.findByCell(candidateCells, cell);
-                    int index = candidateCells.indexOf(candidateCell);
                     candidateCell.increaseAffectedHeroes();
-                    candidateCells.set(index, candidateCell);
+                    impactHeroes.add(inVisionHero);
+                }
+            }
+            candidateCell.setAffectedHeroes(impactHeroes);
+            candidateCells.set(index, candidateCell);
+        }
 
+        ArrayList<CandidateActionCell> equalCandidates = new ArrayList<>();
+        if (candidateCells.size() > 0 ) {
+            Collections.sort(candidateCells, CandidateActionCell.affectedNumberOppHeroComparator);
+            Collections.reverse(candidateCells);
+            equalCandidates = findEqualCandidate(candidateCells);
+            CandidateActionCell bestCandidateCell = findBestCandidateCell(equalCandidates, effectiveTargets);
+            return bestCandidateCell;
+        }
+        return null;
+    }
+
+    private CandidateActionCell findBestCandidateCell(ArrayList<CandidateActionCell> equalCandidates, ArrayList<EffectiveTarget> effectiveTargets) {
+        Collections.sort(equalCandidates, CandidateActionCell.sumHPComparator);
+        ArrayList<CandidateActionCell> equalHPCandidates = new ArrayList<>();
+        equalHPCandidates = findEqualSumHPCandidates(equalCandidates);
+
+        CandidateActionCell bestCandidate = null;
+        int minRepeat = 0;
+        for (CandidateActionCell equalHPCandidate : equalHPCandidates) {
+            // TODO: find heroAffect list of effectiveTargets
+            ArrayList<HeroAffects> heroAffects = findHeroAffects(effectiveTargets);
+            // TODO: find number of repeat current opp heroes in heroAffectList
+            int repeatNumber = findNumberOfRepeatInHeroEffects(equalHPCandidate, heroAffects);
+            if (repeatNumber >= minRepeat) {
+                minRepeat = repeatNumber;
+                bestCandidate = equalHPCandidate;
+            }
+        }
+        return bestCandidate;
+    }
+
+    private int findNumberOfRepeatInHeroEffects(CandidateActionCell equalHPCandidate, ArrayList<HeroAffects> heroAffects) {
+        int repeat = 0;
+        for (Hero hero : equalHPCandidate.getAffectedHeroes()) {
+            HeroAffects heroAffect = HeroAffects.findByHero(heroAffects, hero);
+            if (heroAffect != null) {
+                repeat += heroAffect.getAffectedNumber();
+            }
+
+        }
+        return repeat;
+    }
+
+    private ArrayList<HeroAffects> findHeroAffects(ArrayList<EffectiveTarget> effectiveTargets) {
+        ArrayList<HeroAffects> heroAffects = new ArrayList<>();
+        for (EffectiveTarget effectiveTarget: effectiveTargets) {
+            ArrayList<Hero> effectiveOppHeroes = effectiveTarget.getCandidateActionCell().getAffectedHeroes();
+
+            for (Hero hero : effectiveOppHeroes) {
+                HeroAffects heroAffect = HeroAffects.findByHero(heroAffects, hero);
+                if (heroAffect != null) {
+                    int index = heroAffects.indexOf(heroAffect);
+                    heroAffect.increaseAffected();
+                    heroAffects.set(index, heroAffect);
+                } else {
+                    heroAffects.add(new HeroAffects(hero, 1));
                 }
             }
         }
+        return heroAffects;
+    }
 
-        if (candidateCells.size() > 0 ) {
-            Collections.sort(candidateCells, CandidateActionCell.affectedNumberOppHeroComparator);
-            int lastIndex = candidateCells.size()-1;
-            return candidateCells.get(lastIndex).getImpactCell();
+    private ArrayList<CandidateActionCell> findEqualSumHPCandidates(ArrayList<CandidateActionCell> candidateCells) {
+        ArrayList<CandidateActionCell> equalCandidates = new ArrayList<>();
+        int maxHP = 1000;
+        for (CandidateActionCell candidateActionCell : candidateCells) {
+            int sumHP = candidateActionCell.getSumHP();
+            if (sumHP <= maxHP) {
+                maxHP = sumHP;
+                equalCandidates.add(candidateActionCell);
+            }
         }
-        return null;
+        return equalCandidates;
+    }
+
+    private ArrayList<CandidateActionCell> findEqualCandidate(ArrayList<CandidateActionCell> candidateCells) {
+        ArrayList<CandidateActionCell> equalCandidates = new ArrayList<>();
+        int minImpact = 0;
+        for (CandidateActionCell candidateActionCell : candidateCells) {
+            int impactNumber = candidateActionCell.getAffectedNumber();
+            if (impactNumber >= minImpact) {
+                minImpact = impactNumber;
+                equalCandidates.add(candidateActionCell);
+            }
+        }
+        return equalCandidates;
     }
 
     private ArrayList<Cell> findInRangeObjectiveCells(World world, Hero myHero, Ability ability) {

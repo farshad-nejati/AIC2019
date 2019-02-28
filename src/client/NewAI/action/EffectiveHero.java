@@ -1,4 +1,4 @@
-package client.RandomAI;
+package client.NewAI.action;
 
 import client.model.Ability;
 import client.model.Cell;

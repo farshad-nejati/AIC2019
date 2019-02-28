@@ -1,7 +1,6 @@
 package client.NewAI.action;
 
 import client.NewAI.Utility;
-import client.RandomAI.EffectiveHero;
 import client.RandomAI.RandomAction;
 import client.model.Ability;
 import client.model.Cell;
