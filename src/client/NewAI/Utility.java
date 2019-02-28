@@ -18,6 +18,7 @@ public class Utility {
     public int phaseNumber;
     public ArrayList<HeroNeighbors> heroNeighbors = new ArrayList<>();
     public ArrayList<Cell> blockedCells;
+    // TODO: change maxAreaEffect to area effect of opp heroes
     public int maxAreaEffect = 5;
     public ArrayList<HeroPosition> heroPositions = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package client.RandomAI;
 
+import client.NewAI.Helper;
 import client.NewAI.action.ActiveMyHeroes;
 import client.model.*;
 
@@ -9,7 +10,7 @@ import java.util.Random;
 
 public class RandomAction {
 
-    public void randomAction(World world, ArrayList<ActiveMyHeroes> activeMyHeroes) {
+    public void randomAction(World world, ArrayList<Hero> activeMyHeroes) {
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
         ArrayList<EffectiveTarget> effectiveTargets = getEffectiveTargetForInVisionOppHeroes(world, inVisionOppHeroes, activeMyHeroes);
         if (effectiveTargets.isEmpty()) {
@@ -94,10 +95,9 @@ public class RandomAction {
         return availableOppHeroes;
     }
 
-    public ArrayList<EffectiveTarget> getEffectiveTargetForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes, ArrayList<ActiveMyHeroes> activeMyHeroes) {
+    public ArrayList<EffectiveTarget> getEffectiveTargetForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes, ArrayList<Hero> activeMyHeroes) {
         ArrayList<EffectiveTarget> effectiveTargets = new ArrayList<>();
-        for (ActiveMyHeroes activeMyHero: activeMyHeroes) {
-            Hero myHero = activeMyHero.getMyHero();
+        for (Hero myHero: activeMyHeroes) {
 
             Ability ability = getPowerfulAbility(myHero);
             CandidateActionCell candidateActionCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability, effectiveTargets);
@@ -163,7 +163,7 @@ public class RandomAction {
         ArrayList<Cell> inDistanceCells = new ArrayList<>();
 
         // TODO: for each cell in objective cell find cells with range < max range of ability
-        inDistanceCells = findInRangeObjectiveCells(world, myHero, ability);
+        inDistanceCells = Helper.findInRangeCells(world, myHero, ability);
 
         // TODO: for each findded cell calculate lobbing ability impact cell
         for (Cell cell : inDistanceCells) {
@@ -272,18 +272,6 @@ public class RandomAction {
             }
         }
         return equalCandidates;
-    }
-
-    private ArrayList<Cell> findInRangeObjectiveCells(World world, Hero myHero, Ability ability) {
-        ArrayList<Cell> inRangeCells = new ArrayList<>();
-        for (Cell cell : world.getMap().getObjectiveZone()) {
-            int range = ability.getRange();
-            int distance = world.manhattanDistance(myHero.getCurrentCell(), cell);
-            if (distance <= range) {
-                inRangeCells.add(cell);
-            }
-        }
-        return inRangeCells;
     }
 
     public ArrayList<Cell> LobbingAbilityImpactCells(World world, Cell targetCell, Ability ability) {

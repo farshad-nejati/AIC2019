@@ -1,7 +1,11 @@
 package client;
 
+import client.NewAI.Helper;
 import client.NewAI.SortClass;
 import client.NewAI.action.NewAction;
+import client.NewAI.dodge.DodgeAction;
+import client.NewAI.dodge.DodgeHelper;
+import client.NewAI.dodge.DodgeStatus;
 import client.NewAI.move.inZone.InZoneMoving;
 import client.NewAI.move.Move;
 import client.NewAI.move.noneZone.NoneZoneHero;
@@ -42,6 +46,8 @@ public class AI
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
     int maxAreaEffect = 5;
+    ArrayList<DodgeStatus> inZoneDodgeStatuses = new ArrayList<>();
+    ArrayList<DodgeStatus> noneZoneDodgeStatuses = new ArrayList<>();
 
     public void preProcess(World world) {
         System.out.println("pre process started");
@@ -77,12 +83,20 @@ public class AI
         } else {
             findZoneStatusOfHeroes(world);
         }
+
+        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes);
+        noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes);
+
+
         if (noneZoneHeroes.size() > 0 ) {
+//            DodgeAction.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
+//            DodgeAction.executeMove(world, noneZoneHeroes, noneZoneDodgeStatuses);
             noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
         }
         if (inZoneHeroes.size() > 0) {
+//            DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
             inZoneMoving = new InZoneMoving(inZoneHeroes, world);
-            inZoneMoving.move(world, this.blockedCells, noneZoneHeroes);
+            inZoneMoving.move(world, noneZoneHeroes);
         }
 
 //        newMove.move(world);
@@ -105,8 +119,14 @@ public class AI
 
         printer.printMap(world);
 
-        newAction = new NewAction(inZoneHeroes, world);
-        newAction.action(world);
+
+        DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+        DodgeAction.executeAction(world, inZoneHeroes, inZoneDodgeStatuses);
+
+        if (inZoneHeroes.size() > 0) {
+            newAction = new NewAction(inZoneHeroes, world);
+            newAction.action(world);
+        }
 //        randomAction.randomAction(world);
     }
 

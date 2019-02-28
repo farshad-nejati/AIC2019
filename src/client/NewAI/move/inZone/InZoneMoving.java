@@ -13,11 +13,11 @@ public class InZoneMoving {
     public InZoneMoving(ArrayList<Hero> inZoneHeroes, World world) {
         this.utility = new Utility(inZoneHeroes, world);
     }
-    public void move(World world, ArrayList<Cell> blockedCellsNoneZoneHeroes, ArrayList<Hero> noneZoneHeroes) {
+    public void move(World world, ArrayList<Hero> noneZoneHeroes) {
         for (HeroPosition heroPosition : utility.heroPositions){
             Hero myHero = heroPosition.getHero();
 //        for (Hero myHero : myHeroes) {
-            utility.addBlockedCells(utility.myHeroes, myHero, blockedCellsNoneZoneHeroes);
+//            utility.addBlockedCells(utility.myHeroes, myHero, blockedCellsNoneZoneHeroes);
             Cell bestCell = utility.findBestCellToMove(myHero, noneZoneHeroes);
             if (bestCell != null) {
 //                Direction[] directions = world.getPathMoveDirections(myHero.getCurrentCell(), );
