@@ -8,20 +8,18 @@ import java.util.*;
 public class MinMaxAlgorithm {
     private ArrayList<Move> myHeroesMove = new ArrayList<>();
     private HashMap<Hero, MyDirection> heroDirectionHashMap = new HashMap<>();
-    private ArrayList<Cell> blockCells = new ArrayList<>();
     private ArrayList<Hero> myHeroes;
     private ArrayList<Hero> oppHeroes; // in vision opp heroes in world
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells;
     private World virtualWorld; // update by assumptive my hero directions
     private HashMap<Hero, Boolean> heroHashArrival = new HashMap<>();
 
-    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival, ArrayList<Cell> blockedCells) {
+    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival) {
         this.myHeroes = myHeroes;
         this.oppHeroes = oppHeroes;
         this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
         this.virtualWorld = virtualWorld;
         this.heroHashArrival = heroHashArrival;
-        this.blockCells = blockedCells;
 
     }
 
@@ -59,15 +57,16 @@ public class MinMaxAlgorithm {
             myHeroesMove.set(index, move);
             // TODO: find best object cell for this hero
 
-            System.out.println("my hero = " + myHero.getId() + " row = " + myHero.getCurrentCell().getRow() + " column = " + myHero.getCurrentCell().getColumn() + "\n");
-            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld, blockCells);
+//            System.out.println("my hero = " + myHero.getId() + " row = " + myHero.getCurrentCell().getRow() + " column = " + myHero.getCurrentCell().getColumn() + "\n" + "target Cell = "+ targetcell.getRow() + " " + targetcell.getColumn());
+            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld, this.respawnObjectiveZoneCells);
             MyDirection direction = minMaxMove.getDirection(myHeroesMove);
             heroDirectionHashMap.put(myHero, direction);
-
             Move move2 = Move.findByHero(myHeroesMove, myHero);
             Integer index2 = myHeroesMove.indexOf(move2);
             Cell updatedCell = Utility.getCellFromDirection(myHero.getCurrentCell(), direction, virtualWorld.getMap());
+            move2.setBeforeCell(move2.getCurrentCell());
             move2.setCurrentCell(updatedCell);
+
             myHeroesMove.set(index2, move2);
 
             System.out.println(" final direction= " + direction + "\n \n \n");

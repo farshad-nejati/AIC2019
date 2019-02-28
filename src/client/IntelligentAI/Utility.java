@@ -150,10 +150,10 @@ public class Utility {
 
     public static Cell getMyHeroTargetCell(Hero myHero, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival) {
         RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(respawnObjectiveZoneCells, myHero);
-        if (respawnObjectiveZoneCell.isArrival()){
+        if (respawnObjectiveZoneCell.isArrival()) {
             for (Hero hashHero : heroHashArrival.keySet()) {
-                if (hashHero.equals(myHero)){
-                    heroHashArrival.put(hashHero,true);
+                if (hashHero.equals(myHero)) {
+                    heroHashArrival.put(hashHero, true);
                 }
             }
         }

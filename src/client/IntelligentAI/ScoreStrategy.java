@@ -17,18 +17,17 @@ public class ScoreStrategy {
         if (move.getTargetZoneCell() != null) {
             Cell selectedObjectiveCell = move.getTargetZoneCell();
             //Todo:above code must be replace with nearest objective zone cell
-            blockCells.remove(selectedObjectiveCell);
+
             Direction[] distancepath = virtualWorld.getPathMoveDirections(myherocell, selectedObjectiveCell, blockCells);
-            blockCells.add(selectedObjectiveCell);
             //TODO: find distacePath based on block cell
             Integer distanceLenghtCost = Score.DISTANCE_COST * (distancepath.length);
             score += distanceLenghtCost;
-            System.out.println("distanceLenghtCost = " + distanceLenghtCost);
+//            System.out.println("distanceLenghtCost = " + distanceLenghtCost);
         }
         if (!direction.equals(MyDirection.FIX)) {
             score += Score.MOVE_COST;
         }
-        System.out.println("distance zone Score= " + score);
+//        System.out.println("distance zone Score= " + score);
         return score;
     }
 
@@ -128,7 +127,7 @@ public class ScoreStrategy {
         if (myHeroNextCell.isWall()) {
             score += Score.WALL_SCORE;
         }
-        System.out.println("wall cell score= " + score);
+//        System.out.println("wall cell score= " + score);
 
         return score;
     }
@@ -139,16 +138,20 @@ public class ScoreStrategy {
         Integer killDistanceSum = 0;
         Integer canHitSum = 0;
 
+        Integer beforeCellScore = 0;
         Integer losingHealthScore = 0;
         Integer killDistanceScore = 0;
         Integer canHitScore = 0;
 
         Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
-        Cell myHeroCell = move.getNextCell(); //TODO: this must be updated of my hero cell
-
+        Cell myHeroCell2 = move.getNextCell(); //TODO: this must be updated of my hero cell
+//        System.out.println("myHeroCell2 = " +myHeroCell2.getRow() + " "+ myHeroCell2.getColumn());
+        Cell myHeroCell = Utility.getCellFromDirection(move.getCurrentCell(), direction, virtualWorld.getMap());
+//        System.out.println("myHeroCell = " + myHeroCell.getRow() + " "+ myHeroCell.getColumn());
         for (Move oppHeroMove : copyOfOppHeroesMove) {
             boolean canHit = false;
             Hero hero = oppHeroMove.getHero();
+//            Cell oppHeroCell = oppHeroMove.getNextCell();
             Cell oppHeroCell = oppHeroMove.getNextCell();
             if (oppHeroCell.isInVision()) {
                 Ability maxLosingHealthAbility = null;
@@ -160,7 +163,7 @@ public class ScoreStrategy {
                     }
 
 
-                    boolean abilityCanHit = distance < (maxLosingHealthAbility.getRange() + maxLosingHealthAbility.getAreaOfEffect());
+                    boolean abilityCanHit = distance <= (maxLosingHealthAbility.getRange() + maxLosingHealthAbility.getAreaOfEffect());
 
                     if (abilityCanHit) {
                         canHit = true;
@@ -189,14 +192,21 @@ public class ScoreStrategy {
                 losingHealthScore += 2 * Score.MOVE_COST;
             }
             killDistanceScore = killDistanceSum * Score.KILL_DISTANCE_COST;
+
+            Cell moveCell = myHeroCell;
+            Cell beforeCell = move.getBeforeCell();
+            if (moveCell.equals(beforeCell)) {
+                beforeCellScore = Score.BEFORE_CELL_SCORE;
+            }
         } else {
             losingHealthScore = Score.HEALTH_COST * losingHealthSum;
         }
-        System.out.println("losingHealthScore = " + losingHealthScore);
-        System.out.println("k = " + killDistanceScore);
-        System.out.println("canHitScore = " + canHitScore);
+//        System.out.println("losingHealthScore = " + losingHealthScore);
+//        System.out.println("k = " + killDistanceScore);
+//        System.out.println("canHitScore = " + canHitScore);
 
-        return losingHealthScore + killDistanceScore + canHitScore;
+        return losingHealthScore + killDistanceScore + canHitScore + beforeCellScore;
+//        return losingHealthScore ;
     }
 
     public static Integer moveTowardToOppHeroes(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blocks) {
