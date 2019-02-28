@@ -1,12 +1,9 @@
 package client.IntelligentAI;
 
-import client.AI;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class MinMaxAlgorithm {
     private ArrayList<Move> myHeroesMove = new ArrayList<>();
@@ -33,6 +30,13 @@ public class MinMaxAlgorithm {
     }
 
     public void maxMove() {
+
+        this.myHeroes.sort((o1, o2) -> {
+            if (o1.getCurrentHP() == o2.getCurrentHP())
+                return 0;
+            return o1.getCurrentHP() < o2.getCurrentHP() ? -1 : 1;
+        });
+
         for (Hero myHero : this.myHeroes) {
             Move move = new Move(myHero, myHero.getCurrentCell());
             myHeroesMove.add(move);
