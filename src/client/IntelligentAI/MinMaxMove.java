@@ -11,13 +11,16 @@ class MinMaxMove {
     private Hero myHero;
     private ArrayList<Hero> otherOurHeroes;
     private ArrayList<Hero> oppHeroes;
+    private ArrayList<Cell> blockCells = new ArrayList<>();
+
     private World virtualWorld;
 
-    public MinMaxMove(Hero myHero, ArrayList<Hero> otherOurHeroes, ArrayList<Hero> oppHeroes, World virtualWorld) {
+    public MinMaxMove(Hero myHero, ArrayList<Hero> otherOurHeroes, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Cell> blockCells) {
         this.myHero = myHero;
         this.otherOurHeroes = otherOurHeroes;
         this.oppHeroes = oppHeroes;
         this.virtualWorld = virtualWorld;
+        this.blockCells = blockCells;
     }
 
     public MyDirection getDirection(ArrayList<Move> myHeroesMove) {
@@ -108,7 +111,7 @@ class MinMaxMove {
         if (virtualWorld.getCurrentTurn() == 13) {
             int p = 0;
         }
-        score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
+        score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove,this.blockCells);
         score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
         score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);

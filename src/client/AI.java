@@ -120,7 +120,7 @@ public class AI {
         ArrayList<Hero> oppHeros = new ArrayList<>(Arrays.asList(world.getOppHeroes()));
         oppHeros.removeIf(obj -> (obj.getCurrentCell().getColumn() == -1 || obj.getCurrentCell().getRow() == -1));
 
-        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival);
+        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival,blockedCells);
         minMaxAlgorithm.maxMove();
 
         printer.printMap(world);
@@ -145,7 +145,7 @@ public class AI {
                 return HeroName.BLASTER;
             }
             case 2: {
-                return HeroName.BLASTER;
+                return HeroName.GUARDIAN;
             }
             case 3: {
                 return HeroName.BLASTER;
