@@ -2,7 +2,6 @@ package client.IntelligentAI;
 
 import client.model.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -200,5 +199,50 @@ public class ScoreStrategy {
         return losingHealthScore + killDistanceScore + canHitScore;
     }
 
+    public static Integer moveTowardToOppHeroes(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blockCells) {
 
+        int score = 0;
+        int canHitMaxDistance = Integer.MIN_VALUE;
+        boolean myHeroCanHitAnyone = false;
+        Move oppHeroMoveWithMinimumHealth = null;
+
+        Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
+        Cell myHeroMoveCell = move.getNextCell();
+
+        for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
+            int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
+            if (canHitDistance > canHitMaxDistance) {
+                canHitMaxDistance = canHitDistance;
+            }
+        }
+
+        for (Move oppHeroMove : copyOfOppHeroesMove) {
+            Hero oppHeroMoveHero = oppHeroMove.getHero();
+            Cell oppHeroMoveCell = oppHeroMove.getNextCell();
+            if (oppHeroMoveCell.isInVision()) {
+                int distance = virtualWorld.manhattanDistance(myHeroMoveCell, oppHeroMoveCell);
+                if (distance < canHitMaxDistance) {
+                    myHeroCanHitAnyone = true;
+                }
+                if (oppHeroMoveWithMinimumHealth == null) {
+                    oppHeroMoveWithMinimumHealth = oppHeroMove;
+                } else {
+                    if (oppHeroMoveHero.getCurrentHP() > oppHeroMoveWithMinimumHealth.getHero().getCurrentHP()) {
+                        oppHeroMoveWithMinimumHealth = oppHeroMove;
+                    }
+                }
+            }
+        }
+
+        if (!myHeroCanHitAnyone) {
+            Cell selectedObjectiveCell = move.getTargetZoneCell();
+            blockCells.remove(selectedObjectiveCell);
+            if (oppHeroMoveWithMinimumHealth != null) {
+                Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveCell, oppHeroMoveWithMinimumHealth.getNextCell(), blockCells);
+                score = directions.length * Score.DISTANCE_TO_OPP_HEROES;
+            }
+            blockCells.add(selectedObjectiveCell);
+        }
+        return score;
+    }
 }
