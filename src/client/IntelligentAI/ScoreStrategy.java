@@ -211,9 +211,9 @@ public class ScoreStrategy {
 
     public static Integer moveTowardToOppHeroes(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blocks) {
 
-        int score = 0;
+        Integer score = 0;
 
-        int canHitMaxDistance = Integer.MIN_VALUE;
+        Integer myHeroCanHitMaxDistance = 0;
         boolean myHeroCanHitAnyone = false;
         Move oppHeroMoveWithMinimumHealth = null;
 
@@ -225,9 +225,13 @@ public class ScoreStrategy {
 
             for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
                 int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
-                if (myHeroAbility.isReady() && (canHitDistance > canHitMaxDistance)) {
-                    canHitMaxDistance = canHitDistance;
+                if (myHeroAbility.isReady() && (canHitDistance > myHeroCanHitMaxDistance)) {
+                    myHeroCanHitMaxDistance = canHitDistance;
                 }
+            }
+
+            if(copyOfOppHeroesMove.size()!= 0){
+                int i = 0;
             }
 
             for (Move oppHeroMove : copyOfOppHeroesMove) {
@@ -235,8 +239,8 @@ public class ScoreStrategy {
                 Cell oppHeroMoveNextCell = oppHeroMove.getNextCell();
                 Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
                 if (oppHeroMoveNextCell.isInVision() && oppHeroMoveNextCell.isInObjectiveZone()) {
-                    int distance = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
-                    if (distance <= canHitMaxDistance) {
+                    int distance = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
+                    if (distance <= myHeroCanHitMaxDistance) {
                         myHeroCanHitAnyone = true;
                     }
                     if (oppHeroMoveWithMinimumHealth == null) {
@@ -251,8 +255,21 @@ public class ScoreStrategy {
 
             if (!myHeroCanHitAnyone) {
                 if (oppHeroMoveWithMinimumHealth != null) {
-                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell(), blocks);
-                    score = directions.length * Score.DISTANCE_TO_OPP_HEROES;
+                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());
+//                    Direction direction = directions[0];
+
+                    score += directions.length * (-2100);
+//                    MyDirection directionThatShouldGo = Utility.castDirectionToMyDirection(direction);
+
+//                    if (myHeroDirection.equals(directionThatShouldGo)) {
+//                        Integer distance = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());
+////                        score += -Score.DISTANCE_TO_OPP_HEROES * distance;
+//                        score =  2 * (-Score.MOVE_COST);
+//                    }
+
+                    if (myHeroDirection.equals(MyDirection.FIX)){
+                        score = -10000;
+                    }
                 }
             }
 
