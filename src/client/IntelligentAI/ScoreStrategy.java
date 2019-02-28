@@ -199,7 +199,7 @@ public class ScoreStrategy {
         return losingHealthScore + killDistanceScore + canHitScore;
     }
 
-    public static Integer moveTowardToOppHeroes(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blockCells) {
+    public static Integer moveTowardToOppHeroes(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blocks) {
 
         int score = 0;
 
@@ -211,11 +211,11 @@ public class ScoreStrategy {
         Cell myHeroMoveNextCell = move.getNextCell();
         Cell myHeroMoveCurrentCell = move.getCurrentCell();
 
-        if (myHeroMoveNextCell.isInObjectiveZone()) {
+        if (myHeroMoveCurrentCell.isInObjectiveZone()) {
 
             for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
                 int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
-                if (canHitDistance > canHitMaxDistance) {
+                if (myHeroAbility.isReady() && (canHitDistance > canHitMaxDistance)) {
                     canHitMaxDistance = canHitDistance;
                 }
             }
@@ -240,13 +240,10 @@ public class ScoreStrategy {
             }
 
             if (!myHeroCanHitAnyone) {
-                Cell selectedObjectiveCell = move.getTargetZoneCell();
-                blockCells.remove(selectedObjectiveCell);
                 if (oppHeroMoveWithMinimumHealth != null) {
-                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell(), blockCells);
+                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell(), blocks);
                     score = directions.length * Score.DISTANCE_TO_OPP_HEROES;
                 }
-                blockCells.add(selectedObjectiveCell);
             }
 
         }
