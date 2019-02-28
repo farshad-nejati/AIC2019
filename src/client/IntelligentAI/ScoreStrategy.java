@@ -212,6 +212,8 @@ public class ScoreStrategy {
     public static Integer moveTowardToOppHeroes(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blocks) {
 
         Integer score = 0;
+        Integer distanceSum = 0;
+        Integer distanceScore = 0;
 
         Integer myHeroCanHitMaxDistance = 0;
         boolean myHeroCanHitAnyone = false;
@@ -230,16 +232,18 @@ public class ScoreStrategy {
                 }
             }
 
-            if(copyOfOppHeroesMove.size()!= 0){
+            if (copyOfOppHeroesMove.size() != 0) {
                 int i = 0;
             }
 
             for (Move oppHeroMove : copyOfOppHeroesMove) {
+
                 Hero oppHeroMoveHero = oppHeroMove.getHero();
                 Cell oppHeroMoveNextCell = oppHeroMove.getNextCell();
                 Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
                 if (oppHeroMoveNextCell.isInVision() && oppHeroMoveNextCell.isInObjectiveZone()) {
-                    int distance = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
+                    int distance = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
+                    distanceSum += distance;
                     if (distance <= myHeroCanHitMaxDistance) {
                         myHeroCanHitAnyone = true;
                     }
@@ -254,11 +258,11 @@ public class ScoreStrategy {
             }
 
             if (!myHeroCanHitAnyone) {
-                if (oppHeroMoveWithMinimumHealth != null) {
-                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());
+//                if (oppHeroMoveWithMinimumHealth != null) {
+//                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());
 //                    Direction direction = directions[0];
 
-                    score += directions.length * (-2100);
+//                score += directions.length * (-2100);
 //                    MyDirection directionThatShouldGo = Utility.castDirectionToMyDirection(direction);
 
 //                    if (myHeroDirection.equals(directionThatShouldGo)) {
@@ -266,11 +270,11 @@ public class ScoreStrategy {
 ////                        score += -Score.DISTANCE_TO_OPP_HEROES * distance;
 //                        score =  2 * (-Score.MOVE_COST);
 //                    }
+//                }
+//
 
-                    if (myHeroDirection.equals(MyDirection.FIX)){
-                        score = -10000;
-                    }
-                }
+                score += distanceSum * 2 * Score.MOVE_COST;
+
             }
 
         }
