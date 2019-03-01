@@ -255,7 +255,7 @@ public class ScoreStrategy {
                         if (distance2 > myHeroCanHitMaxDistance ){
                             canNextCellAttack = true;
                             score += 50000;
-                            break; //if break doesn't exist my hero go to cells that have more enemy;
+//                            break; //if break doesn't exist my hero go to cells that have more enemy;
                         }
                     }
 
@@ -294,7 +294,7 @@ public class ScoreStrategy {
 //                if (myHeroDirection.equals(MyDirection.FIX)) {
 //                    score += 3 * Score.MOVE_COST;
 //                }
-                score += distanceSum * 50000 * Score.MOVE_COST;
+                score += distanceSum * 20000 * Score.MOVE_COST;
                 if (canNextCellAttack){
 //                    score += 50000;
                 }
