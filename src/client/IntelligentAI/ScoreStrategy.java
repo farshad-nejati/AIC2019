@@ -215,7 +215,7 @@ public class ScoreStrategy {
         Integer distanceSum = 0;
         Integer distanceScore = 0;
 
-        Integer myHeroCanHitMaxDistance = Integer.MIN_VALUE;
+        Integer myHeroCanHitMaxDistance = 0;
         boolean myHeroCanHitAnyone = false;
         boolean canNextCellAttack = false;
         Move oppHeroMoveWithMinimumHealth = null;
@@ -228,7 +228,7 @@ public class ScoreStrategy {
 
             for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
                 int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
-                if (myHeroAbility.isReady() && (canHitDistance < myHeroCanHitMaxDistance)) {
+                if (myHeroAbility.isReady() && (canHitDistance > myHeroCanHitMaxDistance)) {
                     System.out.println("Hero: " + myHero.getId() + " myHeroAbility = " + myHeroAbility.getName());
                     myHeroCanHitMaxDistance = canHitDistance;
                 }
@@ -254,7 +254,8 @@ public class ScoreStrategy {
                         int distance2 = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
                         if (distance2 > myHeroCanHitMaxDistance ){
                             canNextCellAttack = true;
-//                            break; //if break doesn't exist my hero go to cells that have more enemy;
+                            score += 50000;
+                            break; //if break doesn't exist my hero go to cells that have more enemy;
                         }
                     }
 
@@ -293,9 +294,9 @@ public class ScoreStrategy {
 //                if (myHeroDirection.equals(MyDirection.FIX)) {
 //                    score += 3 * Score.MOVE_COST;
 //                }
-                score += distanceSum * 20000 * Score.MOVE_COST;
+                score += distanceSum * 50000 * Score.MOVE_COST;
                 if (canNextCellAttack){
-                    score += 50000;
+//                    score += 50000;
                 }
 
             }

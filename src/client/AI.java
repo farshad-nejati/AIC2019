@@ -145,10 +145,10 @@ public class AI {
                 return HeroName.BLASTER;
             }
             case 2: {
-                return HeroName.GUARDIAN;
+                return HeroName.BLASTER;
             }
             case 3: {
-                return HeroName.SENTRY;
+                return HeroName.BLASTER;
             }
             default: {
                 return HeroName.BLASTER;
