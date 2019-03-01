@@ -321,13 +321,21 @@ public class ScoreStrategy {
         }
 
         if (oppHeroMoveWithMinimumHealth != null) {
+
             Cell oppHeroMoveWithMinimumHealthNextCell = oppHeroMoveWithMinimumHealth.getNextCell();
             Cell oppHeroMoveWithMinimumHealthCurrentCell = oppHeroMoveWithMinimumHealth.getCurrentCell();
+
             distanceSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveWithMinimumHealthNextCell);
 
-            distanceScore += distanceSum * Score.DISTANCE_COST;
-            if (myHeroDirection.equals(MyDirection.FIX)) {
-                distanceScore += 2 * Score.MOVE_COST;
+            int currentDistance = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveWithMinimumHealthCurrentCell);
+            int myHeroCanHitMaxDistance = Utility.CanHitMaxDistance(myHero);
+            boolean canHitOppHeroWithMinimumHealth = myHeroCanHitMaxDistance < currentDistance && myHeroCanHitMaxDistance != -1;
+
+            if (!canHitOppHeroWithMinimumHealth) {
+                distanceScore += distanceSum * Score.DISTANCE_COST;
+                if (myHeroDirection.equals(MyDirection.FIX)) {
+                    distanceScore += 2 * Score.MOVE_COST;
+                }
             }
         }
 

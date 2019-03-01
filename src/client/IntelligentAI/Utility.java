@@ -150,16 +150,23 @@ public class Utility {
 
     public static Cell getMyHeroTargetCell(Hero myHero, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival) {
         RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(respawnObjectiveZoneCells, myHero);
-        if (respawnObjectiveZoneCell.isArrival()) {
-            for (Hero hashHero : heroHashArrival.keySet()) {
-                if (hashHero.equals(myHero)) {
-                    heroHashArrival.put(hashHero, true);
-                }
-            }
+        if (respawnObjectiveZoneCell.isArrival() && heroHashArrival.containsKey(myHero)) {
+            heroHashArrival.put(myHero, true);
         }
         if (heroHashArrival.get(myHero).equals(true))
             return null;
         return respawnObjectiveZoneCell.getObjectiveZoneCell();
 
+    }
+
+    public static int CanHitMaxDistance(Hero myHero) {
+        Integer myHeroCanHitMaxDistance = -1;
+        for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
+            int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
+            if (myHeroAbility.isReady() && (canHitDistance > myHeroCanHitMaxDistance)) {
+                myHeroCanHitMaxDistance = canHitDistance;
+            }
+        }
+        return myHeroCanHitMaxDistance;
     }
 }
