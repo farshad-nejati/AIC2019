@@ -80,6 +80,7 @@ class MinMaxMove {
 //        if (!oppHeroes.isEmpty()){
         ArrayList<Hero> otherOurOppHeroes = new ArrayList<>(Arrays.asList(virtualWorld.getOppHeroes()));
         otherOurOppHeroes.removeIf(obj -> (obj.getCurrentCell().getColumn() == -1 || obj.getCurrentCell().getRow() == -1));
+        otherOurHeroes.remove(newOppHero);
 
         ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(newOppHero, this.virtualWorld, otherOurOppHeroes);
 
@@ -107,27 +108,34 @@ class MinMaxMove {
         // TODO: evaluateScore()
 //        return new Random().nextInt(10);
         ArrayList<Cell> blocks = new ArrayList<>();
-        blocks = getBlockCells(myHero);
+        blocks = getBlockCells(myHero,copyOfMyHeroesMove);
 
         Integer score = 0;
 
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
         score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
-//
+
         score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
 //        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove);
-        score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
-        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection, otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
+        score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection,virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
 
         return score;
 
     }
 
-    private ArrayList<Cell> getBlockCells(Hero myHero) {
+    private ArrayList<Cell> getBlockCells(Hero myHero, ArrayList<Move> copyOfMyHeroesMove) {
         ArrayList<Cell> blocks = new ArrayList<>();
-        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
-            if (!respawnObjectiveZoneCell.getHero().equals(myHero)) {
-                blocks.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
+//        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
+//            if (!respawnObjectiveZoneCell.getHero().equals(myHero)) {
+//                blocks.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
+//            }
+//        }
+        for (Move myHeroMOve:copyOfMyHeroesMove){
+            if (!myHeroMOve.getHero().equals(myHero)){
+                if (myHeroMOve.getTargetZoneCell()!=null){
+                    blocks.add(myHeroMOve.getTargetZoneCell());
+                }
             }
         }
         return blocks;
