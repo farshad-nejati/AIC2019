@@ -215,8 +215,9 @@ public class ScoreStrategy {
         Integer distanceSum = 0;
         Integer distanceScore = 0;
 
-        Integer myHeroCanHitMaxDistance = 0;
+        Integer myHeroCanHitMaxDistance = Integer.MIN_VALUE;
         boolean myHeroCanHitAnyone = false;
+        boolean canNextCellAttack = false;
         Move oppHeroMoveWithMinimumHealth = null;
 
         Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
@@ -227,7 +228,7 @@ public class ScoreStrategy {
 
             for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
                 int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
-                if (myHeroAbility.isReady() && (canHitDistance > myHeroCanHitMaxDistance)) {
+                if (myHeroAbility.isReady() && (canHitDistance < myHeroCanHitMaxDistance)) {
                     System.out.println("Hero: " + myHero.getId() + " myHeroAbility = " + myHeroAbility.getName());
                     myHeroCanHitMaxDistance = canHitDistance;
                 }
@@ -243,14 +244,20 @@ public class ScoreStrategy {
                 Cell oppHeroMoveNextCell = oppHeroMove.getNextCell();
 //                Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
                 Cell oppHeroMoveCurrentCell = oppHeroMoveHero.getCurrentCell();
-                if (oppHeroMoveCurrentCell.isInVision() && oppHeroMoveCurrentCell.isInObjectiveZone()) {
-                    int distance = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
-                    int distanceForSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveCurrentCell);
+                if (oppHeroMoveNextCell.isInVision() && oppHeroMoveNextCell.isInObjectiveZone()) {
+                    int distance = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
+                    int distanceForSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
                     distanceSum += distanceForSum;
                     if (distance <= myHeroCanHitMaxDistance) {
                         myHeroCanHitAnyone = true;
-                        break;
+
+                        int distance2 = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
+                        if (distance2 > myHeroCanHitMaxDistance ){
+                            canNextCellAttack = true;
+//                            break; //if break doesn't exist my hero go to cells that have more enemy;
+                        }
                     }
+
 //                    if (oppHeroMoveWithMinimumHealth == null) {
 //                        oppHeroMoveWithMinimumHealth = oppHeroMove;
 //                    } else {
@@ -262,6 +269,7 @@ public class ScoreStrategy {
             }
 
             if (!myHeroCanHitAnyone) {
+//                score += ((virtualWorld.getMap().getColumnNum() + virtualWorld.getMap().getRowNum() ) - distanceSum ) * 2000;
 //                if (oppHeroMoveWithMinimumHealth != null) {
 //                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());
 //                    Direction direction = directions[0];
@@ -286,6 +294,9 @@ public class ScoreStrategy {
 //                    score += 3 * Score.MOVE_COST;
 //                }
                 score += distanceSum * 20000 * Score.MOVE_COST;
+                if (canNextCellAttack){
+                    score += 50000;
+                }
 
             }
 
