@@ -33,9 +33,9 @@ class MinMaxMove {
         }
 
         Hero oppHero = null;
-        if (!oppHeroes.isEmpty()) {
-            oppHero = oppHeroes.remove(0);
-        }
+//        if (!oppHeroes.isEmpty()) {
+//            oppHero = oppHeroes.remove(0);
+//        }
 
         ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(this.myHero, this.virtualWorld, this.otherOurHeroes);
         HashMap<MyDirection, Integer> scoreHashMap = new HashMap<>();
@@ -81,12 +81,12 @@ class MinMaxMove {
         ArrayList<Hero> otherOurOppHeroes = new ArrayList<>(Arrays.asList(virtualWorld.getOppHeroes()));
         otherOurOppHeroes.removeIf(obj -> (obj.getCurrentCell().getColumn() == -1 || obj.getCurrentCell().getRow() == -1));
 
-        ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(oppHero, this.virtualWorld, otherOurOppHeroes);
+        ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(newOppHero, this.virtualWorld, otherOurOppHeroes);
 
         for (MyDirection oppHeroDir : possibleDirections) {
 
-            Cell heroMoveNextCell = Utility.getCellFromDirection(oppHero.getCurrentCell(), oppHeroDir, this.virtualWorld.getMap());
-            Move move = Move.findByHero(copyOfOppHeroesMove, oppHero);
+            Cell heroMoveNextCell = Utility.getCellFromDirection(newOppHero.getCurrentCell(), oppHeroDir, this.virtualWorld.getMap());
+            Move move = Move.findByHero(copyOfOppHeroesMove, newOppHero);
             Integer index = copyOfOppHeroesMove.indexOf(move);
             move.setNextCell(heroMoveNextCell);
             copyOfOppHeroesMove.set(index, move);
