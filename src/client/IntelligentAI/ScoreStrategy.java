@@ -221,13 +221,14 @@ public class ScoreStrategy {
 
         Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
         Cell myHeroMoveNextCell = move.getNextCell();
-        Cell myHeroMoveCurrentCell = move.getCurrentCell();
+        Cell myHeroMoveCurrentCell = myHero.getCurrentCell();
 
         if (myHeroMoveCurrentCell.isInObjectiveZone()) {
 
             for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
                 int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
                 if (myHeroAbility.isReady() && (canHitDistance > myHeroCanHitMaxDistance)) {
+                    System.out.println("Her0: " + myHero.getId() + " myHeroAbility = " + myHeroAbility.getName());
                     myHeroCanHitMaxDistance = canHitDistance;
                 }
             }
@@ -240,24 +241,27 @@ public class ScoreStrategy {
 
                 Hero oppHeroMoveHero = oppHeroMove.getHero();
                 Cell oppHeroMoveNextCell = oppHeroMove.getNextCell();
-                Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
-                if (oppHeroMoveNextCell.isInVision() && oppHeroMoveNextCell.isInObjectiveZone()) {
-                    int distance = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
-                    distanceSum += distance;
+//                Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
+                Cell oppHeroMoveCurrentCell = oppHeroMoveHero.getCurrentCell();
+                if (oppHeroMoveCurrentCell.isInVision() && oppHeroMoveCurrentCell.isInObjectiveZone()) {
+                    int distance = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
+                    int distanceforSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveCurrentCell);
+                    distanceSum += distanceforSum;
                     if (distance <= myHeroCanHitMaxDistance) {
                         myHeroCanHitAnyone = true;
+                        break;
                     }
-                    if (oppHeroMoveWithMinimumHealth == null) {
-                        oppHeroMoveWithMinimumHealth = oppHeroMove;
-                    } else {
-                        if (oppHeroMoveHero.getCurrentHP() < oppHeroMoveWithMinimumHealth.getHero().getCurrentHP()) {
-                            oppHeroMoveWithMinimumHealth = oppHeroMove;
-                        }
-                    }
+//                    if (oppHeroMoveWithMinimumHealth == null) {
+//                        oppHeroMoveWithMinimumHealth = oppHeroMove;
+//                    } else {
+//                        if (oppHeroMoveHero.getCurrentHP() < oppHeroMovebbWithMinimumHealth.getHero().getCurrentHP()) {
+//                            oppHeroMoveWithMinimumHealth = oppHeroMove;
+//                        }
+//                    }
                 }
             }
-
-            if (!myHeroCanHitAnyone) {
+            if (myHeroMoveNextCell.isInObjectiveZone()){
+                if (!myHeroCanHitAnyone) {
 //                if (oppHeroMoveWithMinimumHealth != null) {
 //                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());
 //                    Direction direction = directions[0];
@@ -273,9 +277,20 @@ public class ScoreStrategy {
 //                }
 //
 
-                score += distanceSum * 2 * Score.MOVE_COST;
+//                if (move.getBeforeCell() != null) {
+//                    if (move.getBeforeCell().equals(Utility.getCellFromDirection(move.getCurrentCell(), myHeroDirection, virtualWorld.getMap()))) {
+//                        score += -1000;
+//                    }
+//                }
+                    if (myHeroDirection.equals(MyDirection.FIX)) {
+//                    score += 3 * Score.MOVE_COST;
+                    }
+                    score += distanceSum * 20000 * Score.MOVE_COST;
 
+                }
             }
+
+
 
         }
         return score;
