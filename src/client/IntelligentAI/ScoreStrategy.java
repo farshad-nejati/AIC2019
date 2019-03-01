@@ -254,7 +254,7 @@ public class ScoreStrategy {
                         int distance2 = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
                         if (distance2 > myHeroCanHitMaxDistance ){
                             canNextCellAttack = true;
-                            score += 50000;
+//                            score += 50000;
 //                            break; //if break doesn't exist my hero go to cells that have more enemy;
                         }
                     }
@@ -296,7 +296,7 @@ public class ScoreStrategy {
 //                }
                 score += distanceSum * 20000 * Score.MOVE_COST;
                 if (canNextCellAttack){
-//                    score += 50000;
+                    score += 50000;
                 }
 
             }
