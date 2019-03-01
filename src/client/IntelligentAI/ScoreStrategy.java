@@ -309,7 +309,7 @@ public class ScoreStrategy {
             Cell oppHeroMoveNextCell = oppHeroMove.getNextCell();
             Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
 
-            if (oppHeroMoveNextCell.isInVision()) {
+            if (oppHeroMoveCurrentCell.isInVision()) {
                 if (oppHeroMoveWithMinimumHealth == null) {
                     oppHeroMoveWithMinimumHealth = oppHeroMove;
                 } else {
