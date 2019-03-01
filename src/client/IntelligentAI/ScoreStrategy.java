@@ -209,7 +209,7 @@ public class ScoreStrategy {
 //        return losingHealthScore ;
     }
 
-    public static Integer moveTowardToOppHeroes(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blocks) {
+    public static Integer reduceDistanceWithOppHeroesInObjectiveZone(Hero myHero, MyDirection myHeroDirection, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
 
         Integer score = 0;
         Integer distanceSum = 0;
@@ -228,7 +228,7 @@ public class ScoreStrategy {
             for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
                 int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
                 if (myHeroAbility.isReady() && (canHitDistance > myHeroCanHitMaxDistance)) {
-                    System.out.println("Her0: " + myHero.getId() + " myHeroAbility = " + myHeroAbility.getName());
+                    System.out.println("Hero: " + myHero.getId() + " myHeroAbility = " + myHeroAbility.getName());
                     myHeroCanHitMaxDistance = canHitDistance;
                 }
             }
@@ -245,8 +245,8 @@ public class ScoreStrategy {
                 Cell oppHeroMoveCurrentCell = oppHeroMoveHero.getCurrentCell();
                 if (oppHeroMoveCurrentCell.isInVision() && oppHeroMoveCurrentCell.isInObjectiveZone()) {
                     int distance = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
-                    int distanceforSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveCurrentCell);
-                    distanceSum += distanceforSum;
+                    int distanceForSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveCurrentCell);
+                    distanceSum += distanceForSum;
                     if (distance <= myHeroCanHitMaxDistance) {
                         myHeroCanHitAnyone = true;
                         break;
@@ -282,9 +282,9 @@ public class ScoreStrategy {
 //                        score += -1000;
 //                    }
 //                }
-                if (myHeroDirection.equals(MyDirection.FIX)) {
+//                if (myHeroDirection.equals(MyDirection.FIX)) {
 //                    score += 3 * Score.MOVE_COST;
-                }
+//                }
                 score += distanceSum * 20000 * Score.MOVE_COST;
 
             }
