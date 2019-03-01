@@ -254,14 +254,14 @@ public class ScoreStrategy {
 //                    if (oppHeroMoveWithMinimumHealth == null) {
 //                        oppHeroMoveWithMinimumHealth = oppHeroMove;
 //                    } else {
-//                        if (oppHeroMoveHero.getCurrentHP() < oppHeroMovebbWithMinimumHealth.getHero().getCurrentHP()) {
+//                        if (oppHeroMoveHero.getCurrentHP() < oppHeroMoveWithMinimumHealth.getHero().getCurrentHP()) {
 //                            oppHeroMoveWithMinimumHealth = oppHeroMove;
 //                        }
 //                    }
                 }
             }
-            if (myHeroMoveNextCell.isInObjectiveZone()){
-                if (!myHeroCanHitAnyone) {
+
+            if (!myHeroCanHitAnyone) {
 //                if (oppHeroMoveWithMinimumHealth != null) {
 //                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());
 //                    Direction direction = directions[0];
@@ -282,15 +282,12 @@ public class ScoreStrategy {
 //                        score += -1000;
 //                    }
 //                }
-                    if (myHeroDirection.equals(MyDirection.FIX)) {
+                if (myHeroDirection.equals(MyDirection.FIX)) {
 //                    score += 3 * Score.MOVE_COST;
-                    }
-                    score += distanceSum * 20000 * Score.MOVE_COST;
-
                 }
+                score += distanceSum * 20000 * Score.MOVE_COST;
+
             }
-
-
 
         }
         return score;
