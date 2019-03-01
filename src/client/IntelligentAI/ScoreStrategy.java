@@ -292,4 +292,45 @@ public class ScoreStrategy {
         }
         return score;
     }
+
+    public static Integer reduceDistanceToOppHeroesWithMinimumHealth(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, ArrayList<Cell> blocks) {
+
+        Integer distanceSum;
+        Integer distanceScore = 0;
+
+        Move oppHeroMoveWithMinimumHealth = null;
+
+        Move move = Move.findByHero(copyOfMyHeroesMove, myHero);
+        Cell myHeroMoveNextCell = move.getNextCell();
+        Cell myHeroMoveCurrentCell = myHero.getCurrentCell();
+
+        for (Move oppHeroMove : copyOfOppHeroesMove) {
+            Hero oppHeroMoveHero = oppHeroMove.getHero();
+            Cell oppHeroMoveNextCell = oppHeroMove.getNextCell();
+            Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
+
+            if (oppHeroMoveNextCell.isInVision()) {
+                if (oppHeroMoveWithMinimumHealth == null) {
+                    oppHeroMoveWithMinimumHealth = oppHeroMove;
+                } else {
+                    if (oppHeroMoveHero.getCurrentHP() < oppHeroMoveWithMinimumHealth.getHero().getCurrentHP()) {
+                        oppHeroMoveWithMinimumHealth = oppHeroMove;
+                    }
+                }
+            }
+        }
+
+        if (oppHeroMoveWithMinimumHealth != null) {
+            Cell oppHeroMoveWithMinimumHealthNextCell = oppHeroMoveWithMinimumHealth.getNextCell();
+            Cell oppHeroMoveWithMinimumHealthCurrentCell = oppHeroMoveWithMinimumHealth.getCurrentCell();
+            distanceSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveWithMinimumHealthNextCell);
+
+            distanceScore += distanceSum * Score.DISTANCE_COST;
+            if (myHeroDirection.equals(MyDirection.FIX)) {
+                distanceScore += 2 * Score.MOVE_COST;
+            }
+        }
+
+        return distanceScore;
+    }
 }
