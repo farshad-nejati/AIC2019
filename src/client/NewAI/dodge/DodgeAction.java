@@ -10,7 +10,14 @@ import java.util.Random;
 
 public class DodgeAction {
 
-    public static void executeMove(World world, ArrayList<Hero> myHeroes, ArrayList<DodgeStatus> dodgeStatuses) {
+    public static void executeMove(World world, ArrayList<NoneZoneDodge> noneZoneDodges) {
+        for (NoneZoneDodge noneZoneDodge : noneZoneDodges) {
+            Hero hero = noneZoneDodge.getHero();
+            Ability ability = noneZoneDodge.getAbility();
+            Cell targetCell = noneZoneDodge.getTargetCell();
+            world.castAbility(hero, ability, targetCell);
+        }
+        noneZoneDodges.clear();
     }
 
     public static void executeAction(World world, ArrayList<Hero> inZoneHeroes, ArrayList<DodgeStatus> inZoneDodgeStatuses) {
@@ -27,7 +34,8 @@ public class DodgeAction {
                 if (world.getAP() > dodgeStatusHero.getAbility().getAPCost()) {
                     Hero hero = dodgeStatusHero.getHero();
                     Ability dodgeAbility = dodgeStatusHero.getAbility();
-                    ArrayList<Cell> inRangeCells = Helper.findInRangeCells(world, hero, dodgeAbility);
+                    ArrayList<Cell> objectiveCells = new ArrayList<>(Arrays.asList(world.getMap().getObjectiveZone()));
+                    ArrayList<Cell> inRangeCells = Helper.findInRangeCells(world, objectiveCells, hero, dodgeAbility);
                     // TODO: fix max distance to areaEffect
                     ArrayList<Cell> dangerCells = Helper.findInRangeCells(world, inRangeCells, hero, 0, 3);
                     DodgeAction.addTODangerCells(allDangerCells, dangerCells);
@@ -66,12 +74,5 @@ public class DodgeAction {
         return lowerDangerousCells;
     }
 
-
-    public static ArrayList<Hero> removeEnableDodgeFromList(ArrayList<DodgeStatus> noneZoneDodgeStatuses, ArrayList<Hero> noneZoneHeroes) {
-        for (DodgeStatus dodgeStatus : noneZoneDodgeStatuses) {
-            if (dodgeStatus.isActive()) { noneZoneHeroes.remove(dodgeStatus.getHero()); }
-        }
-        return  noneZoneHeroes;
-    }
 
 }

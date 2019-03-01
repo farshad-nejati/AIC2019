@@ -3,9 +3,7 @@ package client;
 import client.NewAI.Helper;
 import client.NewAI.SortClass;
 import client.NewAI.action.NewAction;
-import client.NewAI.dodge.DodgeAction;
-import client.NewAI.dodge.DodgeHelper;
-import client.NewAI.dodge.DodgeStatus;
+import client.NewAI.dodge.*;
 import client.NewAI.move.inZone.InZoneMoving;
 import client.NewAI.move.Move;
 import client.NewAI.move.noneZone.NoneZoneHero;
@@ -48,6 +46,7 @@ public class AI
     int maxAreaEffect = 5;
     ArrayList<DodgeStatus> inZoneDodgeStatuses = new ArrayList<>();
     ArrayList<DodgeStatus> noneZoneDodgeStatuses = new ArrayList<>();
+    ArrayList<NoneZoneDodge> noneZoneDodges = new ArrayList<>();
 
     public void preProcess(World world) {
         System.out.println("pre process started");
@@ -84,13 +83,14 @@ public class AI
             findZoneStatusOfHeroes(world);
         }
 
-        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes);
-        noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes);
+        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, false);
+        noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes, true);
 
 
         if (noneZoneHeroes.size() > 0 ) {
-//            DodgeAction.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
-//            DodgeAction.executeMove(world, noneZoneHeroes, noneZoneDodgeStatuses);
+            ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
+            DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
+            DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
             noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
         }
         if (inZoneHeroes.size() > 0) {
@@ -119,8 +119,9 @@ public class AI
 
         printer.printMap(world);
 
+        DodgeAction.executeMove(world, noneZoneDodges);
 
-        DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+        DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
         DodgeAction.executeAction(world, inZoneHeroes, inZoneDodgeStatuses);
 
         if (inZoneHeroes.size() > 0) {

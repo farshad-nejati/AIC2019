@@ -5,6 +5,7 @@ import client.NewAI.action.ActiveMyHeroes;
 import client.model.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -162,8 +163,9 @@ public class RandomAction {
         ArrayList<CandidateActionCell> candidateCells = new ArrayList<>();
         ArrayList<Cell> inDistanceCells = new ArrayList<>();
 
+        ArrayList<Cell> objectiveZoneCells = new ArrayList<>(Arrays.asList(world.getMap().getObjectiveZone()));
         // TODO: for each cell in objective cell find cells with range < max range of ability
-        inDistanceCells = Helper.findInRangeCells(world, myHero, ability);
+        inDistanceCells = Helper.findInRangeCells(world, objectiveZoneCells, myHero, ability);
 
         // TODO: for each findded cell calculate lobbing ability impact cell
         for (Cell cell : inDistanceCells) {

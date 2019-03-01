@@ -1,16 +1,19 @@
 package client.NewAI;
 
 import client.NewAI.dodge.DodgeStatus;
+import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Helper {
 
 
-    public static ArrayList<Cell> findInRangeCells(World world, Hero myHero, Ability ability) {
+    public static ArrayList<Cell> findInRangeCells(World world, ArrayList<Cell> cells, Hero myHero, Ability ability) {
         ArrayList<Cell> inRangeCells = new ArrayList<>();
-        for (Cell cell : world.getMap().getObjectiveZone()) {
+        for (Cell cell : cells) {
             int range = ability.getRange();
             int distance = world.manhattanDistance(myHero.getCurrentCell(), cell);
             if (distance <= range) {
@@ -86,5 +89,35 @@ public class Helper {
         } else {
             return 7;
         }
+    }
+
+    public static ArrayList<Cell> getBlockedCells(ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells, Hero ignoreHero, ArrayList<Hero> inZoneHeroes) {
+        ArrayList<Cell> blockedCells = new ArrayList<>();
+        for (Hero hero : inZoneHeroes) {
+            blockedCells.add(hero.getCurrentCell());
+        }
+        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : reSpawnObjectiveCells) {
+            if (respawnObjectiveZoneCell.isArrival()) {
+                continue;
+            }
+            if (respawnObjectiveZoneCell.getHero().equals(ignoreHero)) {
+                continue;
+            }
+            blockedCells.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
+        }
+        return blockedCells;
+    }
+
+    public static int getPathDistance(World world, Cell currentCell, Cell targetCell, ArrayList<Cell> blockedCells) {
+        Direction[] directions = world.getPathMoveDirections(currentCell, targetCell, blockedCells);
+        return directions.length;
+    }
+
+    public static  <T> ArrayList<T> twoDArrayToList(T[][] twoDArray) {
+        ArrayList<T> list = new ArrayList<T>();
+        for (T[] array : twoDArray) {
+            list.addAll(Arrays.asList(array));
+        }
+        return list;
     }
 }
