@@ -57,7 +57,7 @@ public class MinMaxAlgorithm {
             myHeroesMove.set(index, move);
             // TODO: find best object cell for this hero
 
-            System.out.println("my hero = " + myHero.getId() + " row = " + myHero.getCurrentCell().getRow() + " column = " + myHero.getCurrentCell().getColumn());
+//            System.out.println("my hero = " + myHero.getId() + " row = " + myHero.getCurrentCell().getRow() + " column = " + myHero.getCurrentCell().getColumn());
             MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld, this.respawnObjectiveZoneCells);
             MyDirection direction = minMaxMove.getDirection(myHeroesMove);
             heroDirectionHashMap.put(myHero, direction);
@@ -69,7 +69,7 @@ public class MinMaxAlgorithm {
 
             myHeroesMove.set(index2, move2);
 
-            System.out.println(" final direction= " + direction + "\n \n \n");
+//            System.out.println(" final direction= " + direction + "\n \n \n");
             if (!direction.equals(MyDirection.FIX)) {
                 virtualWorld.moveHero(myHero, Utility.castMyDirectionToDirection(direction));
             }
