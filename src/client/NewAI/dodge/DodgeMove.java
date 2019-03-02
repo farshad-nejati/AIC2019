@@ -9,15 +9,14 @@ import java.util.ArrayList;
 public class DodgeMove {
     public static ArrayList<NoneZoneDodge> executeMove(ArrayList<NoneZoneDodge> noneZoneDodges, World world, ArrayList<Hero> zoneHeroes, ArrayList<Hero> noneZoneHeroes, ArrayList<DodgeStatus> noneZoneDodgeStatuses, ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells) {
         noneZoneDodges.clear();
-        ArrayList<Cell> blockedCells = new ArrayList<>();
         ArrayList<Cell> alreadySelectedCells = new ArrayList<>();
         for (DodgeStatus dodgeStatus : noneZoneDodgeStatuses) {
             Hero hero = dodgeStatus.getHero();
             boolean againAdd = true;
             if (dodgeStatus.isActive()) {
+                ArrayList<Cell> blockedCells = Helper.getBlockedCells(reSpawnObjectiveCells, hero, zoneHeroes);
                 RespawnObjectiveZoneCell respawnObjective = RespawnObjectiveZoneCell.findByHero(reSpawnObjectiveCells, hero);
                 Cell targetCell = respawnObjective.getObjectiveZoneCell();
-                blockedCells = Helper.getBlockedCells(reSpawnObjectiveCells, hero, zoneHeroes);
 
                 int normalDistance = Helper.getPathDistance(world, hero.getCurrentCell(), targetCell, blockedCells);
                 DodgeDistance bestDodgeDistance = getBestDodgeDistance(world, hero, targetCell, dodgeStatus.getAbility(), alreadySelectedCells);

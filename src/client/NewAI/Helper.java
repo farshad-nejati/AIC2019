@@ -77,9 +77,9 @@ public class Helper {
 
     public static ArrayList<Cell> getBlockedCells(ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells, Hero ignoreHero, ArrayList<Hero> inZoneHeroes) {
         ArrayList<Cell> blockedCells = new ArrayList<>();
-        for (Hero hero : inZoneHeroes) {
-            blockedCells.add(hero.getCurrentCell());
-        }
+//        for (Hero hero : inZoneHeroes) {
+//            blockedCells.add(hero.getCurrentCell());
+//        }
         for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : reSpawnObjectiveCells) {
             if (respawnObjectiveZoneCell.isArrival()) {
                 continue;

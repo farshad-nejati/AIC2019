@@ -47,8 +47,8 @@ public class AI
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
     int maxAreaEffect = 5;
-    ArrayList<DodgeStatus> inZoneDodgeStatuses = new ArrayList<>();
-    ArrayList<DodgeStatus> noneZoneDodgeStatuses = new ArrayList<>();
+    ArrayList<DodgeStatus> inZoneDodgeStatuses;
+    ArrayList<DodgeStatus> noneZoneDodgeStatuses;
     ArrayList<NoneZoneDodge> noneZoneDodges = new ArrayList<>();
     ArrayList<AreaEffect> areaEffectList = new ArrayList<>();
     ArrayList<PowerFullAbility> powerFullAbilities = new ArrayList<>();
@@ -80,6 +80,8 @@ public class AI
 
         inZoneHeroes = new ArrayList<>();
         noneZoneHeroes = new ArrayList<>();
+        noneZoneDodgeStatuses = new ArrayList<>();
+        inZoneDodgeStatuses = new ArrayList<>();
 
         if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
             firstZoneStatusOfHeroes(world);
@@ -258,9 +260,9 @@ public class AI
         }
     }
 
-    private void isArrivalStatus(Hero hero, RespawnObjectiveZoneCell respawnObjectiveZoneCell, ArrayList<Hero> inZoneHeroes) {
+    private void isArrivalStatus(Hero hero, RespawnObjectiveZoneCell respawnObjectiveZoneCell, ArrayList<Hero> ZoneHeroes) {
         if (hero.getCurrentHP() > 0) {
-            inZoneHeroes.add(hero);
+            ZoneHeroes.add(hero);
         } else {
             int index = respawnObjectiveZoneCells.indexOf(respawnObjectiveZoneCell);
             respawnObjectiveZoneCell.setArrival(false);
