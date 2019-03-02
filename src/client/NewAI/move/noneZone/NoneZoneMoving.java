@@ -15,22 +15,37 @@ public class NoneZoneMoving {
         this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
     }
 
-    public void move(World world, ArrayList<Hero> noneZoneHeroes, ArrayList<Cell> blockedCells) {
+    public void move(World world, ArrayList<Hero> noneZoneHeroes, ArrayList<Hero> inZoneHeroes) {
         for (Hero hero : noneZoneHeroes) {
 
-            for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
-                Cell objectiveCell = respawnObjectiveZoneCell.getObjectiveZoneCell();
-                if (respawnObjectiveZoneCell.getHero().getId() == hero.getId()) {
-                    blockedCells.remove(objectiveCell);
-                    respawnObjectiveZoneCell.setHero(hero);
-                    Direction[] directions = world.getPathMoveDirections(hero.getCurrentCell(), objectiveCell, blockedCells);
-                    new Printer().printDirections(directions);
-                    Direction direction = directions[0];
-                    world.moveHero(hero, direction);
-                    blockedCells.add(objectiveCell);
-                    break;
-                }
+            ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>(this.respawnObjectiveZoneCells);
+            RespawnObjectiveZoneCell respawnObjectiveZoneCell = RespawnObjectiveZoneCell.findByHero(this.respawnObjectiveZoneCells, hero) ;
+            int index = respawnObjectiveZoneCells.indexOf(respawnObjectiveZoneCell);
+            respawnObjectiveZoneCells.remove(respawnObjectiveZoneCell);
+
+            ArrayList<Cell> blockedCells = findBlockedCells(respawnObjectiveZoneCells, inZoneHeroes);
+            Cell objectiveCell = respawnObjectiveZoneCell.getObjectiveZoneCell();
+
+            Direction[] directions = world.getPathMoveDirections(hero.getCurrentCell(), objectiveCell, blockedCells);
+            if (directions.length > 0) {
+                new Printer().printDirections(directions);
+                Direction direction = directions[0];
+                world.moveHero(hero, direction);
+                respawnObjectiveZoneCell.setHero(hero);
+                this.respawnObjectiveZoneCells.set(index, respawnObjectiveZoneCell);
             }
+
         }
+    }
+
+    private ArrayList<Cell> findBlockedCells(ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, ArrayList<Hero> inZoneHeroes) {
+        ArrayList<Cell> blockedCells = new ArrayList<>();
+        for (Hero hero: inZoneHeroes) {
+            blockedCells.add(hero.getCurrentCell());
+        }
+        for (RespawnObjectiveZoneCell obj : respawnObjectiveZoneCells) {
+            blockedCells.add(obj.getObjectiveZoneCell());
+        }
+        return blockedCells;
     }
 }

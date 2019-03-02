@@ -1,6 +1,7 @@
 package client.NewAI.move.inZone;
 
 import client.NewAI.Utility;
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.Printer;
 import client.model.*;
 
@@ -10,15 +11,15 @@ import java.util.Collections;
 public class InZoneMoving {
 
     private Utility utility;
-    public InZoneMoving(ArrayList<Hero> inZoneHeroes, World world) {
-        this.utility = new Utility(inZoneHeroes, world);
+    public InZoneMoving(ArrayList<Hero> inZoneHeroes, World world, ArrayList<AreaEffect> areaEffects) {
+        this.utility = new Utility(inZoneHeroes, world, areaEffects);
     }
-    public void move(World world, ArrayList<Cell> blockedCellsNoneZoneHeroes) {
+    public void move(World world, ArrayList<Hero> noneZoneHeroes) {
         for (HeroPosition heroPosition : utility.heroPositions){
             Hero myHero = heroPosition.getHero();
 //        for (Hero myHero : myHeroes) {
-            utility.addBlockedCells(utility.myHeroes, myHero, blockedCellsNoneZoneHeroes);
-            Cell bestCell = utility.findBestCellToMove(myHero);
+//            utility.addBlockedCells(utility.myHeroes, myHero, blockedCellsNoneZoneHeroes);
+            Cell bestCell = utility.findBestCellToMove(myHero, noneZoneHeroes);
             if (bestCell != null) {
 //                Direction[] directions = world.getPathMoveDirections(myHero.getCurrentCell(), );
 //                new Printer().printDirections(directions);

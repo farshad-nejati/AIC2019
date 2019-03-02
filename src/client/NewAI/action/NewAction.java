@@ -1,7 +1,7 @@
 package client.NewAI.action;
 
 import client.NewAI.Utility;
-import client.RandomAI.EffectiveHero;
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.RandomAI.RandomAction;
 import client.model.Ability;
 import client.model.Cell;
@@ -14,8 +14,8 @@ public class NewAction {
 
 
     private Utility utility;
-    public NewAction(ArrayList<Hero> inZoneHeroes, World world) {
-        this.utility = new Utility(inZoneHeroes, world);
+    public NewAction(ArrayList<Hero> inZoneHeroes, World world, ArrayList<AreaEffect> areaEffects) {
+        this.utility = new Utility(inZoneHeroes, world, areaEffects);
     }
 
     public void action(World world) {
@@ -25,6 +25,7 @@ public class NewAction {
         ArrayList<Hero> inVisionOppHeroes = getInVisionOppHeroes(world);
         ArrayList<ActiveMyHeroes> activeMyHeroes = getActiveMyHeroes(world, inVisionOppHeroes);
 
+        ArrayList<Hero> passesMyHeroes = new ArrayList<>();
 
         for (Hero oppHero : inVisionOppHeroes) {
             fuckedOppHEro.put(oppHero, false);
@@ -121,6 +122,7 @@ public class NewAction {
                 if (effectiveHero != null) {
                     Ability ability2 = effectiveHero.getAbility();
                     world.castAbility(effectiveHero.getMyHero(), ability2, effectiveHero.getTargetCell());
+                    passesMyHeroes.add(effectiveHero.getMyHero());
                     Hero oppHero2 = effectiveHero.getOppHero();
                     System.out.println("\n\n\n is Killed worked!!!!! \n\n\n");
                     for (OppHeroAction oppHeroAction: candidateOppHeroes) {
@@ -135,19 +137,27 @@ public class NewAction {
                     }
 
                 }
-            } else {
-                //TODO: my algorithm for if opp hero not dead
-                for (Hero hero : utility.myHeroes)
-                System.out.println("random action inpted!!");
-                    RandomAction randomAction = new RandomAction();
-                    randomAction.randomAction(world);
-                    break;
             }
             activeMyHeroes.remove(selectedActiveMyHero);
         }
 
+        //TODO: my algorithm for if opp hero not dead
+        RandomAction randomAction = new RandomAction();
+        ArrayList<Hero> remainMyHeroes = getRemainHeroes(world.getMyHeroes(), passesMyHeroes);
+        randomAction.randomAction(world, remainMyHeroes);
+
     }
 
+    private ArrayList<Hero> getRemainHeroes(Hero[] allHeroes, ArrayList<Hero> passesMyHeroes) {
+        ArrayList<Hero> remainHeroes = new ArrayList<>();
+        for (Hero hero : allHeroes) {
+            if ( !passesMyHeroes.contains(hero) ) {
+                remainHeroes.add(hero);
+            }
+
+        }
+        return remainHeroes;
+    }
 
 
     public ActiveMyHeroes findActiveMyHeroByHero(ArrayList<ActiveMyHeroes> activeMyHeroes, Hero hero) {

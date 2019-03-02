@@ -1,5 +1,6 @@
 package client.NewAI;
 
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.NewAI.move.inZone.HeroNeighbors;
 import client.NewAI.move.inZone.HeroPosition;
 import client.NewAI.move.inZone.ObjectiveCellThreat;
@@ -18,11 +19,12 @@ public class Utility {
     public int phaseNumber;
     public ArrayList<HeroNeighbors> heroNeighbors = new ArrayList<>();
     public ArrayList<Cell> blockedCells;
+    // TODO: change maxAreaEffect to area effect of opp heroes
     public int maxAreaEffect = 5;
     public ArrayList<HeroPosition> heroPositions = new ArrayList<>();
 
 
-    public Utility(ArrayList<Hero> inZoneHeroes, World world) {
+    public Utility(ArrayList<Hero> inZoneHeroes, World world, ArrayList<AreaEffect> areaEffects) {
         this.myHeroes = inZoneHeroes;
         this.world = world;
         this.objectiveCells = world.getMap().getObjectiveZone();
@@ -30,7 +32,7 @@ public class Utility {
         initializeHeroPositions();
         getInVisionOppHeroes(world);
         initializeObjectiveCellThreats();
-        findObjectiveCellThreat();
+        findObjectiveCellThreat(areaEffects);
         findHeroNeighborCells(world);
     }
 
@@ -69,13 +71,13 @@ public class Utility {
 
     }
 
-    public Cell findBestCellToMove(Hero myHero) {
+    public Cell findBestCellToMove(Hero myHero, ArrayList<Hero> noneZoneHeroes) {
         HeroNeighbors myHeroNeighbors = HeroNeighbors.findByHero(this.heroNeighbors, myHero);
         ArrayList<Cell> neighbors = myHeroNeighbors.getNeighborCells();
         ArrayList<ObjectiveCellThreat> sortedThreatObjects = new ArrayList<>();
         Collections.sort(this.objectiveCellThreats, ObjectiveCellThreat.threatNumberComparator);
         int minNumber = 10;
-        ArrayList<ObjectiveCellThreat> objectThreatCellThree = getObjectsWithThreeDistance(myHero, this.objectiveCellThreats);
+        ArrayList<ObjectiveCellThreat> objectThreatCellThree = getObjectsWithThreeDistance(myHero, this.objectiveCellThreats, noneZoneHeroes);
         for (ObjectiveCellThreat objectThreat : objectThreatCellThree) {
             Cell cell = objectThreat.getCell();
 //            if (!neighbors.contains(cell))
@@ -106,7 +108,7 @@ public class Utility {
         return null;
     }
 
-    public ArrayList<ObjectiveCellThreat> getObjectsWithThreeDistance(Hero currentHero, ArrayList<ObjectiveCellThreat> objectiveCellThreats) {
+    public ArrayList<ObjectiveCellThreat> getObjectsWithThreeDistance(Hero currentHero, ArrayList<ObjectiveCellThreat> objectiveCellThreats, ArrayList<Hero> noneZoneHeroes) {
         ArrayList<ObjectiveCellThreat> returnObject = new ArrayList<>();
 
         ArrayList<HeroPosition> currentHeroPositions = new ArrayList<>(this.heroPositions);
@@ -116,22 +118,35 @@ public class Utility {
         int maxEffect = this.maxAreaEffect;
         while (maxEffect > this.maxAreaEffect - 1) {
 
-            for (ObjectiveCellThreat threatObject : objectiveCellThreats) {
-                boolean flag = true;
+            boolean noneZeroFlag = true;
+            for (Hero noneZeroHero : noneZoneHeroes) {
                 for (HeroPosition heroPosition : currentHeroPositions) {
                     Hero hero = heroPosition.getHero();
-                    int distance = world.manhattanDistance(threatObject.getCell(), heroPosition.getCell());
+                    int distance = world.manhattanDistance(hero.getCurrentCell(), heroPosition.getCell());
                     if (distance < maxEffect) {
-                        flag = false;
+                        noneZeroFlag = false;
                     }
                 }
-                if (flag) {
-                    returnObject.add(threatObject);
+            }
+            if (noneZeroFlag) {
+                for (ObjectiveCellThreat threatObject : objectiveCellThreats) {
+                    boolean flag = true;
+                    for (HeroPosition heroPosition : currentHeroPositions) {
+                        Hero hero = heroPosition.getHero();
+                        int distance = world.manhattanDistance(threatObject.getCell(), heroPosition.getCell());
+                        if (distance < maxEffect) {
+                            flag = false;
+                        }
+                    }
+                    if (flag) {
+                        returnObject.add(threatObject);
+                    }
                 }
             }
             if (returnObject.size() != 0) {
                 break;
             }
+
             maxEffect--;
         }
         return returnObject;
@@ -182,10 +197,15 @@ public class Utility {
     }
 
 
-    public void findObjectiveCellThreat() {
-        for (Hero hero : inVisionOppHeroes) {
-            Ability[] offensiveAbilities = hero.getOffensiveAbilities();
-            Ability dangerousAbility = findDangerousAbility(offensiveAbilities);
+    public void findObjectiveCellThreat(ArrayList<AreaEffect> areaEffects) {
+        for (AreaEffect areaEffect : areaEffects) {
+            Hero hero = areaEffect.getHero();
+            if ( !hero.getCurrentCell().isInVision() ) {
+                continue;
+            }
+//            Ability[] offensiveAbilities = hero.getOffensiveAbilities();
+//            Ability dangerousAbility = findDangerousAbility(offensiveAbilities);
+            Ability dangerousAbility = areaEffect.getAbility();
             if (dangerousAbility != null) {
                 updateObjectiveCellThreats(hero, dangerousAbility);
             }

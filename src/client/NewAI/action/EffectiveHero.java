@@ -1,4 +1,4 @@
-package client.RandomAI;
+package client.NewAI.action;
 
 import client.model.Ability;
 import client.model.Cell;
@@ -11,6 +11,13 @@ public class EffectiveHero {
     private Hero oppHero;
     private Ability randomAbility;
     private Cell targetCell;
+
+    public EffectiveHero(Hero myHero, Ability randomAbility, Cell targetCell) {
+        this.myHero = myHero;
+        this.oppHero = null;
+        this.randomAbility = randomAbility;
+        this.targetCell = targetCell;
+    }
 
     public EffectiveHero(Hero myHero, Hero oppHero, Ability randomAbility, Cell targetCell) {
         this.myHero = myHero;

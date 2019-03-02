@@ -1,6 +1,10 @@
 package client;
 
+import client.NewAI.action.areaEffect.AreaEffect;
+import client.NewAI.action.areaEffect.PowerFullAbility;
 import client.model.*;
+
+import java.util.ArrayList;
 
 public class Printer {
 
@@ -37,7 +41,7 @@ public class Printer {
         for (Hero hero: heroes){
             int row = hero.getCurrentCell().getRow();
             int column = hero.getCurrentCell().getColumn();
-            System.out.print("hero " + hero.getName() + ": " + row + " , " + column);
+            System.out.print("hero " + hero.getName() + hero.getId() + ": " + row + " , " + column);
             System.out.println("  HP: " + hero.getCurrentHP());
         }
     }
@@ -47,7 +51,7 @@ public class Printer {
         for (Hero hero: heroes){
             int row = hero.getCurrentCell().getRow();
             int column = hero.getCurrentCell().getColumn();
-            System.out.print("Opp hero " + hero.getName() + ": " + row + " , " + column);
+            System.out.print("Opp hero " + hero.getName()+ hero.getId() + ": " + row + " , " + column);
             System.out.println("  HP: " + hero.getCurrentHP());
         }
     }
@@ -103,4 +107,23 @@ public class Printer {
         }
     }
 
+    public void printPowerAbilities(ArrayList<PowerFullAbility> powerFullAbilities) {
+        System.out.println("\npowerFullAbilities.size() = " + powerFullAbilities.size());
+        for (PowerFullAbility powerFullAbility : powerFullAbilities) {
+            System.out.println("\npowerFullAbility.getId() = " + powerFullAbility.getId());
+            System.out.println("powerFullAbility.getRemCoolDown() = " + powerFullAbility.getRemCoolDown());
+        }
+    }
+
+    public void printAreaEffectList(ArrayList<AreaEffect> areaEffectList) {
+        System.out.println("\n Area Effect List Size : " + areaEffectList.size());
+
+        for (AreaEffect areaEffect : areaEffectList) {
+            System.out.println("\n");
+            System.out.println("areaEffect.getId() = " + areaEffect.getId());
+            System.out.println("areaEffect.getHero() = " + areaEffect.getHero());
+            System.out.println("areaEffect.getAbility() = " + areaEffect.getAbility().getName());
+            System.out.println("areaEffect.getMaxRange() = " + areaEffect.getMaxRange());
+        }
+    }
 }

@@ -1,7 +1,12 @@
 package client;
 
+import client.NewAI.Helper;
 import client.NewAI.SortClass;
 import client.NewAI.action.NewAction;
+import client.NewAI.action.areaEffect.AreaEffect;
+import client.NewAI.action.areaEffect.AreaEffectHelper;
+import client.NewAI.action.areaEffect.PowerFullAbility;
+import client.NewAI.dodge.*;
 import client.NewAI.move.inZone.InZoneMoving;
 import client.NewAI.move.Move;
 import client.NewAI.move.noneZone.NoneZoneHero;
@@ -37,7 +42,7 @@ public class AI {
 
     private NoneZoneMoving noneZoneMoving;
     private InZoneMoving inZoneMoving;
-    private Cell[] objectiveZoneCells;
+    private ArrayList<Cell> objectiveZoneCells;
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
 
@@ -48,6 +53,11 @@ public class AI {
 
 
     int maxAreaEffect = 5;
+    ArrayList<DodgeStatus> inZoneDodgeStatuses;
+    ArrayList<DodgeStatus> noneZoneDodgeStatuses;
+    ArrayList<NoneZoneDodge> noneZoneDodges = new ArrayList<>();
+    ArrayList<AreaEffect> areaEffectList = new ArrayList<>();
+    ArrayList<PowerFullAbility> powerFullAbilities = new ArrayList<>();
 
     public void preProcess(World world) {
         System.out.println("pre process started");
@@ -57,7 +67,8 @@ public class AI {
         printer = new Printer();
         newMove = new Move();
 
-        objectiveZoneCells = world.getMap().getObjectiveZone();
+//        objectiveZoneCells = world.getMap().getObjectiveZone();
+        objectiveZoneCells =Helper.getSortedObjectiveCells(world);
         findNearestCellToHeroes(world);
         noneZoneMoving = new NoneZoneMoving(respawnObjectiveZoneCells);
     }
@@ -76,13 +87,41 @@ public class AI {
 
         inZoneHeroes = new ArrayList<>();
         noneZoneHeroes = new ArrayList<>();
+        noneZoneDodgeStatuses = new ArrayList<>();
+        inZoneDodgeStatuses = new ArrayList<>();
 
         if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
             firstZoneStatusOfHeroes(world);
             setHeroesInReSpawnCell();
+            areaEffectList = AreaEffectHelper.initialAffectArea(world);
+            powerFullAbilities = AreaEffectHelper.initialPowerFullAbility(world);
         } else {
+            setHeroesInReSpawnCell();
             findZoneStatusOfHeroes(world);
         }
+
+        if (world.getMovePhaseNum() == 0) {
+            try {
+                AreaEffectHelper.updatePowerFullAbility(world, powerFullAbilities, areaEffectList);
+                AreaEffectHelper.updateAreaEffects(world, areaEffectList, powerFullAbilities);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                System.out.println("\nError: ");
+                new Printer().printPowerAbilities(powerFullAbilities);
+                new Printer().printAreaEffectList(areaEffectList);
+            }
+        }
+
+        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, areaEffectList,  false);
+        noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes, areaEffectList, true);
+
+
+        if (noneZoneHeroes.size() > 0 ) {
+            ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
+            DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
+            noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
+            noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
 //        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
 //            randomMove = new RandomMove(world);
 //        }
@@ -97,6 +136,10 @@ public class AI {
                 this.heroHashArrival.put(myhero, false);
             }
         }
+        if (inZoneHeroes.size() > 0) {
+//            DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
+            inZoneMoving.move(world, noneZoneHeroes);
         for (Hero myhero : world.getMyHeroes()) {
             if (myhero.getCurrentHP() > 0) {
                 myHeros.add(myhero);
@@ -136,11 +179,17 @@ public class AI {
         System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
         printer.printHeroList(world);
         printer.printOppHeroList(world);
-
         printer.printMap(world);
 
-        newAction = new NewAction(inZoneHeroes, world);
-        newAction.action(world);
+        DodgeAction.executeMove(world, noneZoneDodges); // moves with dodge operated
+        DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+        DodgeAction.executeAction(world, inZoneHeroes, inZoneDodgeStatuses); // action with dodge operated
+
+        if (inZoneHeroes.size() > 0) {
+            newAction = new NewAction(inZoneHeroes, world, areaEffectList);
+            newAction.action(world);
+        }
+
 //        randomAction.randomAction(world);
     }
 
@@ -171,8 +220,8 @@ public class AI {
         while (this.respawnObjectiveZoneCells.size() != 4) {
             int i = 0;
             ArrayList<Cell> blocked = new ArrayList<>();
-            while (i < objectiveZoneCells.length) {
-                if (this.respawnObjectiveZoneCells.size() == 4) {
+            while (i < objectiveZoneCells.size()) {
+                if (this.respawnObjectiveZoneCells.size() == 4){
                     break;
                 }
                 this.respawnObjectiveZoneCells = new ArrayList<>();
@@ -253,9 +302,9 @@ public class AI {
         }
     }
 
-    private void isArrivalStatus(Hero hero, RespawnObjectiveZoneCell respawnObjectiveZoneCell, ArrayList<Hero> inZoneHeroes) {
+    private void isArrivalStatus(Hero hero, RespawnObjectiveZoneCell respawnObjectiveZoneCell, ArrayList<Hero> ZoneHeroes) {
         if (hero.getCurrentHP() > 0) {
-            inZoneHeroes.add(hero);
+            ZoneHeroes.add(hero);
         } else {
             int index = respawnObjectiveZoneCells.indexOf(respawnObjectiveZoneCell);
             respawnObjectiveZoneCell.setArrival(false);
