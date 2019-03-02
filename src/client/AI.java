@@ -68,7 +68,7 @@ public class AI {
         newMove = new Move();
 
 //        objectiveZoneCells = world.getMap().getObjectiveZone();
-        objectiveZoneCells =Helper.getSortedObjectiveCells(world);
+        objectiveZoneCells = Helper.getSortedObjectiveCells(world);
         findNearestCellToHeroes(world);
         noneZoneMoving = new NoneZoneMoving(respawnObjectiveZoneCells);
     }
@@ -113,15 +113,21 @@ public class AI {
             }
         }
 
-        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, areaEffectList,  false);
+        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, areaEffectList, false);
         noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes, areaEffectList, true);
 
 
-        if (noneZoneHeroes.size() > 0 ) {
+//        if (noneZoneHeroes.size() > 0) {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-            noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
+        ArrayList<Hero> myHeros = new ArrayList<>();
+        System.out.println("noneZoneHeroes = " + noneZoneHeroes);
+
+        myHeros.addAll(noneZoneHeroes);
+        myHeros.addAll(inZoneHeroes);
+
+//            noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
 //        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
 //            randomMove = new RandomMove(world);
 //        }
@@ -130,24 +136,27 @@ public class AI {
 
         printer.printMap(world);
 
-        ArrayList<Hero> myHeros = new ArrayList<>();
         if (world.getCurrentTurn() == 1 || world.getCurrentTurn() == 4) {
             for (Hero myhero : world.getMyHeroes()) {
                 this.heroHashArrival.put(myhero, false);
             }
         }
-        if (inZoneHeroes.size() > 0) {
-//            DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
-            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
-            inZoneMoving.move(world, noneZoneHeroes);
-        for (Hero myhero : world.getMyHeroes()) {
+//        if (inZoneHeroes.size() > 0) {
+////            DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+//            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
+//            inZoneMoving.move(world, noneZoneHeroes);
+//        }
+        for (Hero myhero : myHeros) {
             if (myhero.getCurrentHP() > 0) {
-                myHeros.add(myhero);
+//                myHeros.add(myhero);
             } else {
-                for (Hero hashHero : this.heroHashArrival.keySet()) {
-                    if (hashHero.equals(myhero)) {
-                        this.heroHashArrival.put(hashHero, false);
-                    }
+//                for (Hero hashHero : this.heroHashArrival.keySet()) {
+//                    if (hashHero.equals(myhero)) {
+//                        this.heroHashArrival.put(hashHero, false);
+//                    }
+//                }
+                if (this.heroHashArrival.containsKey(myhero)){
+                    this.heroHashArrival.put(myhero, false);
                 }
             }
 
@@ -221,7 +230,7 @@ public class AI {
             int i = 0;
             ArrayList<Cell> blocked = new ArrayList<>();
             while (i < objectiveZoneCells.size()) {
-                if (this.respawnObjectiveZoneCells.size() == 4){
+                if (this.respawnObjectiveZoneCells.size() == 4) {
                     break;
                 }
                 this.respawnObjectiveZoneCells = new ArrayList<>();
