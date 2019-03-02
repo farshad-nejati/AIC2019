@@ -116,16 +116,36 @@ public class AI {
         inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, areaEffectList, false);
         noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes, areaEffectList, true);
 
+        ArrayList<Hero> myHeros = new ArrayList<>();
 
-//        if (noneZoneHeroes.size() > 0) {
+        if (noneZoneHeroes.size() > 0) {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-        ArrayList<Hero> myHeros = new ArrayList<>();
-        System.out.println("noneZoneHeroes = " + noneZoneHeroes);
+            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
+        }
 
-        myHeros.addAll(noneZoneHeroes);
-        myHeros.addAll(inZoneHeroes);
+        if (inZoneHeroes.size() > 0) {
+            DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+//            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
+//            inZoneMoving.move(world, noneZoneHeroes);
+        }
+
+        if (noneZoneHeroes.size()!=0){
+            int j=2;
+
+            myHeros.addAll(noneZoneHeroes);
+        }
+        if (inZoneHeroes.size() !=0){
+            for (Hero hero:inZoneHeroes){
+                if (!myHeros.contains(hero)){
+                    myHeros.add(hero);
+                }
+            }
+        }
+
+//        myHeros.addAll(inZoneHeroes);
+
 
 //            noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
 //        if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
@@ -141,11 +161,6 @@ public class AI {
                 this.heroHashArrival.put(myhero, false);
             }
         }
-//        if (inZoneHeroes.size() > 0) {
-////            DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
-//            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
-//            inZoneMoving.move(world, noneZoneHeroes);
-//        }
         for (Hero myhero : myHeros) {
             if (myhero.getCurrentHP() > 0) {
 //                myHeros.add(myhero);
