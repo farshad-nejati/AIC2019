@@ -80,7 +80,7 @@ class MinMaxMove {
 //        if (!oppHeroes.isEmpty()){
         ArrayList<Hero> otherOurOppHeroes = new ArrayList<>(Arrays.asList(virtualWorld.getOppHeroes()));
         otherOurOppHeroes.removeIf(obj -> (obj.getCurrentCell().getColumn() == -1 || obj.getCurrentCell().getRow() == -1));
-        otherOurHeroes.remove(newOppHero);
+//        otherOurHeroes.remove(newOppHero);
 
         ArrayList<MyDirection> possibleDirections = Utility.getPossibleDirections(newOppHero, this.virtualWorld, otherOurOppHeroes);
 
@@ -126,18 +126,18 @@ class MinMaxMove {
 
     private ArrayList<Cell> getBlockCells(Hero myHero, ArrayList<Move> copyOfMyHeroesMove) {
         ArrayList<Cell> blocks = new ArrayList<>();
-//        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
-//            if (!respawnObjectiveZoneCell.getHero().equals(myHero)) {
-//                blocks.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
-//            }
-//        }
-        for (Move myHeroMOve:copyOfMyHeroesMove){
-            if (!myHeroMOve.getHero().equals(myHero)){
-                if (myHeroMOve.getTargetZoneCell()!=null){
-                    blocks.add(myHeroMOve.getTargetZoneCell());
-                }
+        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
+            if (!respawnObjectiveZoneCell.getHero().equals(myHero)) {
+                blocks.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
             }
         }
+//        for (Move myHeroMOve:copyOfMyHeroesMove){
+//            if (!myHeroMOve.getHero().equals(myHero)){
+//                if (myHeroMOve.getTargetZoneCell()!=null){
+//                    blocks.add(myHeroMOve.getTargetZoneCell());
+//                }
+//            }
+//        }
         return blocks;
     }
 }
