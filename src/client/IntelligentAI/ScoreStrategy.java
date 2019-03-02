@@ -42,9 +42,9 @@ public class ScoreStrategy {
                 break;
             }
         }
-        if (virtualWorld.getCurrentTurn() == 10) {
-            int p = 0;
-        }
+//        if (virtualWorld.getCurrentTurn() == 10) {
+//            int p = 0;
+//        }
         boolean flag = false;
         for (Move myOtherHeroMove : copyOfMyHeroesMove) {
             boolean checkMyHero = myOtherHeroMove.getHero().equals(myHero);
@@ -83,7 +83,7 @@ public class ScoreStrategy {
                 }
 
                 if (directionCheck.equals(MyDirection.FIX)) {
-                    score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE;
+//                    score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE;
                 }
 
 
@@ -112,7 +112,7 @@ public class ScoreStrategy {
 //        if (flag && directionCheck.equals(MyDirection.FIX)){
 //            score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST;
 //        }
-        System.out.println("other hero cell score= " + score);
+//        System.out.println("other hero cell score= " + score);
         return score;
     }
 

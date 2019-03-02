@@ -16,7 +16,7 @@ class Score {
 
     final static Integer DISTANCE_TO_OPP_HEROES = -4000;
     final static Integer MY_OTHER_HERO_AROUND_NEGATIVE_COST = -(((2 * MOVE_COST) + 1));
-    final static Integer MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE = -(((2 * MOVE_COST) + 1) + IN_ZONE);
+    final static Integer MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE = (((2000 * MOVE_COST) + 1) + IN_ZONE);
 
     // distance to zone = -4 * (manhatan distance)
 }

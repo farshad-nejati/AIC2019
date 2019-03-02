@@ -60,11 +60,11 @@ public class AI {
     ArrayList<PowerFullAbility> powerFullAbilities = new ArrayList<>();
 
     public void preProcess(World world) {
-        System.out.println("pre process started");
-        System.out.println("world Columns: " + world.getMap().getColumnNum());
-        System.out.println("world Columns: " + world.getMap().getRowNum());
+//        System.out.println("pre process started");
+//        System.out.println("world Columns: " + world.getMap().getColumnNum());
+//        System.out.println("world Columns: " + world.getMap().getRowNum());
         randomAction = new RandomAction();
-        printer = new Printer();
+//        printer = new Printer();
         newMove = new Move();
 
 //        objectiveZoneCells = world.getMap().getObjectiveZone();
@@ -74,7 +74,7 @@ public class AI {
     }
 
     public void pickTurn(World world) {
-        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
+//        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
 
         HeroName heroName = pickHero();
         world.pickHero(heroName);
@@ -83,9 +83,9 @@ public class AI {
     }
 
     public void moveTurn(World world) {
-        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getMovePhaseNum());
+//        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getMovePhaseNum());
 
-        printer.printMap(world);
+//        printer.printMap(world);
 
         inZoneHeroes = new ArrayList<>();
         noneZoneHeroes = new ArrayList<>();
@@ -109,9 +109,9 @@ public class AI {
             } catch (Exception e) {
                 e.printStackTrace();
 
-                System.out.println("\nError: ");
-                new Printer().printPowerAbilities(powerFullAbilities);
-                new Printer().printAreaEffectList(areaEffectList);
+//                System.out.println("\nError: ");
+//                new Printer().printPowerAbilities(powerFullAbilities);
+//                new Printer().printAreaEffectList(areaEffectList);
             }
         }
 
@@ -124,7 +124,7 @@ public class AI {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
+//            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
         }
 
         if (inZoneHeroes.size() > 0) {
@@ -156,7 +156,7 @@ public class AI {
 
 //        randomMove.moveToObjectiveZone(world);
 
-        printer.printMap(world);
+//        printer.printMap(world);
 
         if (world.getCurrentTurn() == 1 || world.getCurrentTurn() == 4) {
             for (Hero myhero : world.getMyHeroes()) {
@@ -209,10 +209,10 @@ public class AI {
 
 
     public void actionTurn(World world) {
-        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
-        printer.printHeroList(world);
-        printer.printOppHeroList(world);
-        printer.printMap(world);
+//        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
+//        printer.printHeroList(world);
+//        printer.printOppHeroList(world);
+//        printer.printMap(world);
 
         DodgeAction.executeMove(world, noneZoneDodges); // moves with dodge operated
         DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
@@ -232,10 +232,10 @@ public class AI {
                 return HeroName.BLASTER;
             }
             case 2: {
-                return HeroName.BLASTER;
+                return HeroName.GUARDIAN;
             }
             case 3: {
-                return HeroName.BLASTER;
+                return HeroName.SENTRY;
             }
             default: {
                 return HeroName.BLASTER;
@@ -260,7 +260,7 @@ public class AI {
                 this.respawnObjectiveZoneCells = new ArrayList<>();
                 for (Cell respawnCell : respawnCells) {
                     ArrayList<ObjectiveCellsDistance> objectiveCellsDistances = new ArrayList<>();
-                    System.out.println("ReSpawn Zeno Cell: " + respawnCell.getRow() + " , " + respawnCell.getColumn());
+//                    System.out.println("ReSpawn Zeno Cell: " + respawnCell.getRow() + " , " + respawnCell.getColumn());
                     for (Cell objectiveZoneCell : objectiveZoneCells) {
                         if (blocked.contains(objectiveZoneCell)) {
                             continue;
