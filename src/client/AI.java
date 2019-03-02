@@ -90,6 +90,7 @@ public class AI
             areaEffectList = AreaEffectHelper.initialAffectArea(world);
             powerFullAbilities = AreaEffectHelper.initialPowerFullAbility(world);
         } else {
+            setHeroesInReSpawnCell();
             findZoneStatusOfHeroes(world);
         }
 
