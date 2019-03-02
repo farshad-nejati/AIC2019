@@ -7,8 +7,8 @@ import client.model.*;
 import java.util.ArrayList;
 
 public class DodgeMove {
-    public static ArrayList<NoneZoneDodge> executeMove(ArrayList<NoneZoneDodge> noneZoneDodges, World world, ArrayList<Hero> zoneHeroes, ArrayList<Hero> noneZoneHeroes, ArrayList<DodgeStatus> noneZoneDodgeStatuses, ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells) {
-        noneZoneDodges.clear();
+    public static ArrayList<NoneZoneDodge> executeMove(ArrayList<NoneZoneDodge> noneZoneDodges, World world, ArrayList<Hero> noneZoneHeroes, ArrayList<Hero> zoneHeroes, ArrayList<DodgeStatus> noneZoneDodgeStatuses, ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells) {
+        noneZoneHeroes.clear();
         ArrayList<Cell> alreadySelectedCells = new ArrayList<>();
         for (DodgeStatus dodgeStatus : noneZoneDodgeStatuses) {
             Hero hero = dodgeStatus.getHero();
