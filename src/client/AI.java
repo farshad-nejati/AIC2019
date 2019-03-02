@@ -43,7 +43,7 @@ public class AI
 
     private NoneZoneMoving noneZoneMoving;
     private InZoneMoving inZoneMoving;
-    private Cell[] objectiveZoneCells;
+    private ArrayList<Cell> objectiveZoneCells;
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     ArrayList<Cell> blockedCells = new ArrayList<>();
     int maxAreaEffect = 5;
@@ -61,7 +61,8 @@ public class AI
         printer = new Printer();
         newMove = new Move();
 
-        objectiveZoneCells = world.getMap().getObjectiveZone();
+//        objectiveZoneCells = world.getMap().getObjectiveZone();
+        objectiveZoneCells =Helper.getSortedObjectiveCells(world);
         findNearestCellToHeroes(world);
         noneZoneMoving = new NoneZoneMoving(respawnObjectiveZoneCells);
     }
@@ -178,7 +179,7 @@ public class AI
         while(this.respawnObjectiveZoneCells.size() != 4) {
             int i = 0;
             ArrayList<Cell> blocked = new ArrayList<>();
-            while (i < objectiveZoneCells.length) {
+            while (i < objectiveZoneCells.size()) {
                 if (this.respawnObjectiveZoneCells.size() == 4){
                     break;
                 }

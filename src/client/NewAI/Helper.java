@@ -8,6 +8,7 @@ import client.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Helper {
@@ -112,5 +113,22 @@ public class Helper {
             }
         }
         return null;
+    }
+
+    public static ArrayList<Cell> getSortedObjectiveCells(World world) {
+        ArrayList<Cell> objectiveCells = new ArrayList(Arrays.asList(world.getMap().getObjectiveZone()));
+        Cell firstObjectiveCell = objectiveCells.get(0);
+        ArrayList<Cell> returnObjectiveZone = new ArrayList<>();
+        Cell myRespwanZone = world.getMap().getMyRespawnZone()[0];
+        Cell oppRespwanZone = world.getMap().getOppRespawnZone()[0];
+        int myDistance = world.manhattanDistance(myRespwanZone, firstObjectiveCell);
+        int oppDstance = world.manhattanDistance(oppRespwanZone, firstObjectiveCell);
+        if (myDistance <= oppDstance) {
+            return objectiveCells;
+        } else {
+            Collections.reverse(objectiveCells);
+            return objectiveCells;
+        }
+
     }
 }
