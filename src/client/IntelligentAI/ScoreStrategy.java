@@ -234,7 +234,7 @@ public class ScoreStrategy {
                 }
             }
 
-            if (copyOfOppHeroesMove.size() != 0) {
+            if (virtualWorld.getCurrentTurn()>=24) {
                 int i = 0;
             }
 
@@ -244,7 +244,7 @@ public class ScoreStrategy {
                 Cell oppHeroMoveNextCell = oppHeroMove.getNextCell();
 //                Cell oppHeroMoveCurrentCell = oppHeroMove.getCurrentCell();
                 Cell oppHeroMoveCurrentCell = oppHeroMoveHero.getCurrentCell();
-                if (oppHeroMoveNextCell.isInVision() && oppHeroMoveNextCell.isInObjectiveZone()) {
+                if (oppHeroMoveCurrentCell.isInVision() && oppHeroMoveCurrentCell.isInObjectiveZone()) {
                     int distance = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
                     int distanceForSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
                     distanceSum += distanceForSum;
@@ -270,6 +270,10 @@ public class ScoreStrategy {
             }
 
             if (!myHeroCanHitAnyone) {
+                if (virtualWorld.getCurrentTurn()>=24) {
+                    int i = 0;
+                }
+
 //                score += ((virtualWorld.getMap().getColumnNum() + virtualWorld.getMap().getRowNum() ) - distanceSum ) * 2000;
 //                if (oppHeroMoveWithMinimumHealth != null) {
 //                    Direction[] directions = virtualWorld.getPathMoveDirections(myHeroMoveNextCell, oppHeroMoveWithMinimumHealth.getNextCell());

@@ -89,6 +89,7 @@ public class AI {
 
 //        randomMove.moveToObjectiveZone(world);
 
+        printer.printMap(world);
 
         ArrayList<Hero> myHeros = new ArrayList<>();
         if (world.getCurrentTurn() == 1 || world.getCurrentTurn() == 4) {
@@ -120,10 +121,14 @@ public class AI {
         ArrayList<Hero> oppHeros = new ArrayList<>(Arrays.asList(world.getOppHeroes()));
         oppHeros.removeIf(obj -> (obj.getCurrentCell().getColumn() == -1 || obj.getCurrentCell().getRow() == -1));
 
+//        for (Hero opphero : oppHeros){
+//            if (!opphero.getCurrentCell().isInVision()){
+//                oppHeros.remove(opphero);
+//            }
+//        }
         MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival);
         minMaxAlgorithm.maxMove();
 
-        printer.printMap(world);
     }
 
 
