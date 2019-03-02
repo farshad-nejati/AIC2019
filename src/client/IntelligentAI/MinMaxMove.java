@@ -56,7 +56,7 @@ class MinMaxMove {
             ArrayList<Hero> recursiveOppHeroes = new ArrayList<>(this.oppHeroes);
 
             Integer score = eval(this.myHero, direction, MyDirection.FIX, this.otherOurHeroes, oppHero, recursiveOppHeroes, this.virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, Integer.MAX_VALUE);
-            System.out.println("direction = " + direction + " and Score= " + score + "\n");
+//            System.out.println("direction = " + direction + " and Score= " + score + "\n");
             scoreHashMap.put(direction, score);
         }
 

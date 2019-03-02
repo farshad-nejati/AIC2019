@@ -85,6 +85,8 @@ public class AI {
     public void moveTurn(World world) {
         System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getMovePhaseNum());
 
+        printer.printMap(world);
+
         inZoneHeroes = new ArrayList<>();
         noneZoneHeroes = new ArrayList<>();
         noneZoneDodgeStatuses = new ArrayList<>();
@@ -126,7 +128,7 @@ public class AI {
         }
 
         if (inZoneHeroes.size() > 0) {
-            DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+//            DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
 //            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
 //            inZoneMoving.move(world, noneZoneHeroes);
         }

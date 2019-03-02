@@ -229,7 +229,7 @@ public class ScoreStrategy {
             for (Ability myHeroAbility : myHero.getOffensiveAbilities()) {
                 int canHitDistance = myHeroAbility.getRange() + myHeroAbility.getAreaOfEffect();
                 if (myHeroAbility.isReady() && (canHitDistance > myHeroCanHitMaxDistance)) {
-                    System.out.println("Hero: " + myHero.getId() + " myHeroAbility = " + myHeroAbility.getName());
+//                    System.out.println("Hero: " + myHero.getId() + " myHeroAbility = " + myHeroAbility.getName());
                     myHeroCanHitMaxDistance = canHitDistance;
                 }
             }
