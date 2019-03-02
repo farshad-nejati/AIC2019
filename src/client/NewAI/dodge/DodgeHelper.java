@@ -1,6 +1,7 @@
 package client.NewAI.dodge;
 
 import client.NewAI.Helper;
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.model.Ability;
 import client.model.Hero;
 import client.model.World;
@@ -10,10 +11,10 @@ import java.util.ArrayList;
 public class DodgeHelper {
 
 
-    public static ArrayList<DodgeStatus> getDodgeStatuses(World world, ArrayList<Hero> heroes, boolean skipDeathChecking) {
+    public static ArrayList<DodgeStatus> getDodgeStatuses(World world, ArrayList<Hero> heroes, ArrayList<AreaEffect> areaEffectList, boolean skipDeathChecking) {
         ArrayList<DodgeStatus> dodgeStatuses = new ArrayList<>();
         for (Hero myHero : heroes) {
-            boolean isDead = Helper.isPossibleDead(world, myHero);
+            boolean isDead = Helper.isPossibleDead(world, myHero, areaEffectList);
             Ability[] dodgeAbilities = myHero.getDodgeAbilities();
             for (Ability dodgeAbility : dodgeAbilities) {
                 if (dodgeAbility.isReady()) {

@@ -1,5 +1,6 @@
 package client.NewAI;
 
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.NewAI.move.inZone.HeroNeighbors;
 import client.NewAI.move.inZone.HeroPosition;
 import client.NewAI.move.inZone.ObjectiveCellThreat;
@@ -23,7 +24,7 @@ public class Utility {
     public ArrayList<HeroPosition> heroPositions = new ArrayList<>();
 
 
-    public Utility(ArrayList<Hero> inZoneHeroes, World world) {
+    public Utility(ArrayList<Hero> inZoneHeroes, World world, ArrayList<AreaEffect> areaEffects) {
         this.myHeroes = inZoneHeroes;
         this.world = world;
         this.objectiveCells = world.getMap().getObjectiveZone();
@@ -31,7 +32,7 @@ public class Utility {
         initializeHeroPositions();
         getInVisionOppHeroes(world);
         initializeObjectiveCellThreats();
-        findObjectiveCellThreat();
+        findObjectiveCellThreat(areaEffects);
         findHeroNeighborCells(world);
     }
 
@@ -196,10 +197,15 @@ public class Utility {
     }
 
 
-    public void findObjectiveCellThreat() {
-        for (Hero hero : inVisionOppHeroes) {
-            Ability[] offensiveAbilities = hero.getOffensiveAbilities();
-            Ability dangerousAbility = findDangerousAbility(offensiveAbilities);
+    public void findObjectiveCellThreat(ArrayList<AreaEffect> areaEffects) {
+        for (AreaEffect areaEffect : areaEffects) {
+            Hero hero = areaEffect.getHero();
+            if ( !hero.getCurrentCell().isInVision() ) {
+                continue;
+            }
+//            Ability[] offensiveAbilities = hero.getOffensiveAbilities();
+//            Ability dangerousAbility = findDangerousAbility(offensiveAbilities);
+            Ability dangerousAbility = areaEffect.getAbility();
             if (dangerousAbility != null) {
                 updateObjectiveCellThreats(hero, dangerousAbility);
             }

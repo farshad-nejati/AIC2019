@@ -1,7 +1,7 @@
 package client.NewAI.action;
 
-import client.NewAI.Helper;
 import client.NewAI.Utility;
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.RandomAI.RandomAction;
 import client.model.Ability;
 import client.model.Cell;
@@ -14,8 +14,8 @@ public class NewAction {
 
 
     private Utility utility;
-    public NewAction(ArrayList<Hero> inZoneHeroes, World world) {
-        this.utility = new Utility(inZoneHeroes, world);
+    public NewAction(ArrayList<Hero> inZoneHeroes, World world, ArrayList<AreaEffect> areaEffects) {
+        this.utility = new Utility(inZoneHeroes, world, areaEffects);
     }
 
     public void action(World world) {

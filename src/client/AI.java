@@ -3,6 +3,9 @@ package client;
 import client.NewAI.Helper;
 import client.NewAI.SortClass;
 import client.NewAI.action.NewAction;
+import client.NewAI.action.areaEffect.AreaEffect;
+import client.NewAI.action.areaEffect.AreaEffectHelper;
+import client.NewAI.action.areaEffect.PowerFullAbility;
 import client.NewAI.dodge.*;
 import client.NewAI.move.inZone.InZoneMoving;
 import client.NewAI.move.Move;
@@ -47,6 +50,8 @@ public class AI
     ArrayList<DodgeStatus> inZoneDodgeStatuses = new ArrayList<>();
     ArrayList<DodgeStatus> noneZoneDodgeStatuses = new ArrayList<>();
     ArrayList<NoneZoneDodge> noneZoneDodges = new ArrayList<>();
+    ArrayList<AreaEffect> areaEffectList = new ArrayList<>();
+    ArrayList<PowerFullAbility> powerFullAbilities = new ArrayList<>();
 
     public void preProcess(World world) {
         System.out.println("pre process started");
@@ -79,23 +84,38 @@ public class AI
         if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
             firstZoneStatusOfHeroes(world);
             setHeroesInReSpawnCell();
+            areaEffectList = AreaEffectHelper.initialAffectArea(world);
+            powerFullAbilities = AreaEffectHelper.initialPowerFullAbility(world);
         } else {
             findZoneStatusOfHeroes(world);
         }
 
-        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, false);
-        noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes, true);
+        if (world.getMovePhaseNum() == 0) {
+            try {
+                AreaEffectHelper.updatePowerFullAbility(world, powerFullAbilities, areaEffectList);
+                AreaEffectHelper.updateAreaEffects(world, areaEffectList, powerFullAbilities);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                System.out.println("\nError: ");
+                new Printer().printPowerAbilities(powerFullAbilities);
+                new Printer().printAreaEffectList(areaEffectList);
+            }
+        }
+
+        inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, areaEffectList,  false);
+        noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes, areaEffectList, true);
 
 
         if (noneZoneHeroes.size() > 0 ) {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
-            DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
+            noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
             noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
         }
         if (inZoneHeroes.size() > 0) {
 //            DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
-            inZoneMoving = new InZoneMoving(inZoneHeroes, world);
+            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
             inZoneMoving.move(world, noneZoneHeroes);
         }
 
@@ -116,18 +136,17 @@ public class AI
         System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
         printer.printHeroList(world);
         printer.printOppHeroList(world);
-
         printer.printMap(world);
 
-        DodgeAction.executeMove(world, noneZoneDodges);
-
+        DodgeAction.executeMove(world, noneZoneDodges); // moves with dodge operated
         DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
-        DodgeAction.executeAction(world, inZoneHeroes, inZoneDodgeStatuses);
+        DodgeAction.executeAction(world, inZoneHeroes, inZoneDodgeStatuses); // action with dodge operated
 
         if (inZoneHeroes.size() > 0) {
-            newAction = new NewAction(inZoneHeroes, world);
+            newAction = new NewAction(inZoneHeroes, world, areaEffectList);
             newAction.action(world);
         }
+
 //        randomAction.randomAction(world);
     }
 

@@ -1,5 +1,7 @@
 package client.NewAI;
 
+import client.NewAI.action.areaEffect.AreaEffect;
+import client.NewAI.action.areaEffect.AreaEffectHelper;
 import client.NewAI.dodge.DodgeStatus;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
@@ -14,6 +16,9 @@ public class Helper {
     public static ArrayList<Cell> findInRangeCells(World world, ArrayList<Cell> cells, Hero myHero, Ability ability) {
         ArrayList<Cell> inRangeCells = new ArrayList<>();
         for (Cell cell : cells) {
+            if (cell.isWall()) {
+                continue;
+            }
             int range = ability.getRange();
             int distance = world.manhattanDistance(myHero.getCurrentCell(), cell);
             if (distance <= range) {
@@ -34,14 +39,17 @@ public class Helper {
     }
 
 
-    public static boolean isPossibleDead(World world, Hero myHero) {
+    public static boolean isPossibleDead(World world, Hero myHero, ArrayList<AreaEffect> areaEffectList) {
         int heroHP = myHero.getCurrentHP();
         int sumHP = 0;
-        for (Hero oppHero : Helper.getInVisionOppHeroes(world)) {
-            int abilityRange = Helper.getMaxRange(oppHero);
-            int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
-            if (abilityRange >= distance) {
-                sumHP += Helper.getPowerFullAbility(oppHero);
+        for (AreaEffect areaEffect : areaEffectList) {
+            Hero oppHero = areaEffect.getHero();
+            if (oppHero.getCurrentHP() > 0) {
+                int abilityRange = areaEffect.getMaxRange();
+                int distance = world.manhattanDistance(myHero.getCurrentCell(), oppHero.getCurrentCell());
+                if (abilityRange >= distance) {
+                    sumHP += areaEffect.getAbility().getPower();
+                }
             }
         }
         if (heroHP < sumHP) {
@@ -66,30 +74,6 @@ public class Helper {
     }
 
 
-    public static int getPowerFullAbility(Hero hero) {
-        if (hero.getName().equals(HeroName.BLASTER)) {
-            return 40;
-        } else if (hero.getName().equals(HeroName.GUARDIAN)) {
-            return 40;
-        } else if (hero.getName().equals(HeroName.HEALER)) {
-            return 25;
-        } else {
-            return 50;
-        }
-    }
-
-    public static int getMaxRange(Hero hero) {
-
-        if (hero.getName().equals(HeroName.BLASTER)) {
-            return 7;
-        } else if (hero.getName().equals(HeroName.GUARDIAN)) {
-            return 2;
-        } else if (hero.getName().equals(HeroName.HEALER)) {
-            return 4;
-        } else {
-            return 7;
-        }
-    }
 
     public static ArrayList<Cell> getBlockedCells(ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells, Hero ignoreHero, ArrayList<Hero> inZoneHeroes) {
         ArrayList<Cell> blockedCells = new ArrayList<>();
@@ -119,5 +103,14 @@ public class Helper {
             list.addAll(Arrays.asList(array));
         }
         return list;
+    }
+
+    public static Hero getOppHeroByID(World world, int id) {
+        for (Hero hero : world.getOppHeroes()) {
+            if (hero.getId() == id) {
+                return hero;
+            }
+        }
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package client.NewAI.move.inZone;
 
 import client.NewAI.Utility;
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.Printer;
 import client.model.*;
 
@@ -10,8 +11,8 @@ import java.util.Collections;
 public class InZoneMoving {
 
     private Utility utility;
-    public InZoneMoving(ArrayList<Hero> inZoneHeroes, World world) {
-        this.utility = new Utility(inZoneHeroes, world);
+    public InZoneMoving(ArrayList<Hero> inZoneHeroes, World world, ArrayList<AreaEffect> areaEffects) {
+        this.utility = new Utility(inZoneHeroes, world, areaEffects);
     }
     public void move(World world, ArrayList<Hero> noneZoneHeroes) {
         for (HeroPosition heroPosition : utility.heroPositions){

@@ -7,9 +7,10 @@ import client.model.*;
 import java.util.ArrayList;
 
 public class DodgeMove {
-    public static void executeMove(ArrayList<NoneZoneDodge> noneZoneDodges, World world, ArrayList<Hero> zoneHeroes, ArrayList<Hero> noneZoneHeroes, ArrayList<DodgeStatus> noneZoneDodgeStatuses, ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells) {
+    public static ArrayList<NoneZoneDodge> executeMove(ArrayList<NoneZoneDodge> noneZoneDodges, World world, ArrayList<Hero> zoneHeroes, ArrayList<Hero> noneZoneHeroes, ArrayList<DodgeStatus> noneZoneDodgeStatuses, ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells) {
+        noneZoneDodges.clear();
         ArrayList<Cell> blockedCells = new ArrayList<>();
-
+        ArrayList<Cell> alreadySelectedCells = new ArrayList<>();
         for (DodgeStatus dodgeStatus : noneZoneDodgeStatuses) {
             Hero hero = dodgeStatus.getHero();
             boolean againAdd = true;
@@ -19,14 +20,14 @@ public class DodgeMove {
                 blockedCells = Helper.getBlockedCells(reSpawnObjectiveCells, hero, zoneHeroes);
 
                 int normalDistance = Helper.getPathDistance(world, hero.getCurrentCell(), targetCell, blockedCells);
-                DodgeDistance bestDodgeDistance = getBestDodgeDistance(world, hero, targetCell, dodgeStatus.getAbility(), blockedCells);
+                DodgeDistance bestDodgeDistance = getBestDodgeDistance(world, hero, targetCell, dodgeStatus.getAbility(), alreadySelectedCells);
                 if (bestDodgeDistance != null) {
                     int dodgeDistance = bestDodgeDistance.getDistance();
                     Cell dodgeCell = bestDodgeDistance.getDodgeCell();
 
                     if (dodgeDistance < normalDistance) {
                         noneZoneDodges.add(new NoneZoneDodge(hero, dodgeStatus.getAbility(), dodgeCell));
-                        blockedCells.add(dodgeCell);
+                        alreadySelectedCells.add(dodgeCell);
                         againAdd =false;
                     }
                 }
@@ -35,6 +36,7 @@ public class DodgeMove {
                 noneZoneHeroes.add(hero);
             }
         }
+        return noneZoneDodges;
     }
 
     private static DodgeDistance getBestDodgeDistance(World world, Hero hero, Cell targetCell, Ability ability, ArrayList<Cell> blockedCells) {
@@ -50,10 +52,15 @@ public class DodgeMove {
         double maxDistance = Double.POSITIVE_INFINITY;
         DodgeDistance  dodgeDistance = null;
         for (Cell cell : cells) {
-            Direction[] directions = world.getPathMoveDirections(cell, targetCell, blockedCells);
+            if (cell.isWall() || blockedCells.contains(cell)) {
+                continue;
+            }
+
+            Direction[] directions = world.getPathMoveDirections(cell, targetCell);
             double distance = directions.length;
             if (distance < maxDistance) {
                 dodgeDistance = new DodgeDistance(cell, (int) distance);
+                maxDistance = distance;
             }
         }
         return dodgeDistance;
