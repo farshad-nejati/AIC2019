@@ -161,6 +161,13 @@ public class AI {
                 this.heroHashArrival.put(myhero, false);
             }
         }
+        for (Hero hero: world.getMyHeroes()){
+            if (hero.getCurrentHP() <= 0){
+                if (this.heroHashArrival.containsKey(hero)){
+                    this.heroHashArrival.put(hero, false);
+                }
+            }
+        }
         for (Hero myhero : myHeros) {
             if (myhero.getCurrentHP() > 0) {
 //                myHeros.add(myhero);
