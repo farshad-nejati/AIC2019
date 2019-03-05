@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class DodgeMove {
     public static ArrayList<NoneZoneDodge> executeMove(ArrayList<NoneZoneDodge> noneZoneDodges, World world, ArrayList<Hero> noneZoneHeroes, ArrayList<Hero> zoneHeroes, ArrayList<DodgeStatus> noneZoneDodgeStatuses, ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells) {
         noneZoneHeroes.clear();
+        noneZoneDodges = new ArrayList<>();
         ArrayList<Cell> alreadySelectedCells = new ArrayList<>();
         for (DodgeStatus dodgeStatus : noneZoneDodgeStatuses) {
             Hero hero = dodgeStatus.getHero();
