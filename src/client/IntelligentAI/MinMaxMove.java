@@ -110,7 +110,7 @@ class MinMaxMove {
         // TODO: evaluateScore()
 //        return new Random().nextInt(10);
         ArrayList<Cell> blocks = new ArrayList<>();
-        blocks = getBlockCells(myHero,copyOfMyHeroesMove);
+        blocks = getBlockCells(myHero, copyOfMyHeroesMove);
 
         Integer score = 0;
 
@@ -119,7 +119,8 @@ class MinMaxMove {
 
 //        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
         score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove);
-        score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection,virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+        score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+        //TODO: when there are no one in obj zone of opphero, pakhsh shan va beran to faseleye moshakhas ke albate age faseleye dorost vaystadan piade she khodesh hal mishe.
 //        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
 
         return score;
@@ -128,11 +129,13 @@ class MinMaxMove {
 
     private ArrayList<Cell> getBlockCells(Hero myHero, ArrayList<Move> copyOfMyHeroesMove) {
         ArrayList<Cell> blocks = new ArrayList<>();
-        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
-            if (!respawnObjectiveZoneCell.getHero().equals(myHero)) {
-                blocks.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
-            }
-        }
+//        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : this.respawnObjectiveZoneCells) {
+//            if (!respawnObjectiveZoneCell.getHero().equals(myHero)) {
+//                blocks.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
+//            }
+//        }
+
+
 //        for (Move myHeroMOve:copyOfMyHeroesMove){
 //            if (!myHeroMOve.getHero().equals(myHero)){
 //                if (myHeroMOve.getTargetZoneCell()!=null){
@@ -140,6 +143,27 @@ class MinMaxMove {
 //                }
 //            }
 //        }
+
+
+
+        Cell myHeroNextCell;
+        Cell myHeroCurrentCell;
+        for (Move myHeroMove : copyOfMyHeroesMove) {
+            if (myHeroMove.getHero().equals(myHero)) {
+                myHeroCurrentCell = myHeroMove.getCurrentCell();
+                myHeroNextCell = myHeroMove.getNextCell();
+                break;
+            }
+        }
+        for (Move myHeroMove : copyOfMyHeroesMove) {
+            Hero hero = myHeroMove.getHero();
+
+            if (!hero.equals(myHero)) {
+                blocks.add(hero.getCurrentCell());
+
+            }
+        }
+
         return blocks;
     }
 }

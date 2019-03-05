@@ -249,7 +249,9 @@ public class ScoreStrategy {
                     int distanceForSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
                     distanceSum += distanceForSum;
                     if (distance <= myHeroCanHitMaxDistance) {
-                        myHeroCanHitAnyone = true;
+                        if (virtualWorld.isInVision(myHeroMoveCurrentCell,oppHeroMoveCurrentCell)){
+                            myHeroCanHitAnyone = true;
+                        }
 
                         int distance2 = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
                         if (distance2 > myHeroCanHitMaxDistance ){
