@@ -175,7 +175,7 @@ public class RandomAction {
 
             CandidateActionCell candidateCell = CandidateActionCell.findByCell(candidateCells, cell);
             int index = candidateCells.indexOf(candidateCell);
-            for (Hero inVisionHero : inVisionOppHeroes) {
+            for (Hero inVisionHero : world.getOppHeroes()) {
 
                 // TODO: if see any enemy in impact cells, chance of select of findded cell increased
                 if (impactCells.contains(inVisionHero.getCurrentCell())) {
@@ -265,10 +265,10 @@ public class RandomAction {
 
     private ArrayList<CandidateActionCell> findEqualCandidate(ArrayList<CandidateActionCell> candidateCells) {
         ArrayList<CandidateActionCell> equalCandidates = new ArrayList<>();
-        int minImpact = 0;
+        int minImpact = 1;
         for (CandidateActionCell candidateActionCell : candidateCells) {
             int impactNumber = candidateActionCell.getAffectedNumber();
-            if (impactNumber > minImpact) {
+            if (impactNumber >= minImpact) {
                 minImpact = impactNumber;
                 equalCandidates.add(candidateActionCell);
             }
