@@ -24,7 +24,7 @@ public class DodgeMove {
                     int dodgeDistance = bestDodgeDistance.getDistance();
                     Cell dodgeCell = bestDodgeDistance.getDodgeCell();
 
-                    if (dodgeDistance < normalDistance) {
+                    if (dodgeDistance < normalDistance - (6 - world.getMovePhaseNum())) {
                         noneZoneDodges.add(new NoneZoneDodge(hero, dodgeStatus.getAbility(), dodgeCell));
                         alreadySelectedCells.add(dodgeCell);
                         againAdd =false;
