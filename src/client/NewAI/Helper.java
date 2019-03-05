@@ -15,9 +15,15 @@ public class Helper {
 
 
     public static ArrayList<Cell> findInRangeCells(World world, ArrayList<Cell> cells, Hero myHero, Ability ability) {
+        //TODO: if ability is non lobbing, must check that target cell is in vision to hero
         ArrayList<Cell> inRangeCells = new ArrayList<>();
         for (Cell cell : cells) {
-            if (cell.isWall()) {
+            if (ability.getAreaOfEffect() <= 0) {
+                if (cell.isWall()) {
+                    continue;
+                }
+            }
+            if (!world.isInVision(myHero.getCurrentCell(), cell) && !ability.isLobbing()){
                 continue;
             }
             int range = ability.getRange();
