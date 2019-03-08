@@ -1,6 +1,7 @@
 package client.IntelligentAI;
 
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
+import client.model.Ability;
 import client.model.Cell;
 import client.model.Hero;
 import client.model.World;
@@ -109,22 +110,64 @@ class MinMaxMove {
     private Integer evaluateScore(Hero myHero, MyDirection myHeroDirection, ArrayList<Hero> otherOurHeroes, Hero oppHero, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, int minScore) {
         // TODO: evaluateScore()
 //        return new Random().nextInt(10);
+        Integer score = 0;
+
+
         ArrayList<Cell> blocks = new ArrayList<>();
         blocks = getBlockCells(myHero, copyOfMyHeroesMove);
+        Integer oppHeroInObjZone = getOppHeroZoneNumber(copyOfOppHeroesMove);
+        // TODO: if opphero dar objzone nabod hameye khodiha beran be target haye khod.
 
-        Integer score = 0;
+        Integer oppHeroMaxAreaEffect = getMaxAreaOppHeroo(copyOfOppHeroesMove);
+
+
 
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
 //        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
-        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove);
+        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove,oppHeroInObjZone,oppHeroMaxAreaEffect);
         score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
         //TODO: when there are no one in obj zone of opphero, pakhsh shan va beran to faseleye moshakhas ke albate age faseleye dorost vaystadan piade she khodesh hal mishe.
 //        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
 
         return score;
 
+    }
+
+    private Integer getMaxAreaOppHeroo(ArrayList<Move> copyOfOppHeroesMove) {
+        Integer areaEffect = 0;
+        if (copyOfOppHeroesMove.size()!=0){
+            for (Move heroMove:copyOfOppHeroesMove){
+                Hero hero = heroMove.getHero();
+                Integer thisArea = 0;
+                if (hero.getCurrentCell().isInVision()){
+                    for (Ability ability:hero.getAbilities())
+                    {
+                        if (ability.isReady()){
+                            if (ability.getAreaOfEffect()>thisArea){
+                                thisArea = ability.getAreaOfEffect();
+                            }
+                        }
+                    }
+                }
+                if (thisArea>areaEffect){
+                    areaEffect = thisArea;
+                }
+            }
+        }
+        return (areaEffect*2) + 1;
+    }
+
+    private Integer getOppHeroZoneNumber(ArrayList<Move> copyOfOppHeroesMove) {
+        Integer oppHeroInObjZone = 0;
+        for (Move oppHeroMove : copyOfOppHeroesMove) {
+            Hero hero = oppHeroMove.getHero();
+            if (hero.getCurrentCell().isInObjectiveZone()) {
+                oppHeroInObjZone++;
+            }
+        }
+        return oppHeroInObjZone;
     }
 
     private ArrayList<Cell> getBlockCells(Hero myHero, ArrayList<Move> copyOfMyHeroesMove) {
@@ -143,7 +186,6 @@ class MinMaxMove {
 //                }
 //            }
 //        }
-
 
 
         Cell myHeroNextCell;

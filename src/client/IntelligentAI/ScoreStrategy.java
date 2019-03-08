@@ -1,6 +1,7 @@
 package client.IntelligentAI;
 
 import client.model.*;
+import java.lang.Math;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,82 +32,96 @@ public class ScoreStrategy {
         return score;
     }
 
-    public static Integer otherMyHeroCell(Hero myHero, MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove) {
+    public static Integer otherMyHeroCell(Hero myHero, MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, Integer oppHeroInObjZone, Integer oppHeroMaxAreaEffect) {
         Integer score = 0;
         Cell myHeroCurrentCell = null;
         Cell myHeroNextCell = null;
+        Integer distanceToOtherMyhero = 0;
         for (Move myHeroMove : copyOfMyHeroesMove) {
-            if (myHeroMove.getHero().equals(myHero)) {
+            Hero hero = myHeroMove.getHero();
+            if (hero.equals(myHero)) {
                 myHeroCurrentCell = myHeroMove.getCurrentCell();
                 myHeroNextCell = myHeroMove.getNextCell();
                 break;
             }
         }
+        for (Move myHeroMove : copyOfMyHeroesMove) {
+            Hero hero = myHeroMove.getHero();
+            if (!hero.equals(myHero)){
+                Integer manhatanDistanceFromMyHeroes = 0;
+                manhatanDistanceFromMyHeroes += virtualWorld.manhattanDistance(myHeroCurrentCell,myHero.getCurrentCell());
+                Integer diffFromAreaEffectOFMyHero = Math.abs(manhatanDistanceFromMyHeroes-oppHeroMaxAreaEffect);
+                distanceToOtherMyhero += diffFromAreaEffectOFMyHero;
+            }
+        }
+        score += distanceToOtherMyhero * Score.DISTANCE_TO_My_HEROES;
+
+
+
 //        if (virtualWorld.getCurrentTurn() == 10) {
 //            int p = 0;
 //        }
-        boolean flag = false;
-        for (Move myOtherHeroMove : copyOfMyHeroesMove) {
-            boolean checkMyHero = myOtherHeroMove.getHero().equals(myHero);
-            boolean checkTwoHero = myOtherHeroMove.getCurrentCell().equals(myHeroNextCell);
-            if (checkTwoHero && !(checkMyHero)) {
-                score += Score.MY_HERO_CELL;
-                flag = true;
-//                if (myHero.getCurrentCell().equals(myHeroNextCell)){
-//                    score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST;
-//                }
-                break;
-            }
-        }
+//        boolean flag = false;
+//        for (Move myOtherHeroMove : copyOfMyHeroesMove) {
+//            boolean checkMyHero = myOtherHeroMove.getHero().equals(myHero);
+//            boolean checkTwoHero = myOtherHeroMove.getCurrentCell().equals(myHeroNextCell);
+//            if (checkTwoHero && !(checkMyHero)) {
+//                score += Score.MY_HERO_CELL;
+//                flag = true;
+////                if (myHero.getCurrentCell().equals(myHeroNextCell)){
+////                    score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST;
+////                }
+//                break;
+//            }
+//        }//TODO: in bashe ya nabashe?
 
-        HashMap<Cell, Direction> cellNeighbors = Utility.getCellNeighbors(myHeroCurrentCell, virtualWorld.getMap());
-        MyDirection directionCheck = Utility.getDirectionFromCells(myHeroCurrentCell, myHeroNextCell);
-
-
-        for (Cell cellNeighbor : cellNeighbors.keySet()) {
-
-            if (!copyOfMyHeroesMove.isEmpty()) {
-                Integer i = 0;
-                HashMap<Cell, Direction> cellNeighborsNeighbor = Utility.getCellNeighbors(cellNeighbor, virtualWorld.getMap());
-                for (Cell cellNeighborNeighbor : cellNeighborsNeighbor.keySet()) {
-                    for (Move heroMoveneighbor : copyOfMyHeroesMove) {
-                        Hero otherOurHeroneighbor = heroMoveneighbor.getHero();
-                        if (otherOurHeroneighbor.getCurrentCell().equals(cellNeighborNeighbor)) {
-                            i++;
-                        }
-                    }
-                }
-                score += (i * Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE);
-
-                if (cellNeighbor.isInObjectiveZone()) {
-                    score += Score.IN_ZONE;
-                }
-
-                if (directionCheck.equals(MyDirection.FIX)) {
-//                    score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE;
-                }
-
-
-//                    if (otherOurHero.getCurrentCell().equals(cellNeighbor)) {
-//                        Integer j = 0;
-//                        for (Move ourheroMove: copyOfMyHeroesMove){
-//                            Hero ourhero = ourheroMove.getHero();
-//                            if (!ourhero.equals(myHero) && ourhero.getCurrentCell().equals(myHeroNextCell)){
-//                                j++;
-//                            }
+//        HashMap<Cell, Direction> cellNeighbors = Utility.getCellNeighbors(myHeroCurrentCell, virtualWorld.getMap());
+//        MyDirection directionCheck = Utility.getDirectionFromCells(myHeroCurrentCell, myHeroNextCell);
+//
+//        for (Cell cellNeighbor : cellNeighbors.keySet()) {
+//
+//            if (!copyOfMyHeroesMove.isEmpty()) {
+//                Integer i = 0;
+//                HashMap<Cell, Direction> cellNeighborsNeighbor = Utility.getCellNeighbors(cellNeighbor, virtualWorld.getMap());
+//                for (Cell cellNeighborNeighbor : cellNeighborsNeighbor.keySet()) {
+//                    for (Move heroMoveneighbor : copyOfMyHeroesMove) {
+//                        Hero otherOurHeroneighbor = heroMoveneighbor.getHero();
+//                        if (otherOurHeroneighbor.getCurrentCell().equals(cellNeighborNeighbor)) {
+//                            i++;
 //                        }
-//                            if (myHeroCurrentCell.isInObjectiveZone()){
-//                                score += (i * Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE);
-//
-//                            }else {
-//                                score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST;
-//
-//                            }
 //                    }
-
-            }
-
-        }
+//                }
+//                score += (i * Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE);
+//
+//                if (cellNeighbor.isInObjectiveZone()) {
+//                    score += Score.IN_ZONE;
+//                }
+//
+//                if (directionCheck.equals(MyDirection.FIX)) {
+////                    score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE;
+//                }
+//
+//
+////                    if (otherOurHero.getCurrentCell().equals(cellNeighbor)) {
+////                        Integer j = 0;
+////                        for (Move ourheroMove: copyOfMyHeroesMove){
+////                            Hero ourhero = ourheroMove.getHero();
+////                            if (!ourhero.equals(myHero) && ourhero.getCurrentCell().equals(myHeroNextCell)){
+////                                j++;
+////                            }
+////                        }
+////                            if (myHeroCurrentCell.isInObjectiveZone()){
+////                                score += (i * Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST_IN_ZONE);
+////
+////                            }else {
+////                                score += Score.MY_OTHER_HERO_AROUND_NEGATIVE_COST;
+////
+////                            }
+////                    }
+//
+//            }
+//
+//        }
 
 
 //        if (flag && directionCheck.equals(MyDirection.FIX)){
