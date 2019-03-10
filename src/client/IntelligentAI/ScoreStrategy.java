@@ -107,12 +107,15 @@ public class ScoreStrategy {
 
                 Integer oppAbilityRangeEffect = 0;
                 for (Ability ability : Hero.getOffensiveAbilities()) {
-//                    if (ability.isReady()) {
-                    if (ability.getAreaOfEffect() > oppAbilityRangeEffect)
-                        oppAbilityRangeEffect = 2 * ability.getAreaOfEffect() + 1;
-//                    }
+                    if (ability.isReady()) {
+                        if (ability.getAreaOfEffect() > oppAbilityRangeEffect)
+                            oppAbilityRangeEffect = 2 * ability.getAreaOfEffect() + 1;
+                    }
                 }
 
+                if (oppAbilityRangeEffect == 0) {
+                    oppAbilityRangeEffect = 3;
+                }
                 for (Move myHeroMove : copyOfMyHeroesMove) {
                     Hero hero = myHeroMove.getHero();
                     if (!hero.equals(myHero)) {
@@ -415,8 +418,8 @@ public class ScoreStrategy {
         canHitScore = canHitSum * Score.CAN_HIT_COST;
 
         if (losingHealthSum > myHero.getCurrentHP()) {
-            if (virtualWorld.getCurrentTurn()>24){
-                int p=1;
+            if (virtualWorld.getCurrentTurn() > 24) {
+                int p = 1;
             }
             killScore = Score.KILL_COST;
             if (direction.equals(MyDirection.FIX)) {
@@ -527,7 +530,7 @@ public class ScoreStrategy {
 
 
 //                score += distanceSum * 20000 * Score.MOVE_COST;
-                if (canNextCellAttack){
+                if (canNextCellAttack) {
                     score += 50000;
                 }
 
