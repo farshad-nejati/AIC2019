@@ -1,9 +1,11 @@
 package client.IntelligentAI;
 
 import client.model.*;
+
 import java.lang.Math;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ScoreStrategy {
@@ -32,8 +34,9 @@ public class ScoreStrategy {
         return score;
     }
 
-    public static Integer otherMyHeroCell(Hero myHero, MyDirection direction, Hero oppHero, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, Integer oppHeroInObjZone, Integer oppHeroMaxAreaEffect) {
+    public static Integer otherMyHeroCell(Hero myHero, MyDirection direction, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, Integer oppHeroInObjZone, Integer oppHeroMaxAreaEffect, ArrayList<Move> myHeroesMoves, ArrayList<Cell> blocks) {
         Integer score = 0;
+
         Cell myHeroCurrentCell = null;
         Cell myHeroNextCell = null;
         Integer distanceToOtherMyhero = 0;
@@ -45,17 +48,150 @@ public class ScoreStrategy {
                 break;
             }
         }
-        for (Move myHeroMove : copyOfMyHeroesMove) {
-            Hero hero = myHeroMove.getHero();
-            if (!hero.equals(myHero)){
-                Integer manhatanDistanceFromMyHeroes = 0;
-                manhatanDistanceFromMyHeroes += virtualWorld.manhattanDistance(myHeroCurrentCell,myHero.getCurrentCell());
-                Integer diffFromAreaEffectOFMyHero = Math.abs(manhatanDistanceFromMyHeroes-oppHeroMaxAreaEffect);
-                distanceToOtherMyhero += diffFromAreaEffectOFMyHero;
+        Integer copyOppHeroMaxAreaEffect = oppHeroMaxAreaEffect;
+        if (copyOppHeroMaxAreaEffect < 3) {
+            copyOppHeroMaxAreaEffect = 3;
+        }//TODO: target set konam
+
+        Integer myAbilityRange = 0;
+        for (Ability ability : myHero.getOffensiveAbilities()) {
+            if (ability.isReady() && ability.getRange() > myAbilityRange) {
+                myAbilityRange = ability.getRange();
             }
         }
-        score += distanceToOtherMyhero * Score.DISTANCE_TO_My_HEROES;
 
+        Hero oppHero = null;
+//        Cell oppHeroCell = null;
+        Integer oppHeroCellDistance = 31;
+//        for (Move moveOppHero : copyOfOppHeroesMove) {
+//            Hero Hero = moveOppHero.getHero();
+//            if (Hero.getCurrentCell().isInObjectiveZone()) {
+//                Integer distance = virtualWorld.manhattanDistance(oppHeroCell, myHeroCurrentCell);
+//                if (oppHeroCell == null) {
+//                    oppHeroCell = Hero.getCurrentCell();
+//                    oppHeroCellDistance = distance;
+//                    oppHero=Hero;
+//                    break; //TODO: first opphero seen and choose for attack
+//                } else if (distance < oppHeroCellDistance) {
+//                    oppHeroCellDistance = distance;
+//                    oppHero = Hero;
+//                }
+//            }
+//        }
+
+
+        for (Move moveOppHero : copyOfOppHeroesMove) {
+
+            Hero Hero = moveOppHero.getHero();
+            Cell oppHeroCell = Hero.getCurrentCell();
+
+            boolean findFlag = false;
+            ArrayList<Cell> condidateObjCells = new ArrayList<>(); //(Arrays.asList(virtualWorld.getMap().getObjectiveZone()));
+            if (Hero.getCurrentCell().isInObjectiveZone()) {
+//                ArrayList<Cell> condidateObjCells = new ArrayList<>(); //(Arrays.asList(virtualWorld.getMap().getObjectiveZone()));
+//                if (oppHeroCellDistance != 31) {
+                int row = oppHeroCell.getRow();
+                int column = oppHeroCell.getColumn();
+                for (int i = (row - myAbilityRange); i <= (row + myAbilityRange); i++) {
+                    for (int j = (column - myAbilityRange); j <= (column + myAbilityRange); j++) {
+                        if (virtualWorld.getMap().isInMap(i, j)) {
+                            Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                            if (mapCell.isInObjectiveZone() && (!mapCell.isWall())) { //TODO: can added out of obj zone
+                                condidateObjCells.add(mapCell);
+                            }
+                        }
+
+                    }
+                }
+//                }
+
+                Integer oppAbilityRangeEffect = 0;
+                for (Ability ability : Hero.getOffensiveAbilities()) {
+//                    if (ability.isReady()) {
+                    if (ability.getAreaOfEffect() > oppAbilityRangeEffect)
+                        oppAbilityRangeEffect = 2 * ability.getAreaOfEffect() + 1;
+//                    }
+                }
+
+                for (Move myHeroMove : copyOfMyHeroesMove) {
+                    Hero hero = myHeroMove.getHero();
+                    if (!hero.equals(myHero)) {
+                        Integer myOtherAbilityRange = 0;
+                        for (Ability ability : hero.getOffensiveAbilities()) {
+                            if (ability.isReady() && ability.getRange() > myAbilityRange) {
+                                myAbilityRange = ability.getRange();
+                            }
+                        }
+                        Cell myOtherCell = hero.getCurrentCell();
+                        boolean canHit = false;
+                        for (int i = (myOtherCell.getRow() - myOtherAbilityRange); i <= (myOtherCell.getRow() + myOtherAbilityRange); i++) {
+                            for (int j = (myOtherCell.getColumn() - myOtherAbilityRange); j <= (myOtherCell.getColumn() + myOtherAbilityRange); j++) {
+                                for (Move ooppHeroMovee : copyOfOppHeroesMove) {
+                                    Hero oppher = ooppHeroMovee.getHero();
+                                    int oppRow = oppher.getCurrentCell().getRow();
+                                    int oppColumn = oppher.getCurrentCell().getColumn();
+                                    if ((i == oppRow) && (j == oppColumn)) {
+                                        canHit = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (canHit) {
+                            Cell heroCell = hero.getCurrentCell();
+                            for (int i = (heroCell.getRow() - oppAbilityRangeEffect); i <= (heroCell.getRow() + oppAbilityRangeEffect); i++) {
+                                for (int j = (heroCell.getColumn() - oppAbilityRangeEffect); j <= (heroCell.getColumn() + oppAbilityRangeEffect); j++) {
+                                    if (virtualWorld.getMap().isInMap(i, j)) {
+                                        Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                                        if (condidateObjCells.contains(mapCell)) {
+                                            condidateObjCells.remove(mapCell);
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            if (condidateObjCells.size() != 0) {
+
+                Cell targetcell = condidateObjCells.get(0);
+                Direction[] pathToObj = virtualWorld.getPathMoveDirections(myHeroCurrentCell, targetcell, blocks);
+                Direction dir = null;
+                MyDirection mydir = null;
+                if (pathToObj.length != 0) {
+                    dir = pathToObj[0];
+                    mydir = Utility.castDirectionToMyDirection(dir);
+                }
+                MyDirection myDirection = Utility.getDirectionFromCells(myHeroCurrentCell, myHeroNextCell);
+                if (myDirection.equals(mydir)) {
+                    score += 400000;
+                }
+//                Move move = Move.findByHero(myHeroesMoves, myHero);
+//                Integer index = myHeroesMoves.indexOf(move);
+//                move.setTargetZoneCell(targetcell);
+//                myHeroesMoves.set(index, move);
+
+                findFlag = true;
+            }
+            if (findFlag) {
+                break;
+            }
+        }
+
+
+//        for (Move myHeroMove : copyOfMyHeroesMove) {
+//            Hero hero = myHeroMove.getHero();
+//            if (!hero.equals(myHero)) {
+//                Integer manhatanDistanceFromMyHeroes = 0;
+//                manhatanDistanceFromMyHeroes += virtualWorld.manhattanDistance(myHeroNextCell, hero.getCurrentCell());
+//                Integer diffFromAreaEffectOFMyHero = Math.abs(manhatanDistanceFromMyHeroes - copyOppHeroMaxAreaEffect);
+//                distanceToOtherMyhero += diffFromAreaEffectOFMyHero;
+//            }
+//        }
+//        score += distanceToOtherMyhero * Score.DISTANCE_TO_My_HEROES;
 
 
 //        if (virtualWorld.getCurrentTurn() == 10) {
@@ -224,7 +360,7 @@ public class ScoreStrategy {
 //        return losingHealthScore ;
     }
 
-    public static Integer reduceDistanceWithOppHeroesInObjectiveZone(Hero myHero, MyDirection myHeroDirection, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove) {
+    public static Integer reduceDistanceWithOppHeroesInObjectiveZone(Hero myHero, MyDirection myHeroDirection, World virtualWorld, ArrayList<Move> copyOfMyHeroesMove, ArrayList<Move> copyOfOppHeroesMove, Hero oppHero, Integer oppHeroInObjZone, Integer oppHeroMaxAreaEffect, ArrayList<Move> myHeroesMoves, ArrayList<Cell> blocks) {
 
         Integer score = 0;
         Integer distanceSum = 0;
@@ -249,7 +385,7 @@ public class ScoreStrategy {
                 }
             }
 
-            if (virtualWorld.getCurrentTurn()>=24) {
+            if (virtualWorld.getCurrentTurn() >= 24) {
                 int i = 0;
             }
 
@@ -264,12 +400,12 @@ public class ScoreStrategy {
                     int distanceForSum = virtualWorld.manhattanDistance(myHeroMoveNextCell, oppHeroMoveNextCell);
                     distanceSum += distanceForSum;
                     if (distance <= myHeroCanHitMaxDistance) {
-                        if (virtualWorld.isInVision(myHeroMoveCurrentCell,oppHeroMoveCurrentCell)){
+                        if (virtualWorld.isInVision(myHeroMoveCurrentCell, oppHeroMoveCurrentCell)) {
                             myHeroCanHitAnyone = true;
                         }
 
                         int distance2 = virtualWorld.manhattanDistance(myHeroMoveCurrentCell, oppHeroMoveCurrentCell);
-                        if (distance2 > myHeroCanHitMaxDistance ){
+                        if (distance2 > myHeroCanHitMaxDistance) {
                             canNextCellAttack = true;
 //                            score += 50000;
 //                            break; //if break doesn't exist my hero go to cells that have more enemy;
@@ -287,7 +423,9 @@ public class ScoreStrategy {
             }
 
             if (!myHeroCanHitAnyone) {
-                if (virtualWorld.getCurrentTurn()>=24) {
+
+                score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHeroInObjZone, oppHeroMaxAreaEffect, myHeroesMoves, blocks);
+                if (virtualWorld.getCurrentTurn() >= 24) {
                     int i = 0;
                 }
 
@@ -315,7 +453,9 @@ public class ScoreStrategy {
 //                if (myHeroDirection.equals(MyDirection.FIX)) {
 //                    score += 3 * Score.MOVE_COST;
 //                }
-                score += distanceSum * 20000 * Score.MOVE_COST;
+
+
+//                score += distanceSum * 20000 * Score.MOVE_COST;
                 if (canNextCellAttack){
                     score += 50000;
                 }

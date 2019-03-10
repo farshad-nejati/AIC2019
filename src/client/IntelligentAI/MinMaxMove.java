@@ -14,6 +14,7 @@ class MinMaxMove {
     private ArrayList<Hero> otherOurHeroes;
     private ArrayList<Hero> oppHeroes;
     ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
+    private ArrayList<Move> myHeroesMoves = new ArrayList<>();
 
     private World virtualWorld;
 
@@ -27,6 +28,7 @@ class MinMaxMove {
 
     public MyDirection getDirection(ArrayList<Move> myHeroesMove) {
 
+        this.myHeroesMoves = myHeroesMove;
         ArrayList<Move> oppHeroesMove = new ArrayList<>();
         for (Hero hero : this.oppHeroes) {
             Move move = new Move(hero, hero.getCurrentCell());
@@ -118,16 +120,19 @@ class MinMaxMove {
         Integer oppHeroInObjZone = getOppHeroZoneNumber(copyOfOppHeroesMove);
         // TODO: if opphero dar objzone nabod hameye khodiha beran be target haye khod.
 
-        Integer oppHeroMaxAreaEffect = getMaxAreaOppHeroo(copyOfOppHeroesMove);
+        Integer oppHeroMaxAreaEffect = getMaxAreaOppHero(copyOfOppHeroesMove);
 
-
-
+        if (myHero.getCurrentCell().isInObjectiveZone()) {
+            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove,oppHero, oppHeroInObjZone,  oppHeroMaxAreaEffect, this.myHeroesMoves,blocks);
+        }
+        if (oppHeroInObjZone==0){
+//            resetAllMyHeroTargetCell(this.myHeroesMoves,this.respawnObjectiveZoneCells);
+        }
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
 //        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
-        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove,oppHeroInObjZone,oppHeroMaxAreaEffect);
-        score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+
         //TODO: when there are no one in obj zone of opphero, pakhsh shan va beran to faseleye moshakhas ke albate age faseleye dorost vaystadan piade she khodesh hal mishe.
 //        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
 
@@ -135,28 +140,32 @@ class MinMaxMove {
 
     }
 
-    private Integer getMaxAreaOppHeroo(ArrayList<Move> copyOfOppHeroesMove) {
+    private void resetAllMyHeroTargetCell(ArrayList<Move> myHeroesMoves, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells) {
+        return;
+    }
+
+
+    private Integer getMaxAreaOppHero(ArrayList<Move> copyOfOppHeroesMove) {
         Integer areaEffect = 0;
-        if (copyOfOppHeroesMove.size()!=0){
-            for (Move heroMove:copyOfOppHeroesMove){
+        if (copyOfOppHeroesMove.size() != 0) {
+            for (Move heroMove : copyOfOppHeroesMove) {
                 Hero hero = heroMove.getHero();
                 Integer thisArea = 0;
-                if (hero.getCurrentCell().isInVision()){
-                    for (Ability ability:hero.getAbilities())
-                    {
-                        if (ability.isReady()){
-                            if (ability.getAreaOfEffect()>thisArea){
+                if (hero.getCurrentCell().isInVision()) {
+                    for (Ability ability : hero.getAbilities()) {
+                        if (ability.isReady()) {
+                            if (ability.getAreaOfEffect() > thisArea) {
                                 thisArea = ability.getAreaOfEffect();
                             }
                         }
                     }
                 }
-                if (thisArea>areaEffect){
+                if (thisArea > areaEffect) {
                     areaEffect = thisArea;
                 }
             }
         }
-        return (areaEffect*2) + 1;
+        return (areaEffect * 2) + 1;
     }
 
     private Integer getOppHeroZoneNumber(ArrayList<Move> copyOfOppHeroesMove) {

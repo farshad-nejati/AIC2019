@@ -185,6 +185,9 @@ public class AI {
             }
 
         }
+        if (world.getCurrentTurn() == 12){
+            int p = 0;
+        }
 //        if (noneZoneHeroes.size() > 0 ) {
 //            noneZoneMoving.move(world, noneZoneHeroes, blockedCells);
 //        }
