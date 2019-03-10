@@ -163,9 +163,9 @@ public class RandomAction {
         ArrayList<CandidateActionCell> candidateCells = new ArrayList<>();
         ArrayList<Cell> inDistanceCells = new ArrayList<>();
 
-        ArrayList<Cell> objectiveZoneCells = new ArrayList<>(Arrays.asList(world.getMap().getObjectiveZone()));
+        ArrayList<Cell> zoneCells = new ArrayList<>(Helper.twoDArrayToList(world.getMap().getCells()));
         // TODO: for each cell in objective cell find cells with range < max range of ability
-        inDistanceCells = Helper.findInRangeCells(world, objectiveZoneCells, myHero, ability);
+        inDistanceCells = Helper.findInRangeCells(world, zoneCells, myHero, ability);
 
         // TODO: for each findded cell calculate lobbing ability impact cell
         for (Cell cell : inDistanceCells) {
@@ -278,7 +278,7 @@ public class RandomAction {
 
     public ArrayList<Cell> LobbingAbilityImpactCells(World world, Cell targetCell, Ability ability) {
         ArrayList<Cell> lobbingAbilityImpactCells = new ArrayList<>();
-        for (Cell cell : world.getMap().getObjectiveZone()) {
+        for (Cell cell : Helper.twoDArrayToList(world.getMap().getCells())) {
             int distance = world.manhattanDistance(targetCell, cell);
             if (distance <= ability.getAreaOfEffect()) {
                 lobbingAbilityImpactCells.add(cell);

@@ -131,10 +131,11 @@ class MinMaxMove {
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
-//        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
-
+        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+//        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove);
         //TODO: when there are no one in obj zone of opphero, pakhsh shan va beran to faseleye moshakhas ke albate age faseleye dorost vaystadan piade she khodesh hal mishe.
 //        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
+// score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
 
         return score;
 

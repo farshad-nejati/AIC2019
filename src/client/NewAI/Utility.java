@@ -255,7 +255,7 @@ public class Utility {
 
 
     public void initializeObjectiveCellThreats() {
-        for (Cell objectiveCell : objectiveCells) {
+        for (Cell objectiveCell : Helper.twoDArrayToList(world.getMap().getCells())) {
             this.objectiveCellThreats.add(new ObjectiveCellThreat(objectiveCell));
         }
     }

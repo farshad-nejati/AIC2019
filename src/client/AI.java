@@ -64,7 +64,7 @@ public class AI {
 //        System.out.println("world Columns: " + world.getMap().getColumnNum());
 //        System.out.println("world Columns: " + world.getMap().getRowNum());
         randomAction = new RandomAction();
-//        printer = new Printer();
+        printer = new Printer();
         newMove = new Move();
 
 //        objectiveZoneCells = world.getMap().getObjectiveZone();
@@ -156,7 +156,7 @@ public class AI {
 
 //        randomMove.moveToObjectiveZone(world);
 
-//        printer.printMap(world);
+        printer.printMap(world);
 
         if (world.getCurrentTurn() == 1 || world.getCurrentTurn() == 4) {
             for (Hero myhero : world.getMyHeroes()) {
@@ -215,7 +215,7 @@ public class AI {
 //        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
 //        printer.printHeroList(world);
 //        printer.printOppHeroList(world);
-//        printer.printMap(world);
+        printer.printMap(world);
 
         DodgeAction.executeMove(world, noneZoneDodges); // moves with dodge operated
         DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
