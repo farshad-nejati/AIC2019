@@ -34,14 +34,14 @@ class MinMaxMove {
         ArrayList<Move> oppHeroesMove = new ArrayList<>();
         for (Hero hero : this.oppHeroes) {
             Ability ability = null;
-            Integer maxRange= 0;
-            for (AreaEffect areaEffect: areaEffectListAIAlgorithm){
-                if (areaEffect.getHero().equals(hero)){
+            Integer maxRange = 0;
+            for (AreaEffect areaEffect : areaEffectListAIAlgorithm) {
+                if (areaEffect.getHero().equals(hero)) {
                     ability = areaEffect.getAbility();
                     maxRange = areaEffect.getMaxRange();
                 }
             }
-            Move move = new Move(hero, hero.getCurrentCell(),ability,maxRange);
+            Move move = new Move(hero, hero.getCurrentCell(), ability, maxRange);
             oppHeroesMove.add(move);
         }
 
@@ -133,15 +133,15 @@ class MinMaxMove {
         Integer oppHeroMaxAreaEffect = getMaxAreaOppHero(copyOfOppHeroesMove);
 
         if (myHero.getCurrentCell().isInObjectiveZone()) {
-            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove,oppHero, oppHeroInObjZone,  oppHeroMaxAreaEffect, this.myHeroesMoves,blocks);
+            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, blocks);
         }
-        if (oppHeroInObjZone==0){
-//            resetAllMyHeroTargetCell(this.myHeroesMoves,this.respawnObjectiveZoneCells);
+        if (oppHeroInObjZone == 0) {
+//            resetAllMyHeroTargetCell(this.myHeroesMoves, this.respawnObjectiveZoneCells);
         }
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
-        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+//        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
 //        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove);
         //TODO: when there are no one in obj zone of opphero, pakhsh shan va beran to faseleye moshakhas ke albate age faseleye dorost vaystadan piade she khodesh hal mishe.
 //        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
@@ -152,6 +152,44 @@ class MinMaxMove {
     }
 
     private void resetAllMyHeroTargetCell(ArrayList<Move> myHeroesMoves, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells) {
+        ArrayList<Hero> mustMoveHero = new ArrayList<>();
+        ArrayList<RespawnObjectiveZoneCell> freeFromHero = new ArrayList<>();
+        for (Move moveHero : myHeroesMoves) {
+            Hero myMoveHero = moveHero.getHero();
+            if (myMoveHero.getCurrentCell().isInObjectiveZone()) {
+                mustMoveHero.add(myMoveHero);
+            }
+        }
+        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : respawnObjectiveZoneCells) {
+            if (respawnObjectiveZoneCell.isArrival()) {
+                freeFromHero.add(respawnObjectiveZoneCell);
+            }
+        }
+        if (freeFromHero.size() != 0) {
+            for (RespawnObjectiveZoneCell res : freeFromHero) {
+                if (freeFromHero.size() == 0) {
+                    break;
+                }
+                if (mustMoveHero.size() == 0) {
+                    break;
+                } else {
+                    for (Hero hero : mustMoveHero) {
+                        Move move = Move.findByHero(myHeroesMoves, myHero);
+                        Integer index = myHeroesMoves.indexOf(move);
+                        Cell targetcell = res.getObjectiveZoneCell();
+                        move.setTargetZoneCell(targetcell);
+                        myHeroesMoves.set(index, move);
+                        res.setArrival(false);
+                        if (mustMoveHero.size() == 0) {
+                            break;
+                        }
+                    }
+                }
+                freeFromHero.remove(res);
+            }
+        }
+        System.out.println("mustMoveHero.size() = " + mustMoveHero.size());
+        System.out.println("freeFromHero.size() = " + freeFromHero.size() + "\n\n\n");
         return;
     }
 
@@ -171,7 +209,7 @@ class MinMaxMove {
 //                        }
 //                    }
                     Ability ability = heroMove.getAbility();
-                    Integer maxRange= heroMove.getMaxRange();
+                    Integer maxRange = heroMove.getMaxRange();
                     if (ability.getAreaOfEffect() > thisArea) {
                         thisArea = ability.getAreaOfEffect();
                     }

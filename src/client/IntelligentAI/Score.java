@@ -1,7 +1,7 @@
 package client.IntelligentAI;
 
 class Score {
-    final static Integer IN_ZONE = 100000; //50
+    final static Integer IN_ZONE = 5000; //50
     final static Integer MOVE_COST = -4;
     final static Integer DISTANCE_COST = -99; //5
     final static Integer HEALTH_COST = -5;
