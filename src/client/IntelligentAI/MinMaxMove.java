@@ -1,5 +1,6 @@
 package client.IntelligentAI;
 
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.Ability;
 import client.model.Cell;
@@ -15,15 +16,16 @@ class MinMaxMove {
     private ArrayList<Hero> oppHeroes;
     ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>();
     private ArrayList<Move> myHeroesMoves = new ArrayList<>();
-
+    ArrayList<AreaEffect> areaEffectListAIAlgorithm = new ArrayList<>();
     private World virtualWorld;
 
-    public MinMaxMove(Hero myHero, ArrayList<Hero> otherOurHeroes, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells) {
+    public MinMaxMove(Hero myHero, ArrayList<Hero> otherOurHeroes, ArrayList<Hero> oppHeroes, World virtualWorld, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, ArrayList<AreaEffect> areaEffectListAIAlgorithm) {
         this.myHero = myHero;
         this.otherOurHeroes = otherOurHeroes;
         this.oppHeroes = oppHeroes;
         this.virtualWorld = virtualWorld;
         this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
+        this.areaEffectListAIAlgorithm = areaEffectListAIAlgorithm;
     }
 
     public MyDirection getDirection(ArrayList<Move> myHeroesMove) {
@@ -31,7 +33,15 @@ class MinMaxMove {
         this.myHeroesMoves = myHeroesMove;
         ArrayList<Move> oppHeroesMove = new ArrayList<>();
         for (Hero hero : this.oppHeroes) {
-            Move move = new Move(hero, hero.getCurrentCell());
+            Ability ability = null;
+            Integer maxRange= 0;
+            for (AreaEffect areaEffect: areaEffectListAIAlgorithm){
+                if (areaEffect.getHero().equals(hero)){
+                    ability = areaEffect.getAbility();
+                    maxRange = areaEffect.getMaxRange();
+                }
+            }
+            Move move = new Move(hero, hero.getCurrentCell(),ability,maxRange);
             oppHeroesMove.add(move);
         }
 
@@ -125,13 +135,16 @@ class MinMaxMove {
         if (myHero.getCurrentCell().isInObjectiveZone()) {
             score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove,oppHero, oppHeroInObjZone,  oppHeroMaxAreaEffect, this.myHeroesMoves,blocks);
         }
+        else {
+
+        }
         if (oppHeroInObjZone==0){
 //            resetAllMyHeroTargetCell(this.myHeroesMoves,this.respawnObjectiveZoneCells);
         }
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
-        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
+//        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove);
 //        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove);
         //TODO: when there are no one in obj zone of opphero, pakhsh shan va beran to faseleye moshakhas ke albate age faseleye dorost vaystadan piade she khodesh hal mishe.
 //        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
@@ -153,12 +166,17 @@ class MinMaxMove {
                 Hero hero = heroMove.getHero();
                 Integer thisArea = 0;
                 if (hero.getCurrentCell().isInVision()) {
-                    for (Ability ability : hero.getAbilities()) {
-                        if (ability.isReady()) {
-                            if (ability.getAreaOfEffect() > thisArea) {
-                                thisArea = ability.getAreaOfEffect();
-                            }
-                        }
+//                    for (Ability ability : hero.getAbilities()) {
+//                        if (ability.isReady()) {
+//                            if (ability.getAreaOfEffect() > thisArea) {
+//                                thisArea = ability.getAreaOfEffect();
+//                            }
+//                        }
+//                    }
+                    Ability ability = heroMove.getAbility();
+                    Integer maxRange= heroMove.getMaxRange();
+                    if (ability.getAreaOfEffect() > thisArea) {
+                        thisArea = ability.getAreaOfEffect();
                     }
                 }
                 if (thisArea > areaEffect) {

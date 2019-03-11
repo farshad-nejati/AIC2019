@@ -1,5 +1,6 @@
 package client.IntelligentAI;
 
+import client.model.Ability;
 import client.model.Cell;
 import client.model.Hero;
 
@@ -12,16 +13,21 @@ public class Move {
     private Cell targetZoneCell;
     private Cell beforeCell;
 
+    private Ability ability;
+    private int maxRange;
+
 
     public Move() {
         this.currentCell = null;
         this.nextCell = null;
     }
 
-    public Move(Hero hero, Cell currentCell) {
+    public Move(Hero hero, Cell currentCell, Ability ability, Integer maxRange) {
         this.hero = hero;
         this.currentCell = currentCell;
         this.nextCell = currentCell;
+        this.maxRange = maxRange;
+        this.ability = ability;
     }
 
     public Move(Hero hero, Cell currentCell, Cell nextCell) {
@@ -70,6 +76,22 @@ public class Move {
         this.targetZoneCell = targetZoneCell;
     }
 
+
+    public Ability getAbility() {
+        return ability;
+    }
+
+    public void setAbility(Ability ability) {
+        this.ability = ability;
+    }
+
+    public int getMaxRange() {
+        return maxRange;
+    }
+
+    public void setMaxRange(int maxRange) {
+        this.maxRange = maxRange;
+    }
 
     public static Move findByHero(Collection<Move> list, Hero hero) {
         return list.stream().filter(object -> hero.equals(object.getHero())).findFirst().orElse(null);

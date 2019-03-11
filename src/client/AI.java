@@ -205,7 +205,10 @@ public class AI {
 //                oppHeros.remove(opphero);
 //            }
 //        }
-        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival);
+
+        ArrayList<AreaEffect> areaEffectListAIAlgorithm = new ArrayList<>();
+        areaEffectListAIAlgorithm = areaEffectList;
+        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival,areaEffectListAIAlgorithm);
         minMaxAlgorithm.maxMove();
 
     }

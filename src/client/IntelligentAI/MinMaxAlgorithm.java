@@ -1,5 +1,6 @@
 package client.IntelligentAI;
 
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
 
@@ -13,13 +14,14 @@ public class MinMaxAlgorithm {
     private ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells;
     private World virtualWorld; // update by assumptive my hero directions
     private HashMap<Hero, Boolean> heroHashArrival;
-
-    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival) {
+    ArrayList<AreaEffect> areaEffectListAIAlgorithm = new ArrayList<>();
+    public MinMaxAlgorithm(ArrayList<Hero> myHeroes, ArrayList<Hero> oppHeroes, ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells, World virtualWorld, HashMap<Hero, Boolean> heroHashArrival, ArrayList<AreaEffect> areaEffectListAIAlgorithm) {
         this.myHeroes = myHeroes;
         this.oppHeroes = oppHeroes;
         this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
         this.virtualWorld = virtualWorld;
         this.heroHashArrival = heroHashArrival;
+        this.areaEffectListAIAlgorithm = areaEffectListAIAlgorithm;
 
     }
 
@@ -36,7 +38,7 @@ public class MinMaxAlgorithm {
         });
 
         for (Hero myHero : this.myHeroes) {
-            Move move = new Move(myHero, myHero.getCurrentCell());
+            Move move = new Move(myHero, myHero.getCurrentCell(),null,0);
             myHeroesMove.add(move);
         }
         for (Hero myHero : this.myHeroes) {
@@ -58,7 +60,7 @@ public class MinMaxAlgorithm {
             // TODO: find best object cell for this hero
 
 //            System.out.println("my hero = " + myHero.getId() + " row = " + myHero.getCurrentCell().getRow() + " column = " + myHero.getCurrentCell().getColumn());
-            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld, this.respawnObjectiveZoneCells);
+            MinMaxMove minMaxMove = new MinMaxMove(myHero, otherOurHeroes, oppHeroes, virtualWorld, this.respawnObjectiveZoneCells,areaEffectListAIAlgorithm);
             MyDirection direction = minMaxMove.getDirection(myHeroesMove);
             heroDirectionHashMap.put(myHero, direction);
             Move move2 = Move.findByHero(myHeroesMove, myHero);

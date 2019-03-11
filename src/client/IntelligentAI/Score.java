@@ -11,7 +11,7 @@ class Score {
     final static Integer MY_HERO_CELL = -1000;
     final static Integer WALL_SCORE = -1000;
 
-    final static Integer BEFORE_CELL_SCORE = -4000000;
+    final static Integer BEFORE_CELL_SCORE = -800000;
 
     final static Integer DISTANCE_TO_My_HEROES = -81000;
     final static Integer DISTANCE_TO_OPP_HEROES = -4000;
