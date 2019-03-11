@@ -115,7 +115,7 @@ public class AI
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-            noneZoneMoving.move(world, noneZoneHeroes, inZoneHeroes);
+            noneZoneMoving.move(world,  noneZoneHeroes, inZoneHeroes, noneZoneDodges);
         }
         if (inZoneHeroes.size() > 0) {
 //            DodgeAction.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
