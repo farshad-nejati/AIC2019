@@ -154,7 +154,7 @@ public class ScoreStrategy {
                                         if (manhatanDis <= oppAbilityRangeEffect) {
                                             if (condidateObjCells.contains(mapCell)) {
                                                 if (manhatanDis <= 2) {
-                                                    blocks.add(mapCell);
+//                                                    blocks.add(mapCell);
                                                 }
                                                 condidateObjCells.remove(mapCell);
                                             }

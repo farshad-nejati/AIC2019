@@ -134,7 +134,7 @@ class MinMaxMove {
         boolean flag = false;
         if (myHero.getCurrentCell().isInObjectiveZone()) {
             ArrayList<Cell> copyBlocks = new ArrayList<>(blocks);
-            copyBlocks = getoutOfZoneBlockCells(virtualWorld, copyBlocks);
+//            copyBlocks = getoutOfZoneBlockCells(virtualWorld, copyBlocks);
             score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, copyBlocks);
             if (score != 0) {
 //                flag = true;
@@ -163,36 +163,42 @@ class MinMaxMove {
             Hero myMoveHero = moveHero.getHero();
             if (myMoveHero.getCurrentCell().isInObjectiveZone()) {
                 mustMoveHero.add(myMoveHero);
-            }
-        }
-        for (RespawnObjectiveZoneCell respawnObjectiveZoneCell : respawnObjectiveZoneCells) {
-            if (respawnObjectiveZoneCell.isArrival()) {
-                freeFromHero.add(respawnObjectiveZoneCell);
-            }
-        }
-        if (freeFromHero.size() != 0) {
-            for (RespawnObjectiveZoneCell res : freeFromHero) {
-                if (freeFromHero.size() == 0) {
-                    break;
-                }
-                if (mustMoveHero.size() == 0) {
-                    break;
-                } else {
-                    for (Hero hero : mustMoveHero) {
-                        Move move = Move.findByHero(myHeroesMoves, myHero);
+                for (RespawnObjectiveZoneCell res : respawnObjectiveZoneCells) {
+                    if (res.getHero().equals(myMoveHero)) {
+                        Move move = Move.findByHero(myHeroesMoves, myMoveHero);
                         Integer index = myHeroesMoves.indexOf(move);
                         Cell targetcell = res.getObjectiveZoneCell();
                         move.setTargetZoneCell(targetcell);
                         myHeroesMoves.set(index, move);
                         res.setArrival(false);
-                        if (mustMoveHero.size() == 0) {
-                            break;
-                        }
                     }
                 }
-                freeFromHero.remove(res);
             }
         }
+//
+//        if (freeFromHero.size() != 0) {
+//            for (RespawnObjectiveZoneCell res : freeFromHero) {
+//                if (freeFromHero.size() == 0) {
+//                    break;
+//                }
+//                if (mustMoveHero.size() == 0) {
+//                    break;
+//                } else {
+//                    for (Hero hero : mustMoveHero) {
+//                        Move move = Move.findByHero(myHeroesMoves, myHero);
+//                        Integer index = myHeroesMoves.indexOf(move);
+//                        Cell targetcell = res.getObjectiveZoneCell();
+//                        move.setTargetZoneCell(targetcell);
+//                        myHeroesMoves.set(index, move);
+//                        res.setArrival(false);
+//                        if (mustMoveHero.size() == 0) {
+//                            break;
+//                        }
+//                    }
+//                }
+////                freeFromHero.remove(res);
+//            }
+//        }
         System.out.println("mustMoveHero.size() = " + mustMoveHero.size());
         System.out.println("freeFromHero.size() = " + freeFromHero.size() + "\n\n\n");
         return;
