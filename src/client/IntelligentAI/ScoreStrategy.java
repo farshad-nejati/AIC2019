@@ -55,10 +55,10 @@ public class ScoreStrategy {
 
         Integer myAbilityRangeAndEffect = 0;
         for (Ability myability : myHero.getOffensiveAbilities()) {
-            if (virtualWorld.getCurrentTurn()>=24){
+            if (virtualWorld.getCurrentTurn() >= 24) {
                 int p = 0;
             }
-            if (myability.getRemCooldown()==0 && (myability.getRange() + myability.getAreaOfEffect()) > myAbilityRangeAndEffect) {
+            if (myability.getRemCooldown() == 0 && (myability.getRange() + myability.getAreaOfEffect()) > myAbilityRangeAndEffect) {
 //                myAbilityRangeAndEffect = ability.getRange() + ability.getAreaOfEffect();
                 myAbilityRangeAndEffect = myability.getRange();
             }
@@ -121,9 +121,9 @@ public class ScoreStrategy {
 //                }
 
                 Integer oppAbilityRangeEffect = 0;
-                oppAbilityRangeEffect = moveOppHero.getAbility().getAreaOfEffect();
+                oppAbilityRangeEffect = 2 * moveOppHero.getAbility().getAreaOfEffect() + 1;
                 if (oppAbilityRangeEffect == 1) {
-                    oppAbilityRangeEffect =3;
+                    oppAbilityRangeEffect = 3;
                 }
 //                for (Ability ability : Hero.getOffensiveAbilities()) {
 //                    if (ability.isReady()) {
@@ -138,8 +138,6 @@ public class ScoreStrategy {
 //                }
 
 
-
-
                 ArrayList<Cell> condidateObjCellstest = new ArrayList<>(condidateObjCells);
                 for (Cell condidateCell : condidateObjCellstest) {
                     for (Move myHeroMove : copyOfMyHeroesMove) {
@@ -151,10 +149,13 @@ public class ScoreStrategy {
                             if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
                                 for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
                                     for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
-                                        Cell mapCell = virtualWorld.getMap().getCell(i,j);
+                                        Cell mapCell = virtualWorld.getMap().getCell(i, j);
                                         Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
                                         if (manhatanDis <= oppAbilityRangeEffect) {
-                                            if (condidateObjCells.contains(mapCell)){
+                                            if (condidateObjCells.contains(mapCell)) {
+                                                if (manhatanDis <= 2) {
+                                                    blocks.add(mapCell);
+                                                }
                                                 condidateObjCells.remove(mapCell);
                                             }
 
@@ -165,11 +166,6 @@ public class ScoreStrategy {
                         }
                     }
                 }
-
-
-
-
-
 
 
 //                condidateObjCells = condidateObjCellstest;
@@ -235,8 +231,8 @@ public class ScoreStrategy {
                 if (!flagzonecondid) {
                     targetcell = condidateObjCells.get(0);
                 }
-                Direction[] pathToObj = virtualWorld.getPathMoveDirections(myHeroCurrentCell, targetcell);
-//                Direction[] pathToObj = virtualWorld.getPathMoveDirections(myHeroCurrentCell, targetcell, blocks);
+//                Direction[] pathToObj = virtualWorld.getPathMoveDirections(myHeroCurrentCell, targetcell);
+                Direction[] pathToObj = virtualWorld.getPathMoveDirections(myHeroCurrentCell, targetcell, blocks);
                 Direction dir = null;
                 MyDirection mydir = null;
                 if (pathToObj.length != 0) {
@@ -246,12 +242,12 @@ public class ScoreStrategy {
                 }
                 MyDirection myDirection = Utility.getDirectionFromCells(myHeroCurrentCell, myHeroNextCell);
                 if (myDirection.equals(mydir)) {
-                    score += 1200000;
+//                    score += 1200000;
                 }
-//                Move move = Move.findByHero(myHeroesMoves, myHero);
-//                Integer index = myHeroesMoves.indexOf(move);
-//                move.setTargetZoneCell(targetcell);
-//                myHeroesMoves.set(index, move);
+                Move move = Move.findByHero(myHeroesMoves, myHero);
+                Integer index = myHeroesMoves.indexOf(move);
+                move.setTargetZoneCell(targetcell);
+                myHeroesMoves.set(index, move);
                 findFlag = true;
             }
             if (findFlag) {

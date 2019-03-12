@@ -131,12 +131,17 @@ class MinMaxMove {
         // TODO: if opphero dar objzone nabod hameye khodiha beran be target haye khod.
 
         Integer oppHeroMaxAreaEffect = getMaxAreaOppHero(copyOfOppHeroesMove);
-
+        boolean flag = false;
         if (myHero.getCurrentCell().isInObjectiveZone()) {
-            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, blocks);
+            ArrayList<Cell> copyBlocks = new ArrayList<>(blocks);
+            copyBlocks = getoutOfZoneBlockCells(virtualWorld, copyBlocks);
+            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, copyBlocks);
+            if (score != 0) {
+//                flag = true;
+            }
         }
         if (oppHeroInObjZone == 0) {
-//            resetAllMyHeroTargetCell(this.myHeroesMoves, this.respawnObjectiveZoneCells);
+            resetAllMyHeroTargetCell(this.myHeroesMoves, this.respawnObjectiveZoneCells);
         }
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
@@ -269,6 +274,37 @@ class MinMaxMove {
             }
         }
 
+        return blocks;
+    }
+
+    public ArrayList<Cell> getoutOfZoneBlockCells(World virtualWorld, ArrayList<Cell> blocks) {
+        Cell[] objzoneCell = virtualWorld.getMap().getObjectiveZone();
+        int minRow = objzoneCell[0].getRow();
+        int maxRow = objzoneCell[0].getRow();
+        int mincolumn = objzoneCell[0].getColumn();
+        int maxcolumn = objzoneCell[0].getColumn();
+        for (Cell obj : objzoneCell) {
+            if (obj.getRow() > maxRow) {
+                maxRow = obj.getRow();
+            }
+            if (obj.getRow() < minRow) {
+                minRow = obj.getRow();
+            }
+            if (obj.getColumn() > maxcolumn) {
+                maxcolumn = obj.getColumn();
+            }
+            if (obj.getColumn() < mincolumn) {
+                mincolumn = obj.getColumn();
+            }
+        }
+        for (int i = minRow - 2; i <= maxRow + 2; i++) {
+            for (int j = mincolumn - 2; j <= maxcolumn + 2; j++) {
+                Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                if (!mapCell.isInObjectiveZone()) {
+                    blocks.add(mapCell);
+                }
+            }
+        }
         return blocks;
     }
 }
