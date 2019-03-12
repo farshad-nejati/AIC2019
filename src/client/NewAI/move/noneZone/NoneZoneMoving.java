@@ -1,5 +1,7 @@
 package client.NewAI.move.noneZone;
 
+import client.NewAI.Helper;
+import client.NewAI.dodge.NoneZoneDodge;
 import client.Printer;
 import client.model.Cell;
 import client.model.Direction;
@@ -15,7 +17,7 @@ public class NoneZoneMoving {
         this.respawnObjectiveZoneCells = respawnObjectiveZoneCells;
     }
 
-    public void move(World world, ArrayList<Hero> noneZoneHeroes, ArrayList<Hero> inZoneHeroes) {
+    public void move(World world, ArrayList<Hero> noneZoneHeroes, ArrayList<Hero> inZoneHeroes, ArrayList<NoneZoneDodge> noneZoneDodges) {
         for (Hero hero : noneZoneHeroes) {
 
             ArrayList<RespawnObjectiveZoneCell> respawnObjectiveZoneCells = new ArrayList<>(this.respawnObjectiveZoneCells);
@@ -23,7 +25,8 @@ public class NoneZoneMoving {
             int index = respawnObjectiveZoneCells.indexOf(respawnObjectiveZoneCell);
             respawnObjectiveZoneCells.remove(respawnObjectiveZoneCell);
 
-            ArrayList<Cell> blockedCells = findBlockedCells(respawnObjectiveZoneCells, inZoneHeroes);
+            ArrayList<Cell> blockedCells = Helper.getBlockedCellsForNoneZoneHeroes(noneZoneHeroes, noneZoneDodges,  hero, inZoneHeroes);
+//            ArrayList<Cell> blockedCells = findBlockedCells(respawnObjectiveZoneCells, inZoneHeroes);
             Cell objectiveCell = respawnObjectiveZoneCell.getObjectiveZoneCell();
 
             Direction[] directions = world.getPathMoveDirections(hero.getCurrentCell(), objectiveCell, blockedCells);

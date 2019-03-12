@@ -3,6 +3,7 @@ package client.NewAI;
 import client.NewAI.action.areaEffect.AreaEffect;
 import client.NewAI.action.areaEffect.AreaEffectHelper;
 import client.NewAI.dodge.DodgeStatus;
+import client.NewAI.dodge.NoneZoneDodge;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
 
@@ -96,6 +97,22 @@ public class Helper {
             }
             blockedCells.add(respawnObjectiveZoneCell.getObjectiveZoneCell());
         }
+        return blockedCells;
+    }
+    public static ArrayList<Cell> getBlockedCellsForNoneZoneHeroes(ArrayList<Hero> noneZoneHeroes, ArrayList<NoneZoneDodge> noneZoneDodges, Hero ignoreHero, ArrayList<Hero> inZoneHeroes) {
+        ArrayList<Cell> blockedCells = new ArrayList<>();
+        for (Hero hero : inZoneHeroes) {
+            blockedCells.add(hero.getCurrentCell());
+        }
+        for (NoneZoneDodge noneZoneDodge : noneZoneDodges) {
+            Cell cell = noneZoneDodge.getHero().getCurrentCell();
+            blockedCells.add(cell);
+        }
+//        for (Hero noneZoneHero : noneZoneHeroes) {
+//            Cell cell = noneZoneHero.getCurrentCell();
+//            blockedCells.add(cell);
+//        }
+
         return blockedCells;
     }
 
