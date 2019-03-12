@@ -607,17 +607,20 @@ public class ScoreStrategy {
             }
         }
 
-        if (losingHealthSum > myHero.getCurrentHP()) {
+        if (losingHealthSum >= myHero.getCurrentHP()) {
 
             killScore = Score.KILL_COST;
 
             if (safeCell != null) {
                 Direction[] distancePath = virtualWorld.getPathMoveDirections(myHeroCurrentCell, safeCell, blocks);
-                Direction bestDirection = distancePath[0];
-                MyDirection bestMyDirection = Utility.castDirectionToMyDirection(bestDirection);
-                if (direction.equals(bestMyDirection)) {
-                    killScore += Score.SAFE_CELL_SCORE;
+                if (distancePath.length!=0){
+                    Direction bestDirection = distancePath[0];
+                    MyDirection bestMyDirection = Utility.castDirectionToMyDirection(bestDirection);
+                    if (direction.equals(bestMyDirection)) {
+                        killScore += Score.SAFE_CELL_SCORE;
+                    }
                 }
+
             }
         }
 

@@ -135,13 +135,13 @@ class MinMaxMove {
         if (myHero.getCurrentCell().isInObjectiveZone()) {
             ArrayList<Cell> copyBlocks = new ArrayList<>(blocks);
 //            copyBlocks = getoutOfZoneBlockCells(virtualWorld, copyBlocks);
-            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, copyBlocks);
+//            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, copyBlocks);
             if (score != 0) {
 //                flag = true;
             }
         }
         if (oppHeroInObjZone == 0) {
-            resetAllMyHeroTargetCell(this.myHeroesMoves, this.respawnObjectiveZoneCells);
+//            resetAllMyHeroTargetCell(this.myHeroesMoves, this.respawnObjectiveZoneCells);
         }
         score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
