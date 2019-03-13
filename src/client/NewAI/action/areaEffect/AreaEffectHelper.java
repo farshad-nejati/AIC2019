@@ -74,6 +74,9 @@ public class AreaEffectHelper {
         ArrayList<CastAbility> castAbilities = new ArrayList<>(Arrays.asList(world.getOppCastAbilities()));
         for (CastAbility castAbility : castAbilities) {
             int id = castAbility.getCasterId();
+            if (id == -1) {
+                continue;
+            }
             AreaEffect areaEffect = AreaEffect.findByID(areaEffectList, id);
             PowerFullAbility powerFullAbility = PowerFullAbility.findByID(powerFullAbilities, id);
             int index = powerFullAbilities.indexOf(powerFullAbility);
