@@ -424,6 +424,7 @@ public class ScoreStrategy {
 
             if (!myHeroCanHitAnyone) {
 
+
                 score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHeroInObjZone, oppHeroMaxAreaEffect, myHeroesMoves, blocks);
                 if (virtualWorld.getCurrentTurn() >= 24) {
                     int i = 0;

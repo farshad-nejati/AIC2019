@@ -126,6 +126,9 @@ public class AI {
 
         ArrayList<Hero> myHeros = new ArrayList<>();
 
+        System.out.println("Utility.mapRangeIsBig() = " + Utility.mapRangeIsBig(world));
+        boolean isBig = Utility.mapRangeIsBig(world);
+
         if (noneZoneHeroes.size() > 0) {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
@@ -234,6 +237,8 @@ public class AI {
 
         MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival, areaEffectListAIAlgorithm);
         minMaxAlgorithm.maxMove();
+
+        }
 
     }
 

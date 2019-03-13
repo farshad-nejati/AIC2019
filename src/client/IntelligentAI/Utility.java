@@ -207,5 +207,42 @@ public class Utility {
         else
             return false;
     }
+    public  static  boolean mapRangeIsBig(World virtualWorld) {
+        Cell[] objzoneCell = virtualWorld.getMap().getObjectiveZone();
+        int minRow = objzoneCell[0].getRow();
+        int maxRow = objzoneCell[0].getRow();
+        int mincolumn = objzoneCell[0].getColumn();
+        int maxcolumn = objzoneCell[0].getColumn();
+        for (Cell obj : objzoneCell) {
+            if (obj.getRow() > maxRow) {
+                maxRow = obj.getRow();
+            }
+            if (obj.getRow() < minRow) {
+                minRow = obj.getRow();
+            }
+            if (obj.getColumn() > maxcolumn) {
+                maxcolumn = obj.getColumn();
+            }
+            if (obj.getColumn() < mincolumn) {
+                mincolumn = obj.getColumn();
+            }
+        }
 
+        int difRow =(maxRow- minRow) + 1  ;
+        int difColumn =(maxcolumn-mincolumn)+1;
+        if ( difColumn< 7 && difRow < 7){
+            return false;
+        }
+//        if ( difColumn/ difRow == 1){
+            int maxZoneOnj = difColumn * difRow;
+            double percent = maxZoneOnj * 0.6;
+            if (objzoneCell.length < percent){
+                return false;
+            }else {
+                return true;
+            }
+//        }else {
+//            return false;
+//        }
+    }
 }
