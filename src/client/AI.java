@@ -125,7 +125,7 @@ public class AI {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-
+//            noneZoneMoving.move(world,noneZoneHeroes,inZoneHeroes,noneZoneDodges);
 //            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
         }
 
@@ -135,18 +135,18 @@ public class AI {
 //            inZoneMoving.move(world, noneZoneHeroes);
         }
 
-        if (noneZoneHeroes.size()!=0){
-            int j=2;
-
-            myHeros.addAll(noneZoneHeroes);
-        }
-        if (inZoneHeroes.size() !=0){
-            for (Hero hero:inZoneHeroes){
-                if (!myHeros.contains(hero)){
-                    myHeros.add(hero);
-                }
-            }
-        }
+//        if (noneZoneHeroes.size()!=0){
+//            int j=2;
+//
+//            myHeros.addAll(noneZoneHeroes);
+//        }
+//        if (inZoneHeroes.size() !=0){
+//            for (Hero hero:inZoneHeroes){
+//                if (!myHeros.contains(hero)){
+//                    myHeros.add(hero);
+//                }
+//            }
+//        }
 
 //        myHeros.addAll(inZoneHeroes);
 
@@ -210,6 +210,14 @@ public class AI {
 
         ArrayList<AreaEffect> areaEffectListAIAlgorithm = new ArrayList<>();
         areaEffectListAIAlgorithm = areaEffectList;
+
+        for (Hero myhero: myHeros){
+            DodgeStatus dodgeStatus = DodgeStatus.findByHero(noneZoneDodgeStatuses,myhero);
+            if (!dodgeStatus.isActive()){
+                myHeros.add(myhero);
+            }
+        }
+
         MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival,areaEffectListAIAlgorithm);
         minMaxAlgorithm.maxMove();
 

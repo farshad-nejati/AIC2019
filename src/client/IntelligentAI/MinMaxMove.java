@@ -141,7 +141,7 @@ class MinMaxMove {
 
         Integer oppHeroMaxAreaEffect = getMaxAreaOppHero(copyOfOppHeroesMove);
         boolean flag = false;
-        if (myHero.getCurrentCell().isInObjectiveZone()|| respawn) {
+        if (/*myHero.getCurrentCell().isInObjectiveZone()||*/ respawn) {
             ArrayList<Cell> copyBlocks = new ArrayList<>(blocks);
 //            copyBlocks = getoutOfZoneBlockCells(virtualWorld, copyBlocks);
             score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, copyBlocks);
