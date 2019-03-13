@@ -135,18 +135,18 @@ public class AI {
 //            inZoneMoving.move(world, noneZoneHeroes);
         }
 
-//        if (noneZoneHeroes.size()!=0){
-//            int j=2;
-//
-//            myHeros.addAll(noneZoneHeroes);
-//        }
-//        if (inZoneHeroes.size() !=0){
-//            for (Hero hero:inZoneHeroes){
-//                if (!myHeros.contains(hero)){
-//                    myHeros.add(hero);
-//                }
-//            }
-//        }
+        if (noneZoneHeroes.size()!=0){
+            int j=2;
+
+            myHeros.addAll(noneZoneHeroes);
+        }
+        if (inZoneHeroes.size() !=0){
+            for (Hero hero:inZoneHeroes){
+                if (!myHeros.contains(hero)){
+                    myHeros.add(hero);
+                }
+            }
+        }
 
 //        myHeros.addAll(inZoneHeroes);
 
@@ -211,11 +211,14 @@ public class AI {
         ArrayList<AreaEffect> areaEffectListAIAlgorithm = new ArrayList<>();
         areaEffectListAIAlgorithm = areaEffectList;
 
-        for (Hero myhero: myHeros){
+        ArrayList<Hero> removeMyHeros = new ArrayList<>();
+        for (Hero myhero: removeMyHeros){
             DodgeStatus dodgeStatus = DodgeStatus.findByHero(noneZoneDodgeStatuses,myhero);
-            if (!dodgeStatus.isActive()){
-                myHeros.add(myhero);
-            }
+//            if (dodgeStatus.isActive()&& removeMyHeros.contains(myhero)){
+//                myHeros.remove(myhero);
+//            }
+            int index = myHeros.indexOf(myhero);
+            myHeros.remove(index);
         }
 
         MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival,areaEffectListAIAlgorithm);
