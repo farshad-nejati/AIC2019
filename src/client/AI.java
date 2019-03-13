@@ -118,12 +118,14 @@ public class AI {
         inZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, inZoneHeroes, areaEffectList, false);
         noneZoneDodgeStatuses = DodgeHelper.getDodgeStatuses(world, noneZoneHeroes, areaEffectList, true);
 
+
         ArrayList<Hero> myHeros = new ArrayList<>();
 
         if (noneZoneHeroes.size() > 0) {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
+
 //            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
         }
 

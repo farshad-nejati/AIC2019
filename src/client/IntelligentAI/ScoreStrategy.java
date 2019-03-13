@@ -122,8 +122,8 @@ public class ScoreStrategy {
 
                 Integer oppAbilityRangeEffect = 0;
                 oppAbilityRangeEffect = 2 * moveOppHero.getAbility().getAreaOfEffect() + 1;
-                if (oppAbilityRangeEffect == 1) {
-                    oppAbilityRangeEffect = 3;
+                if (oppAbilityRangeEffect <= 3) {
+                    oppAbilityRangeEffect = 4;
                 }
 //                for (Ability ability : Hero.getOffensiveAbilities()) {
 //                    if (ability.isReady()) {
@@ -151,6 +151,9 @@ public class ScoreStrategy {
                                     for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
                                         Cell mapCell = virtualWorld.getMap().getCell(i, j);
                                         Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
+                                        if (i == 11 && j == 13) {
+                                            int p = 0;
+                                        }
                                         if (manhatanDis <= oppAbilityRangeEffect) {
                                             if (condidateObjCells.contains(mapCell)) {
                                                 if (manhatanDis <= 2) {
@@ -161,6 +164,21 @@ public class ScoreStrategy {
 
                                         }
                                     }
+                                }
+                            }
+                            Cell heroCell = myOtherHero.getCurrentCell();
+                            for (int i = (heroCell.getRow() - oppAbilityRangeEffect); i <= (heroCell.getRow() + oppAbilityRangeEffect); i++) {
+                                for (int j = (heroCell.getColumn() - oppAbilityRangeEffect); j <= (heroCell.getColumn() + oppAbilityRangeEffect); j++) {
+                                    if (virtualWorld.getMap().isInMap(i, j)) {
+                                        Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                                        Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
+                                        if (manhatanDis <= oppAbilityRangeEffect) {
+                                            if (condidateObjCells.contains(mapCell)) {
+                                                condidateObjCells.remove(mapCell);
+                                            }
+                                        }
+                                    }
+
                                 }
                             }
                         }
@@ -577,7 +595,7 @@ public class ScoreStrategy {
                 }
             }
             if (objectiveZoneCellLosingHealthSum < myHero.getCurrentHP()) {
-                int distance = virtualWorld.manhattanDistance(myHeroCurrentCell,objectiveZoneCell);
+                int distance = virtualWorld.manhattanDistance(myHeroCurrentCell, objectiveZoneCell);
                 if (safeCell == null) {
                     safeCell = objectiveZoneCell;
                     safeCellDistance = distance;
@@ -613,7 +631,7 @@ public class ScoreStrategy {
 
             if (safeCell != null) {
                 Direction[] distancePath = virtualWorld.getPathMoveDirections(myHeroCurrentCell, safeCell, blocks);
-                if (distancePath.length!=0){
+                if (distancePath.length != 0) {
                     Direction bestDirection = distancePath[0];
                     MyDirection bestMyDirection = Utility.castDirectionToMyDirection(bestDirection);
                     if (direction.equals(bestMyDirection)) {

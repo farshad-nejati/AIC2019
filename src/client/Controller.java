@@ -93,7 +93,7 @@ public class Controller
 
     /**
      * Handles incoming message. This method will be called from
-     * {@link Network} when a new message is received.
+     * {@link client.Network} when a new message is received.
      *
      * @param msg incoming message
      */

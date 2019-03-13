@@ -130,25 +130,34 @@ class MinMaxMove {
         Integer oppHeroInObjZone = getOppHeroZoneNumber(copyOfOppHeroesMove);
         // TODO: if opphero dar objzone nabod hameye khodiha beran be target haye khod.
 
+        boolean respawn = false;
+        for (RespawnObjectiveZoneCell res : respawnObjectiveZoneCells) {
+            if (res.getHero().equals(myHero)) {
+               if (res.isArrival()){
+                   respawn = true;
+               }
+            }
+        }
+
         Integer oppHeroMaxAreaEffect = getMaxAreaOppHero(copyOfOppHeroesMove);
         boolean flag = false;
-        if (myHero.getCurrentCell().isInObjectiveZone()) {
+        if (myHero.getCurrentCell().isInObjectiveZone()|| respawn) {
             ArrayList<Cell> copyBlocks = new ArrayList<>(blocks);
 //            copyBlocks = getoutOfZoneBlockCells(virtualWorld, copyBlocks);
-//            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, copyBlocks);
+            score += ScoreStrategy.reduceDistanceWithOppHeroesInObjectiveZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, oppHero, oppHeroInObjZone, oppHeroMaxAreaEffect, this.myHeroesMoves, copyBlocks);
             if (score != 0) {
 //                flag = true;
             }
         }
         if (oppHeroInObjZone == 0) {
-//            resetAllMyHeroTargetCell(this.myHeroesMoves, this.respawnObjectiveZoneCells);
+            resetAllMyHeroTargetCell(this.myHeroesMoves, this.respawnObjectiveZoneCells);
         }
-        score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, blocks);
+        score += ScoreStrategy.distanceToZone(myHero, myHeroDirection, virtualWorld, this.myHeroesMoves, blocks);
 //        score += ScoreStrategy.otherWallCell(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove);
 
-        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove,blocks);
+//        score += ScoreStrategy.hitByOppHeroes(myHero, myHeroDirection, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove,blocks);
 //        score += ScoreStrategy.otherMyHeroCell(myHero, myHeroDirection, oppHero, virtualWorld, copyOfMyHeroesMove);
-        //TODO: when there are no one in obj zone of opphero, pakhsh shan va beran to faseleye moshakhas ke albate age faseleye dorost vaystadan piade she khodesh hal mishe.
+
 //        score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
 // score += ScoreStrategy.reduceDistanceToOppHeroesWithMinimumHealth(myHero, myHeroDirection,otherOurHeroes, oppHero, oppHeroes, virtualWorld, copyOfMyHeroesMove, copyOfOppHeroesMove, blocks);
 

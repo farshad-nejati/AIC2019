@@ -28,8 +28,8 @@ import java.nio.charset.Charset;
  * <code>JsonSocket</code> to send and receive objects correctly.
  * <p>
  *
- * @see Gson
- * @see Socket
+ * @see com.google.gson.Gson
+ * @see java.net.Socket
  */
 public class JsonSocket {
 
@@ -59,8 +59,8 @@ public class JsonSocket {
      * @param port the port number.
      * @throws IOException if an I/O error occurs when creating the socket or
      *                     its input or output stream.
-     * @see Socket#Socket(String, int)
-     * @see #JsonSocket(Socket)
+     * @see java.net.Socket#Socket(java.lang.String, int)
+     * @see #JsonSocket(java.net.Socket)
      */
     public JsonSocket(String host, int port) throws IOException {
         this(new Socket(host, port));
@@ -84,7 +84,7 @@ public class JsonSocket {
      * Closes the underlying socket.
      *
      * @throws IOException if an I/O error occurs when closing the socket.
-     * @see Socket#close
+     * @see java.net.Socket#close
      * @see #isClosed
      */
     public void close() throws IOException {
@@ -95,7 +95,7 @@ public class JsonSocket {
      * Returns the closed state of the socket.
      *
      * @return true if the socket has been closed
-     * @see Socket#isClosed
+     * @see java.net.Socket#isClosed
      * @see #close
      */
     public boolean isClosed() {
@@ -108,7 +108,7 @@ public class JsonSocket {
      *
      * @param obj the object to send.
      * @throws IOException if an I/O error occurs, e.g. when the socket is closed.
-     * @see Gson#toJson(Object)
+     * @see com.google.gson.Gson#toJson(java.lang.Object)
      */
     public void send(Object obj) throws IOException {
         String json = mGson.toJson(obj);
@@ -124,8 +124,8 @@ public class JsonSocket {
      *
      * @return the received <code>JsonObject</code>
      * @throws IOException if an I/O error occurs, e.g. when the socket is closed.
-     * @see Gson#fromJson(String, Class)
-     * @see #get(Class)
+     * @see com.google.gson.Gson#fromJson(String, java.lang.Class)
+     * @see #get(java.lang.Class)
      */
     public JsonObject get() throws IOException {
         return get(JsonObject.class);
@@ -139,7 +139,7 @@ public class JsonSocket {
      * @param <T>          type
      * @return the received object
      * @throws IOException if an I/O error occurs, e.g. when the socket is closed.
-     * @see Gson#fromJson(String, Class)
+     * @see com.google.gson.Gson#fromJson(String, java.lang.Class)
      * @see #get
      */
     public <T> T get(Class<T> classOfInput) throws IOException {

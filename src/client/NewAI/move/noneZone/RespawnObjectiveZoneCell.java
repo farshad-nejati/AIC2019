@@ -11,6 +11,7 @@ public class RespawnObjectiveZoneCell {
     private Hero hero;
     private boolean arrival;
 
+
     public RespawnObjectiveZoneCell(Cell objectiveZoneCell, Cell respawnZoneCell, boolean arrival) {
         this.objectiveZoneCell = objectiveZoneCell;
         this.respawnZoneCell = respawnZoneCell;
