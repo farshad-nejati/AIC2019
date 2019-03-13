@@ -1,11 +1,13 @@
 package client.IntelligentAI;
 
+import client.NewAI.action.areaEffect.AreaEffect;
 import client.NewAI.move.noneZone.RespawnObjectiveZoneCell;
 import client.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Utility {
     public static HashMap<Cell, Direction> getCellNeighbors(Cell cell, Map map) {
@@ -168,5 +170,41 @@ public class Utility {
             }
         }
         return myHeroCanHitMaxDistance;
+    }
+
+    public static boolean willMyHeroGetKilled(Hero myHero, ArrayList<Hero> oppHeroes, ArrayList<AreaEffect> areaEffectListAIAlgorithm, World world) {
+
+        boolean canHit;
+        Integer losingHealthSum = 0;
+
+        Cell myHeroCurrentCell = myHero.getCurrentCell();
+
+        for (Hero oppHero : oppHeroes) {
+            Cell oppHeroCurrentCell = oppHero.getCurrentCell();
+            canHit = false;
+
+            if (oppHeroCurrentCell.isInVision()) {
+                int distance = world.manhattanDistance(myHeroCurrentCell, oppHeroCurrentCell);
+
+                Integer maxRange = 0;
+                Ability ability = null;
+                for (AreaEffect areaEffect : areaEffectListAIAlgorithm) {
+                    if (areaEffect.getHero().equals(oppHero)) {
+                        ability = areaEffect.getAbility();
+                        maxRange = areaEffect.getMaxRange();
+                    }
+                }
+
+                canHit = distance <= maxRange;
+                if (canHit) {
+                    losingHealthSum += Objects.requireNonNull(ability).getPower();
+                }
+            }
+        }
+
+        if (losingHealthSum >= myHero.getCurrentHP())
+            return true;
+        else
+            return false;
     }
 }
