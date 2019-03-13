@@ -1,5 +1,6 @@
 package client;
 
+import client.IntelligentAI.Utility;
 import client.NewAI.Helper;
 import client.NewAI.SortClass;
 import client.NewAI.action.NewAction;
@@ -19,6 +20,7 @@ import client.RandomAI.Moving;
 import client.RandomAI.RandomAction;
 import client.RandomAI.RandomMove;
 import client.model.*;
+import client.model.Map;
 
 import java.util.*;
 
@@ -49,6 +51,7 @@ public class AI {
 
     //farshid add this things
     HashMap<Hero, Boolean> heroHashArrival = new HashMap<>();
+    public boolean isMapBig = false;
     // to here
 
 
@@ -71,6 +74,7 @@ public class AI {
         objectiveZoneCells = Helper.getSortedObjectiveCells(world);
         findNearestCellToHeroes(world);
         noneZoneMoving = new NoneZoneMoving(respawnObjectiveZoneCells);
+        isMapBig = isMapBig(world.getMap(),15);
     }
 
     public void pickTurn(World world) {
@@ -93,6 +97,7 @@ public class AI {
         inZoneDodgeStatuses = new ArrayList<>();
 
         if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
+            System.out.println("isMapBig = " + isMapBig);
             firstZoneStatusOfHeroes(world);
             setHeroesInReSpawnCell();
             areaEffectList = AreaEffectHelper.initialAffectArea(world);
@@ -125,24 +130,30 @@ public class AI {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-//            noneZoneMoving.move(world,noneZoneHeroes,inZoneHeroes,noneZoneDodges);
+            if (!isMapBig) {
+            noneZoneMoving.move(world,noneZoneHeroes,inZoneHeroes,noneZoneDodges);
+            }
 //            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
         }
 
         if (inZoneHeroes.size() > 0) {
-//            DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
+            DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
 //            inZoneMoving = new InZoneMoving(inZoneHeroes, world, areaEffectList);
 //            inZoneMoving.move(world, noneZoneHeroes);
         }
 
-        if (noneZoneHeroes.size()!=0){
-            int j=2;
+        if (!isMapBig) {
+            return;
+        }
+
+        if (noneZoneHeroes.size() != 0) {
+            int j = 2;
 
             myHeros.addAll(noneZoneHeroes);
         }
-        if (inZoneHeroes.size() !=0){
-            for (Hero hero:inZoneHeroes){
-                if (!myHeros.contains(hero)){
+        if (inZoneHeroes.size() != 0) {
+            for (Hero hero : inZoneHeroes) {
+                if (!myHeros.contains(hero)) {
                     myHeros.add(hero);
                 }
             }
@@ -165,9 +176,9 @@ public class AI {
                 this.heroHashArrival.put(myhero, false);
             }
         }
-        for (Hero hero: world.getMyHeroes()){
-            if (hero.getCurrentHP() <= 0){
-                if (this.heroHashArrival.containsKey(hero)){
+        for (Hero hero : world.getMyHeroes()) {
+            if (hero.getCurrentHP() <= 0) {
+                if (this.heroHashArrival.containsKey(hero)) {
                     this.heroHashArrival.put(hero, false);
                 }
             }
@@ -181,13 +192,13 @@ public class AI {
 //                        this.heroHashArrival.put(hashHero, false);
 //                    }
 //                }
-                if (this.heroHashArrival.containsKey(myhero)){
+                if (this.heroHashArrival.containsKey(myhero)) {
                     this.heroHashArrival.put(myhero, false);
                 }
             }
 
         }
-        if (world.getCurrentTurn() == 12){
+        if (world.getCurrentTurn() == 12) {
             int p = 0;
         }
 //        if (noneZoneHeroes.size() > 0 ) {
@@ -221,7 +232,7 @@ public class AI {
 //            myHeros.remove(index);
 //        }
 
-        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival,areaEffectListAIAlgorithm);
+        MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival, areaEffectListAIAlgorithm);
         minMaxAlgorithm.maxMove();
 
     }
@@ -374,6 +385,21 @@ public class AI {
                     noneZoneHeroes.add(hero);
             }
         }
+    }
+
+    public static boolean isMapBig(Map map, int index) {
+        int counter = 0;
+        Cell[] objectiveZoneCells = map.getObjectiveZone();
+        for (Cell cell : objectiveZoneCells) {
+            int row = cell.getRow();
+            int column = cell.getColumn();
+            Cell mirrorCell = map.getCell(column, row);
+            if (mirrorCell.isInObjectiveZone()) {
+                counter++;
+            }
+        }
+        counter = counter / 2;
+        return counter >= index;
     }
 
 }

@@ -49,7 +49,7 @@ public class MinMaxAlgorithm {
             myHeroesMove.add(move);
         }
         for (Hero myHero : this.myHeroes) {
-            if (!(Utility.willMyHeroGetKilled(myHero, oppHeroes, areaEffectListAIAlgorithm, virtualWorld) && myHero.getDodgeAbilities()[0].isReady())) {
+//            if (!(Utility.willMyHeroGetKilled(myHero, oppHeroes, areaEffectListAIAlgorithm, virtualWorld) && myHero.getDodgeAbilities()[0].isReady())) {
                 ArrayList<Hero> otherOurHeroes = new ArrayList<>(this.myHeroes);
                 otherOurHeroes.remove(myHero);
                 //TODO: check call by reference
@@ -84,7 +84,7 @@ public class MinMaxAlgorithm {
                     virtualWorld.moveHero(myHero, Utility.castMyDirectionToDirection(direction));
                 }
             }
-        }
+//        }
     }
 
 }
