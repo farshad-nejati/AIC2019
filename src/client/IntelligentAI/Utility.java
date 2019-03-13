@@ -207,7 +207,8 @@ public class Utility {
         else
             return false;
     }
-    public  static  boolean mapRangeIsBig(World virtualWorld) {
+
+    public static boolean mapRangeIsBig(World virtualWorld) {
         Cell[] objzoneCell = virtualWorld.getMap().getObjectiveZone();
         int minRow = objzoneCell[0].getRow();
         int maxRow = objzoneCell[0].getRow();
@@ -228,21 +229,41 @@ public class Utility {
             }
         }
 
-        int difRow =(maxRow- minRow) + 1  ;
-        int difColumn =(maxcolumn-mincolumn)+1;
-        if ( difColumn< 7 && difRow < 7){
+        int difRow = (maxRow - minRow) + 1;
+        int difColumn = (maxcolumn - mincolumn) + 1;
+        if (difColumn < 7 && difRow < 7) {
             return false;
         }
 //        if ( difColumn/ difRow == 1){
-            int maxZoneOnj = difColumn * difRow;
-            double percent = maxZoneOnj * 0.6;
-            if (objzoneCell.length < percent){
-                return false;
-            }else {
-                return true;
-            }
+        int maxZoneOnj = difColumn * difRow;
+        double percent = maxZoneOnj * 0.6;
+        if (objzoneCell.length < percent) {
+            return false;
+        } else {
+            return true;
+        }
 //        }else {
 //            return false;
 //        }
+    }
+
+    public static void getAroundHitCells(Cell myOtherHeroCell, Cell condidateCell, Integer oppAbilityRangeEffect, ArrayList<Cell> condidateObjCells, World virtualWorld) {
+
+        int myotherRow = myOtherHeroCell.getRow();
+        int myotherColumn = myOtherHeroCell.getColumn();
+        if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
+            for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
+                for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
+                    Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                    Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
+                    if (manhatanDis <= oppAbilityRangeEffect) {
+                        if (condidateObjCells.contains(mapCell)) {
+                            condidateObjCells.remove(mapCell);
+                        }
+
+                    }
+                }
+            }
+        }
     }
 }
