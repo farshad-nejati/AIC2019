@@ -211,15 +211,15 @@ public class AI {
         ArrayList<AreaEffect> areaEffectListAIAlgorithm = new ArrayList<>();
         areaEffectListAIAlgorithm = areaEffectList;
 
-        ArrayList<Hero> removeMyHeros = new ArrayList<>();
-        for (Hero myhero: removeMyHeros){
-            DodgeStatus dodgeStatus = DodgeStatus.findByHero(noneZoneDodgeStatuses,myhero);
-//            if (dodgeStatus.isActive()&& removeMyHeros.contains(myhero)){
-//                myHeros.remove(myhero);
-//            }
-            int index = myHeros.indexOf(myhero);
-            myHeros.remove(index);
-        }
+//        ArrayList<Hero> removeMyHeros = new ArrayList<>();
+//        for (Hero myhero: removeMyHeros){
+//            DodgeStatus dodgeStatus = DodgeStatus.findByHero(noneZoneDodgeStatuses,myhero);
+////            if (dodgeStatus.isActive()&& removeMyHeros.contains(myhero)){
+////                myHeros.remove(myhero);
+////            }
+//            int index = myHeros.indexOf(myhero);
+//            myHeros.remove(index);
+//        }
 
         MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival,areaEffectListAIAlgorithm);
         minMaxAlgorithm.maxMove();
