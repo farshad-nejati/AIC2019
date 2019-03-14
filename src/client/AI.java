@@ -281,17 +281,17 @@ public class AI {
     public HeroName pickHero() {
         switch (pickNumber) {
             case 1: {
-                return HeroName.GUARDIAN;
+                return HeroName.BLASTER;
             }
             case 2: {
 
                 return HeroName.BLASTER;
             }
             case 3: {
-                return HeroName.GUARDIAN;
+                return HeroName.BLASTER;
             }
             default: {
-                return HeroName.GUARDIAN;
+                return HeroName.BLASTER;
 
             }
 
