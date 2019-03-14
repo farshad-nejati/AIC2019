@@ -281,6 +281,7 @@ public class AI {
             }
             case 2: {
 
+                return HeroName.BLASTER;
             }
             case 3: {
                 return HeroName.BLASTER;
