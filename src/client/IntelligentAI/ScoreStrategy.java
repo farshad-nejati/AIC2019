@@ -149,30 +149,72 @@ public class ScoreStrategy {
                             Cell myOtherHeroCell = myOtherHero.getCurrentCell();
 
                             if (myHeroMove.getTargetZoneCell()!= null){
-                                
-                            }
-
-                            int myotherRow = myOtherHeroCell.getRow();
-                            int myotherColumn = myOtherHeroCell.getColumn();
-                            if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
-                                for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
-                                    for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
-                                        Cell mapCell = virtualWorld.getMap().getCell(i, j);
-                                        Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
-                                        if (manhatanDis <= oppAbilityRangeEffect) {
-                                            if (condidateObjCells.contains(mapCell)) {
-                                                condidateObjCells.remove(mapCell);
-                                                if (myHeroCurrentCell.getRow() == 19 && myHeroCurrentCell.getColumn() ==14){
-                                                    if (virtualWorld.getCurrentTurn()>= 24){
-                                                        int ip = 0;
+                                int myotherRow = myOtherHeroCell.getRow();
+                                int myotherColumn = myOtherHeroCell.getColumn();
+                                if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
+                                    for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
+                                        for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
+                                            Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                                            Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
+                                            if (manhatanDis <= oppAbilityRangeEffect) {
+                                                if (condidateObjCells.contains(mapCell)) {
+                                                    condidateObjCells.remove(mapCell);
+                                                    if (myHeroCurrentCell.getRow() == 19 && myHeroCurrentCell.getColumn() ==14){
+                                                        if (virtualWorld.getCurrentTurn()>= 24){
+                                                            int ip = 0;
+                                                        }
                                                     }
                                                 }
-                                            }
 
+                                            }
+                                        }
+                                    }
+                                }
+                            }else{
+                                int myotherRow = myHeroMove.getTargetZoneCell().getRow();
+                                int myotherColumn = myHeroMove.getTargetZoneCell().getColumn();
+                                if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
+                                    for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
+                                        for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
+                                            Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                                            Integer manhatanDis = virtualWorld.manhattanDistance(myHeroMove.getTargetZoneCell(), mapCell);
+                                            if (manhatanDis <= oppAbilityRangeEffect) {
+                                                if (condidateObjCells.contains(mapCell)) {
+                                                    condidateObjCells.remove(mapCell);
+                                                    if (myHeroCurrentCell.getRow() == 19 && myHeroCurrentCell.getColumn() ==14){
+                                                        if (virtualWorld.getCurrentTurn()>= 24){
+                                                            int ip = 0;
+                                                        }
+                                                    }
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
                             }
+
+//                            int myotherRow = myOtherHeroCell.getRow();
+//                            int myotherColumn = myOtherHeroCell.getColumn();
+//                            if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
+//                                for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
+//                                    for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
+//                                        Cell mapCell = virtualWorld.getMap().getCell(i, j);
+//                                        Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
+//                                        if (manhatanDis <= oppAbilityRangeEffect) {
+//                                            if (condidateObjCells.contains(mapCell)) {
+//                                                condidateObjCells.remove(mapCell);
+//                                                if (myHeroCurrentCell.getRow() == 19 && myHeroCurrentCell.getColumn() ==14){
+//                                                    if (virtualWorld.getCurrentTurn()>= 24){
+//                                                        int ip = 0;
+//                                                    }
+//                                                }
+//                                            }
+//
+//                                        }
+//                                    }
+//                                }
+//                            }
 
 //                            Utility.getAroundHitCells(myHeroCurrentCell,myOtherHeroCell, condidateCell, oppAbilityRangeEffect, condidateObjCells, virtualWorld);
 
