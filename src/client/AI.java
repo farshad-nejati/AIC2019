@@ -238,7 +238,6 @@ public class AI {
         MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(myHeros, oppHeros, respawnObjectiveZoneCells, world, heroHashArrival, areaEffectListAIAlgorithm);
         minMaxAlgorithm.maxMove();
 
-        }
 
     }
 
