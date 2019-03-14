@@ -169,7 +169,9 @@ public class AI {
         if (inZoneHeroes.size() != 0) {
             for (Hero hero : inZoneHeroes) {
                 if (!myHeros.contains(hero)) {
-                    myHeros.add(hero);
+                    if (isMapBig == MapStatus.small && hero.getName().equals(HeroName.GUARDIAN)) {
+                        myHeros.add(hero);
+                    }
                 }
             }
         }

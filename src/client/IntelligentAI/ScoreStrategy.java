@@ -123,7 +123,7 @@ public class ScoreStrategy {
                 Integer oppAbilityRangeEffect = 0;
                 oppAbilityRangeEffect = 2 * moveOppHero.getAbility().getAreaOfEffect() + 1;
                 if (oppAbilityRangeEffect <= 3) {
-                    oppAbilityRangeEffect = 4;
+//                    oppAbilityRangeEffect = 4;
                 }
 //                for (Ability ability : Hero.getOffensiveAbilities()) {
 //                    if (ability.isReady()) {
