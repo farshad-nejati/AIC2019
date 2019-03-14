@@ -33,7 +33,7 @@ public class NewAction {
 
         while (activeMyHeroes.size() != 0 ) {
 
-            System.out.println("\n\n\n while worked!!!!! \n\n\n");
+//            System.out.println("\n\n\n while worked!!!!! \n\n\n");
 
             EffectiveHero effectiveHero = null;
             ArrayList<OppHeroAction> candidateOppHeroes = new ArrayList<>();
@@ -64,7 +64,7 @@ public class NewAction {
 
             if (canKill) {
 
-                System.out.println("\n\n\n is can kill worked!!!!! \n\n\n");
+//                System.out.println("\n\n\n is can kill worked!!!!! \n\n\n");
                 Hero selectedOppHero = null;
                 if (selectedActiveMyHero != null) {
 //                    Collections.sort(oppHeroActions, OppHeroAction.KillerOppHeroesComparator);
@@ -124,7 +124,7 @@ public class NewAction {
                     world.castAbility(effectiveHero.getMyHero(), ability2, effectiveHero.getTargetCell());
                     passesMyHeroes.add(effectiveHero.getMyHero());
                     Hero oppHero2 = effectiveHero.getOppHero();
-                    System.out.println("\n\n\n is Killed worked!!!!! \n\n\n");
+//                    System.out.println("\n\n\n is Killed worked!!!!! \n\n\n");
                     for (OppHeroAction oppHeroAction: candidateOppHeroes) {
                         if (oppHeroAction.getOppHero().equals(oppHero2)) {
                             Integer virtualHP = oppHeroAction.getVirtualHP();

@@ -148,7 +148,7 @@ public class ScoreStrategy {
                         if (!myOtherHero.equals(myHero)) {
                             Cell myOtherHeroCell = myOtherHero.getCurrentCell();
 
-                            if (myHeroMove.getTargetZoneCell()!= null){
+                            if (myHeroMove.getTargetZoneCell()== null){
                                 int myotherRow = myOtherHeroCell.getRow();
                                 int myotherColumn = myOtherHeroCell.getColumn();
                                 if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {

@@ -82,7 +82,7 @@ public class AI {
         objectiveZoneCells = Helper.getSortedObjectiveCells(world);
         findNearestCellToHeroes(world);
         noneZoneMoving = new NoneZoneMoving(respawnObjectiveZoneCells);
-        isMapBig = isMapBig(world.getMap(), 15, 30);
+        isMapBig = isMapBig(world.getMap(), 15, 21);
     }
 
     public void pickTurn(World world) {
@@ -110,7 +110,7 @@ public class AI {
         inZoneDodgeStatuses = new ArrayList<>();
 
         if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
-            System.out.println("isMapBig = " + isMapBig);
+//            System.out.println("isMapBig = " + isMapBig);
             firstZoneStatusOfHeroes(world);
             setHeroesInReSpawnCell();
             areaEffectList = AreaEffectHelper.initialAffectArea(world);
@@ -262,7 +262,7 @@ public class AI {
 //        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
 //        printer.printHeroList(world);
 //        printer.printOppHeroList(world);
-        printer.printMap(world);
+//        printer.printMap(world);
 
         DodgeAction.executeMove(world, noneZoneDodges); // moves with dodge operated
         DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
@@ -302,13 +302,13 @@ public class AI {
 
         switch (pickNumber) {
             case 1: {
-                return HeroName.GUARDIAN;
+                return HeroName.BLASTER;
             }
             case 2: {
                 return HeroName.GUARDIAN;
             }
             case 3: {
-                return HeroName.BLASTER;
+                return HeroName.GUARDIAN;
             }
             default: {
                 return HeroName.BLASTER;

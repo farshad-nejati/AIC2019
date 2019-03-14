@@ -32,8 +32,8 @@ public class RandomAction {
         world.castAbility(myHero, ability, targetCell);
         int row =targetCell.getRow();
         int column =targetCell.getColumn();
-        System.out.println("\n\n" + ability.getName() + myHero.getId() + " ability used with " + myHero.getName());
-        System.out.println("in Position: " + row + " , " + column + "\n\n");
+//        System.out.println("\n\n" + ability.getName() + myHero.getId() + " ability used with " + myHero.getName());
+//        System.out.println("in Position: " + row + " , " + column + "\n\n");
     }
 
 //    public ArrayList<EffectiveHero> getTargetForEachMyHeroes(ArrayList<EffectiveHero> effectiveHeroes) {
@@ -127,9 +127,9 @@ public class RandomAction {
                     maxPower = newPower;
                     returnAbility = ability;
                 } else {
-                    System.out.println(myHero.getName() + Integer.toString(myHero.getId()) + " apCost not enough");
-                    System.out.println("current AP: " + remainAP);
-                    System.out.println("ability AP: " + ability.getAPCost());
+//                    System.out.println(myHero.getName() + Integer.toString(myHero.getId()) + " apCost not enough");
+//                    System.out.println("current AP: " + remainAP);
+//                    System.out.println("ability AP: " + ability.getAPCost());
                 }
             }
         }
