@@ -59,7 +59,7 @@ public class AI {
 
     //farshid add this things
     HashMap<Hero, Boolean> heroHashArrival = new HashMap<>();
-    public MapStatus isMapBig = MapStatus.small;
+//    public MapStatus isMapBig = MapStatus.small;
     // to here
 
 
@@ -82,16 +82,16 @@ public class AI {
         objectiveZoneCells = Helper.getSortedObjectiveCells(world);
         findNearestCellToHeroes(world);
         noneZoneMoving = new NoneZoneMoving(respawnObjectiveZoneCells);
-        isMapBig = isMapBig(world.getMap(), 15, 30);
+//        isMapBig = isMapBig(world.getMap(), 15, 30);
     }
 
     public void pickTurn(World world) {
 //        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
 
         HeroName heroName = pickHero();
-        if (isMapBig == MapStatus.small) {
-            heroName = pickHeroInSmallMap();
-        }
+//        if (isMapBig == MapStatus.small) {
+//            heroName = pickHeroInSmallMap();
+//        }
 
         world.pickHero(heroName);
 
@@ -110,7 +110,7 @@ public class AI {
         inZoneDodgeStatuses = new ArrayList<>();
 
         if (world.getCurrentTurn() == 4 && world.getMovePhaseNum() == 0) {
-            System.out.println("isMapBig = " + isMapBig);
+//            System.out.println("isMapBig = " + isMapBig);
             firstZoneStatusOfHeroes(world);
             setHeroesInReSpawnCell();
             areaEffectList = AreaEffectHelper.initialAffectArea(world);
@@ -146,9 +146,9 @@ public class AI {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-            if (isMapBig == MapStatus.medium) {
+//            if (isMapBig == MapStatus.medium) {
                 noneZoneMoving.move(world,noneZoneHeroes,inZoneHeroes,noneZoneDodges);
-            }
+//            }
 //            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
         }
 
@@ -158,9 +158,9 @@ public class AI {
 //            inZoneMoving.move(world, noneZoneHeroes);
         }
 
-        if (isMapBig == MapStatus.medium) {
-            return;
-        }
+//        if (isMapBig == MapStatus.medium) {
+//            return;
+//        }
 
         if (noneZoneHeroes.size() != 0) {
             int j = 2;
@@ -170,7 +170,7 @@ public class AI {
         if (inZoneHeroes.size() != 0) {
             for (Hero hero : inZoneHeroes) {
                 if (!myHeros.contains(hero)) {
-                    if (isMapBig == MapStatus.small && hero.getName().equals(HeroName.GUARDIAN)) {
+                    if (!hero.getName().equals(HeroName.BLASTER)) {
                         myHeros.add(hero);
                     }
                 }
@@ -291,7 +291,7 @@ public class AI {
                 return HeroName.BLASTER;
             }
             default: {
-                return HeroName.BLASTER;
+                return HeroName.SENTRY;
 
             }
 
