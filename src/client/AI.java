@@ -1,5 +1,6 @@
 package client;
 
+import client.IntelligentAI.MapStatus;
 import client.IntelligentAI.Utility;
 import client.NewAI.Helper;
 import client.NewAI.SortClass;
@@ -33,6 +34,12 @@ public class AI {
     NewAction newAction;
     Printer printer;
     private int pickNumber = 1;
+
+    private int defensiveNumber = 2;
+    private int defensiveCounter = 0;
+    private int guardianNumber = 2;
+    private int guardianCounter = 0;
+
     private String mapSizeStatus; // normal, small, big
     private String mapWallStatus; // low, much, normal
     private String mapZoneNumbersStatus; // low, much, normal
@@ -51,7 +58,7 @@ public class AI {
 
     //farshid add this things
     HashMap<Hero, Boolean> heroHashArrival = new HashMap<>();
-    public boolean isMapBig = false;
+    public MapStatus isMapBig = MapStatus.small;
     // to here
 
 
@@ -74,17 +81,22 @@ public class AI {
         objectiveZoneCells = Helper.getSortedObjectiveCells(world);
         findNearestCellToHeroes(world);
         noneZoneMoving = new NoneZoneMoving(respawnObjectiveZoneCells);
-        isMapBig = isMapBig(world.getMap(),15);
+        isMapBig = isMapBig(world.getMap(), 15, 30);
     }
 
     public void pickTurn(World world) {
 //        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getCurrentPhase());
 
         HeroName heroName = pickHero();
+        if (isMapBig == MapStatus.small) {
+            heroName = pickHeroInSmallMap();
+        }
+
         world.pickHero(heroName);
 
         pickNumber++;
     }
+
 
     public void moveTurn(World world) {
 //        System.out.println("current turn: " + world.getCurrentTurn() + "   current phase: " + world.getMovePhaseNum());
@@ -126,15 +138,15 @@ public class AI {
 
         ArrayList<Hero> myHeros = new ArrayList<>();
 
-        System.out.println("Utility.mapRangeIsBig() = " + Utility.mapRangeIsBig(world));
-        boolean isBig = Utility.mapRangeIsBig(world);
+//        System.out.println("Utility.mapRangeIsBig() = " + Utility.mapRangeIsBig(world));
+//        boolean isBig = Utility.mapRangeIsBig(world);
 
         if (noneZoneHeroes.size() > 0) {
             ArrayList<RespawnObjectiveZoneCell> copyRespawnObjectiveCells = new ArrayList<>(this.respawnObjectiveZoneCells);
             DodgeHelper.removeEnableDodgeFromList(noneZoneDodgeStatuses, noneZoneHeroes); // update noneZone Heroes;
             noneZoneDodges = DodgeMove.executeMove(noneZoneDodges, world, noneZoneHeroes, inZoneHeroes, noneZoneDodgeStatuses, copyRespawnObjectiveCells);
-            if (!isMapBig) {
-            noneZoneMoving.move(world,noneZoneHeroes,inZoneHeroes,noneZoneDodges);
+            if (isMapBig == MapStatus.medium) {
+                noneZoneMoving.move(world,noneZoneHeroes,inZoneHeroes,noneZoneDodges);
             }
 //            System.out.println("noneZoneHeroes = " + noneZoneHeroes);
         }
@@ -145,7 +157,7 @@ public class AI {
 //            inZoneMoving.move(world, noneZoneHeroes);
         }
 
-        if (!isMapBig) {
+        if (isMapBig == MapStatus.medium) {
             return;
         }
 
@@ -266,7 +278,27 @@ public class AI {
                 return HeroName.BLASTER;
             }
             case 2: {
+
+            }
+            case 3: {
                 return HeroName.BLASTER;
+            }
+            default: {
+                return HeroName.BLASTER;
+
+            }
+
+        }
+    }
+
+    public HeroName pickHeroInSmallMap() {
+
+        switch (pickNumber) {
+            case 1: {
+                return HeroName.GUARDIAN;
+            }
+            case 2: {
+                return HeroName.GUARDIAN;
             }
             case 3: {
                 return HeroName.BLASTER;
@@ -391,7 +423,7 @@ public class AI {
         }
     }
 
-    public static boolean isMapBig(Map map, int index) {
+    public static MapStatus isMapBig(Map map, int mediumIndex, int maxIndex) {
         int counter = 0;
         Cell[] objectiveZoneCells = map.getObjectiveZone();
         for (Cell cell : objectiveZoneCells) {
@@ -403,7 +435,12 @@ public class AI {
             }
         }
         counter = counter / 2;
-        return counter >= index;
+        if ( counter <= mediumIndex) {
+            return MapStatus.small;
+        } else if (counter <= maxIndex){
+            return MapStatus.medium;
+        }
+        return MapStatus.big;
     }
 
 }
