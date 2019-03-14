@@ -75,7 +75,7 @@ public class AreaEffectHelper {
         for (CastAbility castAbility : castAbilities) {
 
             int id = castAbility.getCasterId();
-            if (id == -1){
+            if (id == -1) {
                 continue;
             }
             AreaEffect areaEffect = AreaEffect.findByID(areaEffectList, id);
