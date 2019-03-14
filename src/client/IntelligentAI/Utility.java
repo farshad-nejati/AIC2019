@@ -247,23 +247,55 @@ public class Utility {
 //        }
     }
 
-    public static void getAroundHitCells(Cell myOtherHeroCell, Cell condidateCell, Integer oppAbilityRangeEffect, ArrayList<Cell> condidateObjCells, World virtualWorld) {
+    public static void getAroundHitCells(Cell myHeroCurrentCell, Cell myOtherHeroCell, Cell condidateCell, Integer oppAbilityRangeEffect, ArrayList<Cell> condidateObjCells, World virtualWorld) {
 
-        int myotherRow = myOtherHeroCell.getRow();
-        int myotherColumn = myOtherHeroCell.getColumn();
-        if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
-            for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
-                for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
-                    Cell mapCell = virtualWorld.getMap().getCell(i, j);
-                    Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
-                    if (manhatanDis <= oppAbilityRangeEffect) {
-                        if (condidateObjCells.contains(mapCell)) {
-                            condidateObjCells.remove(mapCell);
-                        }
+//        int myotherRow = myOtherHeroCell.getRow();
+//        int myotherColumn = myOtherHeroCell.getColumn();
+//        if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
+//            for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
+//                for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
+//                    Cell mapCell = virtualWorld.getMap().getCell(i, j);
+//                    Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
+//                    if (manhatanDis <= oppAbilityRangeEffect) {
+//                        if (condidateObjCells.contains(mapCell)) {
+//                            condidateObjCells.remove(mapCell);
+//                            if (myHeroCurrentCell.getRow() == 19 && myHeroCurrentCell.getColumn() ==14){
+//                                if (virtualWorld.getCurrentTurn()>= 24){
+//                                    int ip = 0;
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//                }
+//            }
+//        }
+    }
 
-                    }
+    public static Integer threatNumber(Cell myHeroCurrentCell, ArrayList<Move> copyOfOppHeroesMove, Cell targetcell, World virtualWorld) {
+        Integer number = 0;
+        for (Move oppHeroMove : copyOfOppHeroesMove) {
+            Cell oppHeroCurrentCell = oppHeroMove.getCurrentCell();
+
+            boolean canHit = false;
+            if (oppHeroCurrentCell.isInVision()) {
+                int distance = virtualWorld.manhattanDistance(targetcell, oppHeroCurrentCell);
+                Ability oppHeroMaximumAbility = oppHeroMove.getAbility();
+//                int oppHeroMaximumPower = oppHeroMaximumAbility.getPower();
+                Integer distanceThatCanHit = oppHeroMaximumAbility.getRange() + oppHeroMaximumAbility.getAreaOfEffect();
+                canHit = distance <= distanceThatCanHit;
+                if (canHit) {
+                    number++;
                 }
             }
         }
+        return 0;
     }
+
+    public static Integer distanceNUmber(Cell myHeroCurrentCell, Cell targetcell, World virtualWorld) {
+        Integer distance = 0;
+       distance = virtualWorld.getPathMoveDirections(myHeroCurrentCell,targetcell).length;
+        return distance;
+    }
+
 }

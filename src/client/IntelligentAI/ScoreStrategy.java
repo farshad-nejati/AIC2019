@@ -140,6 +140,7 @@ public class ScoreStrategy {
 //                }
 
 
+
                 ArrayList<Cell> condidateObjCellstest = new ArrayList<>(condidateObjCells);
                 for (Cell condidateCell : condidateObjCellstest) {
                     for (Move myHeroMove : copyOfMyHeroesMove) {
@@ -147,16 +148,33 @@ public class ScoreStrategy {
                         if (!myOtherHero.equals(myHero)) {
                             Cell myOtherHeroCell = myOtherHero.getCurrentCell();
 
-                            if (myHeroMove.getTargetZoneCell() != null) {
-                                if (myOtherHero.getCurrentCell().isInObjectiveZone()) {
-                                    Utility.getAroundHitCells(myHeroMove.getTargetZoneCell(), condidateCell, oppAbilityRangeEffect, condidateObjCells, virtualWorld);
+                            if (myHeroMove.getTargetZoneCell()!= null){
+                                
+                            }
 
+                            int myotherRow = myOtherHeroCell.getRow();
+                            int myotherColumn = myOtherHeroCell.getColumn();
+                            if ((myotherRow == condidateCell.getRow()) && (myotherColumn == condidateCell.getColumn())) {
+                                for (int i = myotherRow - oppAbilityRangeEffect; i <= myotherRow + oppAbilityRangeEffect; i++) {
+                                    for (int j = myotherColumn - oppAbilityRangeEffect; j <= myotherColumn + oppAbilityRangeEffect; j++) {
+                                        Cell mapCell = virtualWorld.getMap().getCell(i, j);
+                                        Integer manhatanDis = virtualWorld.manhattanDistance(myOtherHeroCell, mapCell);
+                                        if (manhatanDis <= oppAbilityRangeEffect) {
+                                            if (condidateObjCells.contains(mapCell)) {
+                                                condidateObjCells.remove(mapCell);
+                                                if (myHeroCurrentCell.getRow() == 19 && myHeroCurrentCell.getColumn() ==14){
+                                                    if (virtualWorld.getCurrentTurn()>= 24){
+                                                        int ip = 0;
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
                                 }
+                            }
 
-                            }
-                            else {
-                                Utility.getAroundHitCells(myOtherHeroCell, condidateCell, oppAbilityRangeEffect, condidateObjCells, virtualWorld);
-                            }
+//                            Utility.getAroundHitCells(myHeroCurrentCell,myOtherHeroCell, condidateCell, oppAbilityRangeEffect, condidateObjCells, virtualWorld);
 
 
 //                            Cell heroCell = myOtherHero.getCurrentCell();
@@ -230,18 +248,32 @@ public class ScoreStrategy {
             }
             if (condidateObjCells.size() != 0) {
 
+
                 Cell targetcell = null;
                 boolean flagzonecondid = false;
+                ArrayList<BestTargetCell> bestTargetCells = new ArrayList<>();
                 for (Cell condidCell : condidateObjCells) {
-                    if (condidCell.isInObjectiveZone()) {
-                        targetcell = condidCell;
-                        flagzonecondid = true;
-                        break;
-                    }
+//                    if (condidCell.isInObjectiveZone()) {
+//                        targetcell = condidCell;
+//                        flagzonecondid = true;
+//                        break;
+//                    }
+                    Integer distance = Utility.distanceNUmber(myHeroCurrentCell, targetcell, virtualWorld);
+                    Integer theartNum = Utility.threatNumber(myHeroCurrentCell, copyOfOppHeroesMove, targetcell, virtualWorld);
+                    BestTargetCell targetCellforBest = new BestTargetCell(condidCell, theartNum, distance);
+                    bestTargetCells.add(targetCellforBest);
+
                 }
+                bestTargetCells.sort((o1, o2) -> {
+                    if (o1.getThreat() == o2.getThreat())
+                        return 0;
+                    return o1.getThreat() < o2.getThreat() ? -1 : 1;
+                });
                 if (!flagzonecondid) {
-                    targetcell = condidateObjCells.get(0);
+//                    targetcell = condidateObjCells.get(0);
                 }
+                targetcell = condidateObjCells.get(0);
+
 //                Direction[] pathToObj = virtualWorld.getPathMoveDirections(myHeroCurrentCell, targetcell);
                 Direction[] pathToObj = virtualWorld.getPathMoveDirections(myHeroCurrentCell, targetcell, blocks);
                 Direction dir = null;
@@ -415,6 +447,22 @@ public class ScoreStrategy {
                 }
             }
 
+//            for (Move myHeroMove : copyOfMyHeroesMove) {
+//                Hero myOtherHero = myHeroMove.getHero();
+//                if (myHeroMove.getTargetZoneCell() != null) {
+//                    if (myOtherHero.getCurrentCell().isInObjectiveZone()) {
+//                        Utility.getAroundHitCells(myHeroMove.getTargetZoneCell(), condidateCell, oppAbilityRangeEffect, condidateObjCells, virtualWorld);
+//
+//                    }
+//
+//                } else {
+//                    Utility.getAroundHitCells(myOtherHeroCell, condidateCell, oppAbilityRangeEffect, condidateObjCells, virtualWorld);
+//                }
+//            }
+
+
+
+
             if (!myHeroCanHitAnyone) {
 
 
@@ -455,6 +503,7 @@ public class ScoreStrategy {
                 }
 
             }
+
 
         }
         return score;
