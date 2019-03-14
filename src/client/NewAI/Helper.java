@@ -81,6 +81,23 @@ public class Helper {
         return availableOppHeroes;
     }
 
+    public static Ability getPowerfulAbility(Hero myHero) {
+        Ability[] abilities = myHero.getOffensiveAbilities();
+        int maxPower = 0;
+        Ability returnAbility = null;
+        for (Ability ability : abilities) {
+            if (!ability.isReady()) {
+                continue;
+            }
+            int newPower = ability.getPower();
+            if (newPower > maxPower) {
+                maxPower = newPower;
+                returnAbility = ability;
+            }
+        }
+        return returnAbility;
+    }
+
 
 
     public static ArrayList<Cell> getBlockedCells(ArrayList<RespawnObjectiveZoneCell> reSpawnObjectiveCells, Hero ignoreHero, ArrayList<Hero> inZoneHeroes) {

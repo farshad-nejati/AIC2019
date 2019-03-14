@@ -7,6 +7,7 @@ import client.NewAI.action.NewAction;
 import client.NewAI.action.areaEffect.AreaEffect;
 import client.NewAI.action.areaEffect.AreaEffectHelper;
 import client.NewAI.action.areaEffect.PowerFullAbility;
+import client.NewAI.defense.DefenseAction;
 import client.NewAI.dodge.*;
 import client.NewAI.move.inZone.InZoneMoving;
 import client.NewAI.move.Move;
@@ -252,6 +253,8 @@ public class AI {
         DodgeHelper.removeEnableDodgeFromList(inZoneDodgeStatuses, inZoneHeroes); // update inZone Heroes;
         DodgeAction.executeAction(world, inZoneHeroes, inZoneDodgeStatuses); // action with dodge operated
 
+        DefenseAction.executeAction(world, inZoneHeroes , areaEffectList);
+
         if (inZoneHeroes.size() > 0) {
             newAction = new NewAction(inZoneHeroes, world, areaEffectList);
             newAction.action(world);
@@ -263,16 +266,16 @@ public class AI {
     public HeroName pickHero() {
         switch (pickNumber) {
             case 1: {
-                return HeroName.BLASTER;
+                return HeroName.GUARDIAN;
             }
             case 2: {
-                return HeroName.BLASTER;
+                return HeroName.GUARDIAN;
             }
             case 3: {
-                return HeroName.BLASTER;
+                return HeroName.GUARDIAN;
             }
             default: {
-                return HeroName.BLASTER;
+                return HeroName.GUARDIAN;
 
             }
 
