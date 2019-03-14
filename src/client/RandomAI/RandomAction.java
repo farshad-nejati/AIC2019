@@ -98,9 +98,13 @@ public class RandomAction {
 
     public ArrayList<EffectiveTarget> getEffectiveTargetForInVisionOppHeroes(World world, ArrayList<Hero> inVisionOppHeroes, ArrayList<Hero> activeMyHeroes) {
         ArrayList<EffectiveTarget> effectiveTargets = new ArrayList<>();
+        int remainAP = world.getAP();
         for (Hero myHero: activeMyHeroes) {
-
-            Ability ability = getPowerfulAbility(myHero);
+            Ability ability = getPowerfulAbility(myHero, remainAP);
+            if (ability == null) {
+                continue;
+            }
+            remainAP -= ability.getAPCost();
             CandidateActionCell candidateActionCell = getBestCellToAttack(world, inVisionOppHeroes, myHero, ability, effectiveTargets);
             if (candidateActionCell != null) {
                 effectiveTargets.add(new EffectiveTarget(myHero, ability, candidateActionCell));
@@ -109,7 +113,7 @@ public class RandomAction {
         return effectiveTargets;
     }
 
-    private Ability getPowerfulAbility(Hero myHero) {
+    private Ability getPowerfulAbility(Hero myHero, int remainAP) {
         Ability[] abilities = myHero.getOffensiveAbilities();
         int maxPower = 0;
         Ability returnAbility = null;
@@ -119,13 +123,18 @@ public class RandomAction {
             }
             int newPower = ability.getPower();
             if (newPower > maxPower) {
-                maxPower = newPower;
-                returnAbility = ability;
+                if(ability.getAPCost() <= remainAP) {
+                    maxPower = newPower;
+                    returnAbility = ability;
+                } else {
+                    System.out.println(myHero.getName() + Integer.toString(myHero.getId()) + " apCost not enough");
+                    System.out.println("current AP: " + remainAP);
+                    System.out.println("ability AP: " + ability.getAPCost());
+                }
             }
         }
 
         return returnAbility;
-
     }
 
     public Ability getRandomAbility(Hero hero) {
