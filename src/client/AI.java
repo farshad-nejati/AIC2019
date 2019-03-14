@@ -187,7 +187,7 @@ public class AI {
 
 //        randomMove.moveToObjectiveZone(world);
 
-        printer.printMap(world);
+//        printer.printMap(world);
 
         if (world.getCurrentTurn() == 1 || world.getCurrentTurn() == 4) {
             for (Hero myhero : world.getMyHeroes()) {

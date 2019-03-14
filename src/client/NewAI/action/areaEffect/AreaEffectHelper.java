@@ -119,8 +119,8 @@ public class AreaEffectHelper {
 
     public static void printCastAbilities(World world) {
         for (CastAbility castAbility : world.getOppCastAbilities()) {
-            System.out.println("\n\ncastAbility.getCasterId() = " + castAbility.getCasterId());
-            System.out.println("castAbility.getAbilityName() = " + castAbility.getAbilityName());
+//            System.out.println("\n\ncastAbility.getCasterId() = " + castAbility.getCasterId());
+//            System.out.println("castAbility.getAbilityName() = " + castAbility.getAbilityName());
         }
     }
 

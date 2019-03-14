@@ -208,8 +208,8 @@ class MinMaxMove {
 ////                freeFromHero.remove(res);
 //            }
 //        }
-        System.out.println("mustMoveHero.size() = " + mustMoveHero.size());
-        System.out.println("freeFromHero.size() = " + freeFromHero.size() + "\n\n\n");
+//        System.out.println("mustMoveHero.size() = " + mustMoveHero.size());
+//        System.out.println("freeFromHero.size() = " + freeFromHero.size() + "\n\n\n");
         return;
     }
 

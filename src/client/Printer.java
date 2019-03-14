@@ -51,8 +51,8 @@ public class Printer {
         for (Hero hero: heroes){
             int row = hero.getCurrentCell().getRow();
             int column = hero.getCurrentCell().getColumn();
-            System.out.print("Opp hero " + hero.getName()+ hero.getId() + ": " + row + " , " + column);
-            System.out.println("  HP: " + hero.getCurrentHP());
+//            System.out.print("Opp hero " + hero.getName()+ hero.getId() + ": " + row + " , " + column);
+//            System.out.println("  HP: " + hero.getCurrentHP());
         }
     }
 
@@ -101,29 +101,29 @@ public class Printer {
     }
 
     public void printDirections(Direction[] directions) {
-        System.out.print("\n\nDirections: ");
+//        System.out.print("\n\nDirections: ");
         for (Direction direction: directions) {
             System.out.print(direction.name() + " ");
         }
     }
 
     public void printPowerAbilities(ArrayList<PowerFullAbility> powerFullAbilities) {
-        System.out.println("\npowerFullAbilities.size() = " + powerFullAbilities.size());
+//        System.out.println("\npowerFullAbilities.size() = " + powerFullAbilities.size());
         for (PowerFullAbility powerFullAbility : powerFullAbilities) {
-            System.out.println("\npowerFullAbility.getId() = " + powerFullAbility.getId());
-            System.out.println("powerFullAbility.getRemCoolDown() = " + powerFullAbility.getRemCoolDown());
+//            System.out.println("\npowerFullAbility.getId() = " + powerFullAbility.getId());
+//            System.out.println("powerFullAbility.getRemCoolDown() = " + powerFullAbility.getRemCoolDown());
         }
     }
 
     public void printAreaEffectList(ArrayList<AreaEffect> areaEffectList) {
-        System.out.println("\n Area Effect List Size : " + areaEffectList.size());
+//        System.out.println("\n Area Effect List Size : " + areaEffectList.size());
 
         for (AreaEffect areaEffect : areaEffectList) {
-            System.out.println("\n");
-            System.out.println("areaEffect.getId() = " + areaEffect.getId());
-            System.out.println("areaEffect.getHero() = " + areaEffect.getHero());
-            System.out.println("areaEffect.getAbility() = " + areaEffect.getAbility().getName());
-            System.out.println("areaEffect.getMaxRange() = " + areaEffect.getMaxRange());
+//            System.out.println("\n");
+//            System.out.println("areaEffect.getId() = " + areaEffect.getId());
+//            System.out.println("areaEffect.getHero() = " + areaEffect.getHero());
+//            System.out.println("areaEffect.getAbility() = " + areaEffect.getAbility().getName());
+//            System.out.println("areaEffect.getMaxRange() = " + areaEffect.getMaxRange());
         }
     }
 }

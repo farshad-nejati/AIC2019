@@ -61,10 +61,10 @@ public class RandomMove {
             if (directions.length != 0) {
                 try {
                     Direction direction = directions[0];
-                    System.out.println("Direction 0 : " + direction);
+//                    System.out.println("Direction 0 : " + direction);
                     world.moveHero(myHero, direction);
                 } catch (Exception e) {
-                    System.out.println("\n\n\n ERROR:  " + directions.length+ "\n\n\n\n");
+//                    System.out.println("\n\n\n ERROR:  " + directions.length+ "\n\n\n\n");
                 }
             }
         }
@@ -95,7 +95,7 @@ public class RandomMove {
                     Direction direction = directions[0];
                     world.moveHero(myHero, direction);
                 } catch (Exception e) {
-                    System.out.println("\n\n\n ERROR:  " + directions.length+ "\n\n\n\n");
+//                    System.out.println("\n\n\n ERROR:  " + directions.length+ "\n\n\n\n");
                 }
             }
         }

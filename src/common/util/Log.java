@@ -84,7 +84,7 @@ public final class Log {
             PrintStream stream = new PrintStream(outputFile);
             stream.printf("%s (%s): %s%n", LEVELS[priority], tag, msg);
         } else {
-            System.err.println(LEVELS[priority] + ": " + msg);
+//            System.err.println(LEVELS[priority] + ": " + msg);
         }
     }
 
@@ -95,7 +95,7 @@ public final class Log {
             PrintStream stream = new PrintStream(outputFile);
             stream.printf("%s (%s): %s%n", LEVELS[priority], tag, msg + '\n' + getStackTraceString(tr));
         } else {
-            System.err.println(LEVELS[priority] + ": " + msg);
+//            System.err.println(LEVELS[priority] + ": " + msg);
         }
     }
 

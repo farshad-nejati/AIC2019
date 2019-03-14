@@ -38,7 +38,7 @@ public class Main {
             Controller c = new Controller(args[0], Integer.parseInt(args[1]), args[2], Long.parseLong(args[3]));
             c.start();
         } catch (Exception e) {
-            System.err.println("Client terminated with error: " + e.getMessage());
+//            System.err.println("Client terminated with error: " + e.getMessage());
             e.printStackTrace();
         }
     }
